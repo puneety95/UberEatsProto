@@ -1,0 +1,64 @@
+#space{
+    margin-left: 10%;
+}
+#space2{
+    margin-left:2% ;
+}
+#groupBtn{
+    background-color:#EEEEEE;
+    padding-right: 4%;
+    padding-left: 4%;
+    padding-top: 4%;
+    padding-bottom: 4%;
+}
+#b1{
+    background-color:white;
+    color:black;
+    border-color: white;
+}
+#b2{
+    background: #EEEEEE;
+    color:black;
+    border-color:#EEEEEE
+}
+#navaddress{
+    width: max-content;
+    background-color: #EEEEEE;
+    color:black;
+    border-color: #EEEEEE;
+    
+}
+#navsearch{
+    margin-left: 10%;
+    display: inline-flex;
+    flex-direction: row;
+    background-color: #EEEEEE;
+    min-width: 100%;
+    flex:1;
+       
+}
+
+
+#icon{
+    margin-top: 10px;
+}
+#navform{
+    outline:none;
+    background-color: #EEEEEE;
+    border-color:  #EEEEEE;
+    width:100%
+    
+       
+}
+#cart_button{
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    border-color: black;
+    
+    
+    }
+  .flex-container{
+      flex:1
+  }
+  

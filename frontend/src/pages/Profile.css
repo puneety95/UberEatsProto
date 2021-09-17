@@ -1,0 +1,13 @@
+#profile_details{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 1%;
+}
+
+#profile_details > div:nth-child(1) > div{
+    font-weight: 500;
+}
+#updateprofile{
+    background-color:rgb(68, 143, 68);
+}
