@@ -1,10 +1,21 @@
 import {ListGroup,Button,Modal,Form,Col,Row} from 'react-bootstrap';
 import blankuser from  '/home/puneet/CourseWork/uber_eats/frontend/src/blankuser.jpeg';
-import './Profile.css'
-import {useState} from 'react'
+import './Profile.css';
+import {useState,useEffect} from 'react';
+import axios from 'axios';
 function Profile()
 {
     const [show, setShow] = useState(false);
+    const[page,setPage]=useState(true);
+
+    useEffect(()=>{
+        axios.get("http://localhost:4000/profile").then((response)=>{
+          console.log(response.data);
+        });
+   
+    },[]);
+
+
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -53,42 +64,6 @@ function Profile()
         </div>
         
 
-        <Modal show={show} onHide={handleClose} backdrop="static">
-        <Modal.Header >
-          <Modal.Title>Update Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <Form>
-  <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
-    <Form.Label column sm="2">
-      Email
-    </Form.Label>
-    <Col sm="10">
-      <Form.Control plaintext readOnly defaultValue="email@example.com" />
-    </Col>
-  </Form.Group>
-
-  <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
-    <Form.Label column sm="2">
-      Name
-    </Form.Label>
-    <Col sm="10">
-      <Form.Control type="Text" placeholder="Name" />
-    </Col>
-  </Form.Group>
-</Form>
-
-
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal>
             
     </div>);
 }
