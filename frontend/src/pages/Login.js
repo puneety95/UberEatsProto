@@ -1,10 +1,43 @@
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import './Login.css';
-import {Link} from 'react-router-dom';
+import {Link,useHistory} from 'react-router-dom';
+import { useState } from 'react';
+import axios from 'axios';
 
 
 function Login()
 {
+    let history=useHistory();
+    const [loginEmail,setLoginEmail] =useState("");
+    const [loginPassword,setLoginPassword] = useState("");
+
+
+    function loginButtonHandler(e)
+      {
+          
+    let ele=document.getElementById("loginFormId");
+    let chk_status=ele.checkValidity();
+    ele.reportValidity()
+    
+        if(!chk_status)
+        {
+            return;
+        }
+   e.preventDefault();
+   const loginData={loginEmail,loginPassword};
+   axios({
+       method:"post",
+       url:"http://localhost:4000/login",
+       data:JSON.stringify(loginData),
+       headers:{"Content-Type":"application/json"}
+   }).then((response)=>{alert("Sign in success");
+     localStorage.setItem('accessToken' ,response.data.accessToken);
+     history.push('/');
+})
+   .catch((error)=>{
+       alert(error.response.data);
+   })
+  };
     return(
     
             <Container fluid>
@@ -27,19 +60,19 @@ function Login()
                 <Row style={{marginTop:'1%'}}>
                 <div className='col-sm-4' style={{marginRight:'2%'}}></div>
                     <div className='col-sm-5'>
-                    <Form>  
-                   
-                        <input type="text" placeholder="Enter Email Id" />
+                    <Form id="loginFormId" className="loginForm">  
+                    
+                        <input type="text" onChange={(e)=>{setLoginEmail(e.target.value)}} placeholder="Enter Email Id" required/>
                         
-                        <input type="password" placeholder="Enter Password" />
-                       <button>Sign In</button>
+                        <input type="password" onChange={(e)=>{setLoginPassword(e.target.value)}} placeholder="Enter Password" required/>
+                       <button onClick={loginButtonHandler}>Sign In</button>
                     </Form>
                     </div>
                   </Row>
                   <Row style={{marginTop:'1%',justifyContent:'flex-start'}}>
                   <div className='col-sm-4' style={{marginRight:'2%'}}></div>
                     <div className='col-sm-4'>
-                    New to Uber? <Link to="/signup" ><button  style={{border:'none',padding:'0',color:'green',backgroundColor:'white'}}>Create an account</button></Link>
+                    New to Uber? <Link to="/signup" ><button  style={{ textDecoration: 'underline',border:'none',padding:'0',color:'green',backgroundColor:'white'}}>Create an account</button></Link>
                     </div>
                   </Row>
                                

@@ -1,14 +1,11 @@
-.col-sm-5 input{
+.loginForm input{
     width: 80%;
     margin-bottom: 1%;
     line-height: 3em;
 }
-.col-sm-5  button{
+.loginForm > button  {
     color:white;
     background-color: green;
     width:80%;
     line-height: 3em;
 }
-.col-sm-4 button:hover{
-   text-decoration: underline;
-  }

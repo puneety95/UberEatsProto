@@ -1,12 +1,15 @@
 import {Container,Row,Col,Form} from 'react-bootstrap';
 import {useState} from 'react';
 import axios from 'axios';
-import './SignUp.css'
+import './SignUp.css';
+import validator from 'validator';
+import { Link,useHistory} from 'react-router-dom';
+
 
 
 function SignUp()
 {
-
+    const history=useHistory();
     const [signup_name,set_signup_name] =useState("");
     const [signup_pass,set_signup_pass] =useState("");
     const [signup_email ,set_signup_email]=useState("");
@@ -28,20 +31,45 @@ function SignUp()
 
     function SignUpHandler(e)
     {
+
+        var ele = document.getElementById("customer_signup");
+        var chk_status = ele.checkValidity();
+        ele.reportValidity();
+       if (!chk_status) {
+            
+            return;
+           }
         e.preventDefault();
+
+        if (!(validator.isEmail(signup_email))) {
+           
+            alert('Enter valid Email!');
+            return ;
+          }
+       
+
+
         let role=1;//cust , 2rest
+       
         if(!cust)
         {
             role=2;
 
         }
         const signup_data={signup_name,signup_pass,signup_email,signup_location,role};
-        //console.log(signup_data);
+       // console.log(signup_data);
         axios({
             method:'post',
             url:'http://localhost:4000/signup',
-            data : JSON.stringify(signup_data)
-        }).then (()=>{});
+            data : JSON.stringify(signup_data),
+            headers:{"Content-Type":"application/json"}
+        }).then ((response)=>{alert("Sign Up Successful !!! ");
+                               history.push('/login');
+                             })
+        .catch((error) => {
+            
+            alert(error.response.data);
+          });
 
 
     }
@@ -69,7 +97,7 @@ function SignUp()
 
                     <div  className="col-sm-3   ">
                       <div className="form-check">
-                         <input class="form-check-input" onClick={()=>Togglecheck(true)} type="radio" name="flexRadioDefault" id="Customer"/>
+                         <input class="form-check-input" onClick={()=>Togglecheck(true)} type="radio" name="flexRadioDefault" id="Customer" defaultChecked/>
                           <label class="form-check-label" for="flexRadioDefault1">
                             Customer
                               </label>
@@ -83,31 +111,31 @@ function SignUp()
                         <label for="custlabel">Name</label>
                             <input onChange={(e)=>{set_signup_name(e.target.value)}} style={{marginBottom:"8%"}} type="text" name="custlabel"  required/>
                             <label for="custlabel">Email</label>
-                            <input onChange={(e)=>{set_signup_email(e.target.value)}} style={{marginBottom:"8%"}} type="text" name="custlabel" required />
+                            <input onChange={(e)=>{set_signup_email(e.target.value)}} style={{marginBottom:"8%"}} type="text" name="custlabel"   required />
                             <label for="custlabel">Password</label>
-                            <input onChange={(e)=>{set_signup_pass(e.target.value)}} style={{marginBottom:"8%"}} type="password" name="custlabel" required />
-                            <button onClick={SignUpHandler} style={{color:"white",marginTop:"10%" ,backgroundColor:"green"}} id="Custformbutton">Submit</button>
+                            <input onChange={(e)=>{set_signup_pass(e.target.value)}} style={{marginBottom:"8%"}} type="password" name="custlabel"  minlength="7" required />
+                            <button type="Submit" onClick={SignUpHandler} style={{color:"white",marginTop:"10%" ,backgroundColor:"green"}} id="Custformbutton">Submit</button>
                            
                         </Form>
                 </div>
-                </Row> 
-                }
-               { !cust  &&   <Row>
+                </Row> }
+                
+                { !cust  &&     <Row>
                 <div className="col-sm-2 col-ms-4 offset-sm-3 ">
                         <Form style={{marginTop:'6%'}} id="customer_signup">
                         <label for="custlabel">Restaurant Name</label>
                             <input onChange={(e)=>{set_signup_name(e.target.value)}} set_signup_passstyle={{marginBottom:"8%"}} type="text" name="custlabel"  required/>
                             <label for="custlabel">Email</label>
-                            <input onChange={(e)=>{set_signup_email(e.target.value)}} style={{marginBottom:"8%"}} type="text" name="custlabel" required />
+                            <input onChange={(e)=>{set_signup_email(e.target.value)}} style={{marginBottom:"8%"}} type="text" name="custlabel"   required />
                             <label for="custlabel">Password</label>
-                            <input onChange={(e)=>{set_signup_pass(e.target.value)}}  style={{marginBottom:"8%"}} type="password" name="custlabel" required />
+                            <input onChange={(e)=>{set_signup_pass(e.target.value)}}  style={{marginBottom:"8%"}} type="password" name="custlabel"  minlength="7" required />
                             <label for="custlabel">Location</label>
-                            <input  onChange={(e)=>{set_signup_location(e.target.value)}} style={{marginBottom:"8%"}} type="text" name="custlabel" required />
+                            <input  onChange={(e)=>{set_signup_location(e.target.value)}} style={{marginBottom:"8%"}} type="text" name="custlabel"  minlength="7" required />
                             <button onClick={SignUpHandler} style={{color:"white",marginTop:"10%" ,backgroundColor:"green"}} id="Custformbutton">Submit</button>
                            
                         </Form>
                 </div>
-                </Row> }
+              </Row>}
                 </Container>
     </Container>)
 }

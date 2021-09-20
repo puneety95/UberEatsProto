@@ -11,7 +11,15 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp"
 function App() {
   const [value_nav, setValue_nav] = useState("false");
-  const [userlogin, setuserLogin] = useState(false);
+  let userLoginBool;
+  if(localStorage.getItem('accessToken'))
+  {
+    userLoginBool=true;
+  }
+  else{
+    userLoginBool=false;
+  }
+  const [userlogin, setuserLogin] = useState(userLoginBool);
   console.log(value_nav);
   const sideDrawerClickHandler = () => {
     setValue_nav((prev_state) => {
