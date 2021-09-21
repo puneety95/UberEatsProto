@@ -1,0 +1,61 @@
+########Navigbar user
+const [value_nav, setValue_nav] = useState("false");
+  let userLoginBool;
+  
+  if(localStorage.getItem('accessToken'))
+  {
+    userLoginBool=true;
+  }
+  else{
+    userLoginBool=false;
+  }
+  const [userlogin, setuserLogin] = useState(userLoginBool);
+  
+  console.log(value_nav);
+  const sideDrawerClickHandler = () => {
+    setValue_nav((prev_state) => {
+      return !prev_state;
+    });
+  };
+
+  const BackDropClickHandler = () => {
+    setValue_nav((prevState) => {
+      return !prevState;
+    });
+  };
+  let view_side_drawer;
+  let view_back_drop;
+
+  if (!value_nav && 1) {
+    view_side_drawer = <SideDrawer bd_click_handler={BackDropClickHandler} />;
+    view_back_drop = <BackDrop bd_click_handler={BackDropClickHandler} />;
+  }
+
+  #########
+   <Container fluid style={{padding:0}}>
+     <Row>
+      <Navbar bg="dark">
+          
+         <Row>
+           <div className="col"> 
+            <Navbar.Brand>
+             <img
+              width="146px" 
+              height="26px"
+              className="img-responsive"
+              src={brandlogo}
+              alt="logo"
+             />
+             <div style={{color:'white'}}>For Restaurant</div>
+            </Navbar.Brand>
+             
+           </div>
+           <div className="col">
+             col2
+           </div>
+         </Row>
+      </Navbar>
+         </Row>
+    
+        
+      </Container>

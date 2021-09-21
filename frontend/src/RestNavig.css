@@ -1,0 +1,21 @@
+#rest_navig_1 {
+    background-color: green;
+    border: none;
+    padding: none ;
+    width: -webkit-fill-available;
+}
+
+#rest_navig_1:focus {
+    
+    
+  }
+#forresttxt{
+    padding-top: 8px;
+    color:white;
+}
+#cforresttxt{
+    width: 300px;
+}
+#rest_nav_button{
+    
+}    

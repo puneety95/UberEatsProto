@@ -64,7 +64,7 @@ function SignUp()
             data : JSON.stringify(signup_data),
             headers:{"Content-Type":"application/json"}
         }).then ((response)=>{alert("Sign Up Successful !!! ");
-                               history.push('/login');
+                               history.push('/');
                              })
         .catch((error) => {
             
@@ -72,7 +72,7 @@ function SignUp()
           });
 
 
-    }
+    };
 
 
     return (<Container>
