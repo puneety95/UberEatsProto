@@ -5,7 +5,8 @@ var con = mysql.createConnection({
     user: 'admin',
     password: 'Sputnik12',
     port:3306,
-    database:'uber_eats'
+    database:'uber_eats',
+    multipleStatements: true
   });
   
   con.connect(function(err) {

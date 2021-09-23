@@ -32,8 +32,9 @@ function Login() {
       .then((response) => {
         //    alert("Sign in success");
         localStorage.setItem("accessToken", response.data.accessToken);
-        console.log("-----LOGIN----", response.data);
-       history.push("/home");
+        localStorage.setItem("id", response.data.id[0].id);
+        console.log("-----LOGIN----", response.data.id[0].id);
+       history.push("/dashboard");
        // return <Redirect to='/home' />
       })
       .catch((error) => {

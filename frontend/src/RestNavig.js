@@ -1,6 +1,8 @@
 import { Container,Row,Col, Navbar,Button, NavItem,Nav } from "react-bootstrap";
 import brandlogo from "./logo2.svg";
 import "./RestNavig.css";
+import {Link}
+ from 'react-router-dom';
 //  import brandlogo from "./brand.svg";
 
 function RestNavig() {
@@ -23,18 +25,18 @@ function RestNavig() {
               </Navbar.Brand>
               </div>
               <div id="cforresttxt" className="col-sm-2">
-              <div id="forresttxt">For Restaurant</div>
+              <div id="forresttxt">Restaurant Manager</div>
               </div>
             
               <div  className="col-sm-1" >  
                  <NavItem id="rest_nav_button">
-                   <Button id="rest_navig_1">Home</Button>
+                  <Link to="/dashboard"> <Button id="rest_navig_1">Home</Button></Link>
                  </NavItem>
                </div>
 
                <div id="rest_nav_button" className="col-sm-1">
                  <NavItem id="rest_nav_button">
-                   <Button id="rest_navig_1">Orders</Button>
+                  <Link to="/orders"> <Button id="rest_navig_1">Orders</Button> </Link>
                  </NavItem>
                </div>
                
