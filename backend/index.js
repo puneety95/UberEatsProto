@@ -21,12 +21,12 @@ var cors_options ={
 
 
 const routesHandler=require('./routes/handler.js');
-
+const imageRoutesHandler=require('./routes/imageHandler.js');
 
 
 
 app.use('/',routesHandler);
-
+app.use('/',imageRoutesHandler);
 
 const PORT =4000;
 app.listen(PORT,()=>{

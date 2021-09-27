@@ -67,10 +67,9 @@ function SignUp()
                                history.push('/');
                              })
         .catch((error) => {
-            
+            console.log(error.response)
             alert(error.response.data);
           });
-
 
     };
 

@@ -1,39 +1,24 @@
-import "./App.css";
 import RouteCustomer from "./RouteCustomer";
 import RouteRest  from "./RouteRest";
-import {useEffect,useRef, useState} from "react";
-import {useLocation,useHistory} from "react-router-dom";
-
-
 import RouteLogin from "./RouteLogin";
+import { useEffect } from "react";
+import {useHistory,Route} from "react-router-dom";
+import Switch from "react-bootstrap/esm/Switch";
  function App() {
-  
-   let loc = useLocation();
-   let history = useHistory();
-  // let isLogin=useRef(false);
- // const [isLogin,setIsLogin]=useState(false);
-   
-   
-   // useEffect(()=>{
-     
-   //    if(localStorage.getItem('accessToken'))
-   //    {
-        
-   //       setIsLogin
-   //    }
-   //    else{
-   //       isLogin.current=false;
-   //       //history.push('/login');
-   //    }
-   // },[loc])
-
-   //let issLogin=true;
-
-
+   const history = useHistory();
+   console.log('----APP----', history);
   return (
-     
      <div>
-        {localStorage.getItem('accessToken')? <RouteRest/> : <RouteLogin/>}
+        {/* <Route path="/"  >
+        <RestHome/>
+        </Route> */}
+        
+        <Switch>
+           <Route path="/">
+           {localStorage.getItem('accessToken')?  <RouteCustomer/>  : <RouteLogin/>} 
+              </Route>
+        
+        </Switch>
           
      </div>
     

@@ -9,9 +9,7 @@ function RouteRest()
     return (<div>
         <RestNavig/>
         <Switch>
-        <Route path="/" exact>
-            <RestHome/>
-        </Route>
+      
         <Route path="/dashboard">
             <RestHome/>
         </Route>
@@ -21,6 +19,9 @@ function RouteRest()
         </Route>
         <Route path="/Dashboard2">
             <Dashboard/>
+        </Route>
+        <Route path="/"  >
+        <RestHome/>
         </Route>
         
         </Switch>

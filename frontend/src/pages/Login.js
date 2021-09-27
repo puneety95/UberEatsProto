@@ -9,15 +9,15 @@ import App from "../App";
 
 function Login() {
  let history = useHistory();
-
-  const [loginEmail, setLoginEmail] = useState("");
+ 
+;  const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   function loginButtonHandler(e) {
     let ele = document.getElementById("loginFormId");
     let chk_status = ele.checkValidity();
     ele.reportValidity();
-
+   
     if (!chk_status) {
       return;
     }
@@ -33,9 +33,9 @@ function Login() {
         //    alert("Sign in success");
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("id", response.data.id[0].id);
-        console.log("-----LOGIN----", response.data.id[0].id);
-       history.push("/dashboard");
-       // return <Redirect to='/home' />
+        
+        history.push("/dashboard");
+    
       })
       .catch((error) => {
         alert(error.response.data);
@@ -43,6 +43,7 @@ function Login() {
   }
   return (
     <Container fluid>
+     
       <Row xs style={{ marginTop: "6%" }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
