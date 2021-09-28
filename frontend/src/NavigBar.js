@@ -4,14 +4,32 @@ import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import * as CGIcons from "react-icons/cg";
 import "bootstrap/dist/css/bootstrap.css";
+import {useState} from "react";
 import "./NavigBar.css";
+import SideDrawer from "./SideDrawer";
+import BackDrop from "./BackDrop";
 
 function NavigBar(props) {
+
+  const [sideDrawerView,setSideDrawerView] =useState(false);
+ 
+  const sd_click_handler=()=>{
+    setSideDrawerView((prevState)=>{
+      return (!prevState)
+    });   
+  }
+  const closeSideDrawerHandler=()=>{
+    setSideDrawerView(false);
+  }
+
   return (
     <div>
+      {sideDrawerView && <SideDrawer/>}
+      {sideDrawerView && <BackDrop closeSideDrawer={closeSideDrawerHandler}/>}
       <Navbar >
+        
         <Nav id="space2">
-          <Button onClick={props.sd_click_handler}>
+          <Button onClick={sd_click_handler}>
             <FaIcons.FaBars />{" "}
           </Button>
         </Nav>

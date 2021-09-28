@@ -1,23 +1,26 @@
 //import {Navbar,Nav} from 'react-bootstrap';
 import './SideDrawer.css';
-import {Row,Col } from 'react-bootstrap';
+import {Row,Col, Container } from 'react-bootstrap';
 import blankuser from  './blankuser.jpeg';
 import {Link} from 'react-router-dom';
 import  * as MdIcons from 'react-icons/md';
 import {ListGroup} from 'react-bootstrap';
 import * as RiIcons from 'react-icons/ri';
+import BackDrop from './BackDrop';
+import "./SideDrawer.css"
 function alert_message()
 {
     alert("Puneet");
 }
-function SideDrawer(props)
+function SideDrawer(props)  
 {
     let uname="Puneet";
 
     return(
-
+    <Container fluid>
+       
         <div className='sidedrawer'>
-           
+            
                 <div className="drawercont">
                     <div class='flex_cont'>
                     <img src={blankuser} width='46px' height='46px' id="userimagedrawer" alt="user"></img>
@@ -57,6 +60,7 @@ function SideDrawer(props)
                     </div>
                     
         </div>
+        </Container>
     );      
 }
 export default SideDrawer;

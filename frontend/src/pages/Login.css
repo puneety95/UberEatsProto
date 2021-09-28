@@ -1,0 +1,11 @@
+.loginForm input{
+    width: 80%;
+    margin-bottom: 1%;
+    line-height: 3em;
+}
+.loginForm > button  {
+    color:white;
+    background-color: green;
+    width:80%;
+    line-height: 3em;
+}

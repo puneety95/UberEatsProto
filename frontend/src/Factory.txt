@@ -1,0 +1,135 @@
+########Navigbar user
+const [value_nav, setValue_nav] = useState("false");
+  let userLoginBool;
+  
+  if(localStorage.getItem('accessToken'))
+  {
+    userLoginBool=true;
+  }
+  else{
+    userLoginBool=false;
+  }
+  const [userlogin, setuserLogin] = useState(userLoginBool);
+  
+  console.log(value_nav);
+  const sideDrawerClickHandler = () => {
+    setValue_nav((prev_state) => {
+      return !prev_state;
+    });
+  };
+
+  const BackDropClickHandler = () => {
+    setValue_nav((prevState) => {
+      return !prevState;
+    });
+  };
+  let view_side_drawer;
+  let view_back_drop;
+
+  if (!value_nav && 1) {
+    view_side_drawer = <SideDrawer bd_click_handler={BackDropClickHandler} />;
+    view_back_drop = <BackDrop bd_click_handler={BackDropClickHandler} />;
+  }
+
+  #########
+   <Container fluid style={{padding:0}}>
+     <Row>
+      <Navbar bg="dark">
+          
+         <Row>
+           <div className="col"> 
+            <Navbar.Brand>
+             <img
+              width="146px" 
+              height="26px"
+              className="img-responsive"
+              src={brandlogo}
+              alt="logo"
+             />
+             <div style={{color:'white'}}>For Restaurant</div>
+            </Navbar.Brand>
+             
+           </div>
+           <div className="col">
+             col2
+           </div>
+         </Row>
+      </Navbar>
+         </Row>
+    
+        
+      </Container>
+
+      #######
+       <div className="col-sm-6">
+                <ListGroup>
+                <ListGroup.Item>Name</ListGroup.Item>
+                <ListGroup.Item>Location</ListGroup.Item>
+                <ListGroup.Item>Contact Number</ListGroup.Item>
+                <ListGroup.Item>Description</ListGroup.Item>
+                <ListGroup.Item>Timings</ListGroup.Item>
+                </ListGroup>
+                </div>
+                <div className="col-sm-6">
+                <ListGroup>
+                <ListGroup.Item>Moti Mahal</ListGroup.Item>
+                <ListGroup.Item>San Jose</ListGroup.Item>
+                <ListGroup.Item>9911294357</ListGroup.Item>
+                 <ListGroup.Item>9pm-10pm</ListGroup.Item>
+                <ListGroup.Item>Wish you could ask someone what's the best thing on the menu? The jasmine rice is one of the most ordered items on the menu and the pen pineapple fried rice and the sesame chicken are two of the items most commonly ordered together at this evening go-to. • $ • Thai • Asian • Noodles • Alcohol</ListGroup.Item>
+               
+                </ListGroup>
+                </div>
+
+                #############
+                <div className="col-sm-6">
+                       Name
+                   </div>
+                   <div className="col-sm-6">
+                       Moti Mahal
+                   </div>
+                   <div className="col-sm-6">
+                       Location
+                   </div>
+                   <div className="col-sm-6">
+                       San Jose
+                   </div>
+                   <div className="col-sm-6">
+                       Contact
+                   </div>
+                   <div className="col-sm-6">
+                       9911294357
+                   </div>
+                   <div className="col-sm-6">
+                       Timings
+                   </div>
+                   <div className="col-sm-6">
+                       9pm-10pm
+                   </div>
+                   <div className="col-sm-6">
+                       Description
+                   </div>
+                   <div className="col-sm-6">
+                   Wish you could ask someone what's the best thing on the menu? The jasmine rice is one of the most ordered items on the menu and the pen pineapple fried rice and the sesame chicken are two of the items most commonly ordered together at this evening go-to. • $ • Thai • Asian • Noodles • Alcohol
+                   </div>
+
+                   ####
+                   <div className="col-sm-6">
+                <ListGroup>
+                <ListGroup.Item>Name</ListGroup.Item>
+                <ListGroup.Item>Location</ListGroup.Item>
+                <ListGroup.Item>Contact Number</ListGroup.Item>
+                <ListGroup.Item>Description</ListGroup.Item>
+                <ListGroup.Item>Timings</ListGroup.Item>
+                </ListGroup>
+                </div>
+                <div className="col-sm-6">
+                <ListGroup>
+                <ListGroup.Item>{profDetails.name}</ListGroup.Item>
+                <ListGroup.Item>{profDetails.r_location}</ListGroup.Item>
+                <ListGroup.Item>{profDetails.r_contact}</ListGroup.Item>
+                 <ListGroup.Item>{profDetails.r_timings}</ListGroup.Item>
+                <ListGroup.Item>{profDetails.r_description}</ListGroup.Item>
+               
+                </ListGroup>
+                </div>
