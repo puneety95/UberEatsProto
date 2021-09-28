@@ -3,6 +3,7 @@ import blankuser from  '/home/puneet/CourseWork/uber_eats/frontend/src/blankuser
 import './Profile.css';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
+import Countries from '../components/Countries';
 function Profile()
 {
     const [show, setShow] = useState(false);
@@ -53,7 +54,7 @@ function Profile()
                 <ListGroup.Item>{phonenumber}</ListGroup.Item>
                 <ListGroup.Item>{dob}</ListGroup.Item>
                 <ListGroup.Item>{state}</ListGroup.Item>
-                <ListGroup.Item>{country}</ListGroup.Item>
+                <Countries/>
                 <ListGroup.Item>{Nickname}</ListGroup.Item>
 
             </ListGroup>
