@@ -39,8 +39,15 @@ router.post('/signup',  (req,res)=>{
        
         sql = `INSERT INTO user_login  (id,email,password,location,role,name) VALUES`
         sql=sql+ `((select * from (select max(id)+1 from uber_eats.user_login b) as  temp), '${val.signup_email}' ,'${pp}','${val.signup_location}','${val.role}','${val.signup_name}');`;
-       sql=sql+` Insert into rest_info (r_id) values((select max(id) from user_login));`;
-       console.log(sql);
+       if(val.role==1)
+       {
+         sql=sql+`Insert into cust_profile (id) values((select max(id) from user_login));`;
+       }
+       else
+       {
+        sql=sql+` Insert into rest_info (r_id) values((select max(id) from user_login));`;
+       }
+        console.log(sql);
            con.query(sql ,function (err, result) {
               if (err)
               {

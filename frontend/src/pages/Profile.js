@@ -1,22 +1,27 @@
-import {ListGroup,Button,Modal,Form,Col,Row} from 'react-bootstrap';
-import blankuser from  '/home/puneet/CourseWork/uber_eats/frontend/src/blankuser.jpeg';
+import {ListGroup,Button,Modal,Form,Col,Container,Row} from 'react-bootstrap';
+import ImageButton from 'react-image-button';
+ import blankuser from '../Images/blankuser.jpeg';
 import './Profile.css';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 import Countries from '../components/Countries';
+import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 function Profile()
 {
     const [show, setShow] = useState(false);
-    const[page,setPage]=useState(true);
+    const[showImage,setShowImage]=useState(false);
+    const[custDetails,setCustDetails]=useState([]);
+    const[dumCustDetails,setDumCustDetails]=useState([]);
 
-    useEffect(()=>{
+     useEffect(()=>{
         axios.get("http://localhost:4000/profile").then((response)=>{
           console.log(response.data);
         });
    
     },[]);
 
-
+    const updateImage=()=>setShowImage(true);
+    const updateImageClose=()=>setShowImage(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -30,42 +35,137 @@ function Profile()
     
     return(
         <div>
-    <div style={{display:'flex',justifyContent:'center',marginRight:'5%',marginTop:'5%'}}>
-          <img src={blankuser} width='80px' height='80px' id="profileimagedrawer" style={{borderRadius:'50%'}} alt="user" ></img>
-          </div>
+
+    <div style={{display:'flex',postion:'relative',justifyContent:'center',marginRight:'5%',marginTop:'5%'}}>
+        
+        <Container>
+        <Row>
+             <div className="col-sm-6" style={{display:'flex',justifyContent:'flex-end'}}>
+                <img onClick={updateImage} src={blankuser} width='80px' height='80px' id="profileimagedrawer" style={{borderRadius:'50%',cursor:'pointer'}} alt="user" ></img> 
+             </div>
+             <div className="col-sm-6">        
+                <div>Puneet Yadav</div>
+                <Button className='shadow-none' style={{color:'green',background:'white',border:'none'}} id="profile_image_space"><u>Favourties</u></Button>
+             </div>
+        </Row>
+        </Container>
+                
+        
+    </div>
+   
     <div id="profile_details">
-      
-        <div>
+     
+      <Container>
+       <Row>
+           <div style={{display:'flex',justifyContent:'flex-end'}}className="col-sm-6">
         <ListGroup>
-                <ListGroup.Item>Name</ListGroup.Item>
-                <ListGroup.Item>Email ID</ListGroup.Item>
+               <ListGroup.Item>Email ID</ListGroup.Item>
                 <ListGroup.Item>Phone Number</ListGroup.Item>
                 <ListGroup.Item>Date of Birth</ListGroup.Item>
+                <ListGroup.Item>City</ListGroup.Item>
                 <ListGroup.Item>State</ListGroup.Item>
                 <ListGroup.Item>Country</ListGroup.Item>
                 <ListGroup.Item>Nick Name</ListGroup.Item>
 
             </ListGroup>
         </div>
-        <div>
-        <ListGroup>
-                <ListGroup.Item>{uname}</ListGroup.Item>
-                <ListGroup.Item>{emailid}</ListGroup.Item>
-                <ListGroup.Item>{phonenumber}</ListGroup.Item>
-                <ListGroup.Item>{dob}</ListGroup.Item>
-                <ListGroup.Item>{state}</ListGroup.Item>
-                <Countries/>
-                <ListGroup.Item>{Nickname}</ListGroup.Item>
+        <div className="col-sm-6">
+        <ListGroup style={{fontWeight:'300'}}>
+                <ListGroup.Item>emailid</ListGroup.Item>
+                <ListGroup.Item>phone</ListGroup.Item>
+                <ListGroup.Item>do</ListGroup.Item>
+                <ListGroup.Item>Sahibabad</ListGroup.Item>
+                <ListGroup.Item>state</ListGroup.Item>
+                <ListGroup.Item>state</ListGroup.Item>
+                <ListGroup.Item>Nickname</ListGroup.Item>
 
             </ListGroup>
         </div>
-        </div>
+        </Row>
+       </Container>
+    </div>
         <div>
-        <Button onClick={handleShow} style={{marginLeft:"44%",marginTop:"1%"}} id="updateprofile">Update Details</Button>
+        <Button className="shadow-none" onClick={handleShow} style={{marginLeft:"44%",marginTop:"1%"}} id="updateprofile">Update Details</Button>
         </div>
         
-
+        <Modal show={show} onHide={handleClose}>
+        <Modal.Header >
+          <Modal.Title>Edit Profile</Modal.Title>
+        </Modal.Header>
+        <Container fluid>
+        <Modal.Body>
             
+        <Form style={{marginTop:'6%'}} id="customer_signup">
+            <Row>
+                <div className="col-sm-3 text-center">
+                <label for="name">Name</label>
+                </div>
+                <div className="col-sm-9">
+                <input  style={{marginBottom:"8%"}} type="text" name="name" />
+                </div>
+        
+         </Row>
+         <Row>
+                <div className="col-sm-3 text-center">
+                <label for="phoneNumber">Phone Number</label>
+                </div>
+                <div className="col-sm-9">
+                <input  style={{marginBottom:"8%"}} type="text" name="phoneNumber"   />
+                </div>
+        
+         </Row>
+         <Row>
+                <div className="col-sm-3 text-center">
+                <label for="dob">Date of Birth</label>
+                </div>
+                <div className="col-sm-9">
+                <input style={{marginBottom:"8%"}} type="text" name="dob"   />
+                </div>
+        
+         </Row>
+         
+         
+                           
+     </Form>
+     </Modal.Body>
+            </Container>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" style={{backgroundColor:"green"}}  value="button" id="dish_form_modal"  >
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+   
+
+    <Modal show={showImage} onHide={updateImageClose}>
+    <Modal.Header >
+          <Modal.Title>Edit Image</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <Container>
+            <Row>
+            <Col>
+            Please upload file to change the profile image.
+            </Col>
+            
+            </Row>
+            <Row style={{marginTop:'2%'}}>
+                <div className="col-sm-6">
+            <input type='file'></input>
+            </div>
+            </Row>
+            
+        </Container>
+
+    </Modal.Body>
+
+    </Modal>
+
+   
     </div>);
 }
 export default Profile;
