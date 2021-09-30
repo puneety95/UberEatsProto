@@ -30,5 +30,14 @@ function authenticateToken(req,res,next)
 }
 
 customerRouter.post('/profile',(res,req)=>{
-    let sql=`select name,dob,city,nickname,phone from cust_profile where id=;`;
+    let sql=`select name,dob,city,nickname,phone from cust_profile where id=${res.body.id};`;
+    con.query(sq,function(err,result){
+      if(err)
+      {
+        res.statusCode(500);
+      }
+      else{
+        res.send(result);
+      }
+    })
 })
