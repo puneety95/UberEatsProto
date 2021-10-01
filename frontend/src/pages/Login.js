@@ -34,11 +34,11 @@ function Login() {
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("id", response.data.id[0].id);
         
-        history.push("/dashboard");
+        history.push('/dashboard');
     
       })
       .catch((error) => {
-        alert(error.response.data);
+        alert(error.response);
       });
   }
   return (

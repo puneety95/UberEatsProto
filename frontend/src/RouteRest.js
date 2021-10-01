@@ -1,32 +1,23 @@
 import RestNavig  from "./RestNavig";
-import {Switch,Route} from "react-router-dom";
+import {Switch,Route,useHistory} from "react-router-dom";
 import RestHome from "./pages/RestHome";
-import RestOrders from "./pages/RestOrders";
+import RestOrders from "./pages/RestOrders"; 
 import Profile from "./pages/RestOrders";
 import Dashboard from "./pages/Dashboard"
+import Login from './pages/Login';
+import SignUp from "./pages/SignUp";
 function RouteRest()
 {
+    
+ 
     return (<div>
-        <RestNavig/>
-        <Switch>
-      
-        <Route path="/dashboard">
-            <RestHome/>
-        </Route>
-
-        <Route path="/orders">
-            <RestOrders/>
-        </Route>
-        <Route path="/Dashboard2">
-            <Dashboard/>
-        </Route>
-        <Route path="/"  >
-        <RestHome/>
-        </Route>
-        
-        </Switch>
-  
+        {/* <RestNavig/>
+        <RestHome/> */}
+        {/* <Route exact path='/' component={RestHome} /> */}
+        <Route exact path="/dashboard" component={RestHome}>   
+       {/*  <Route exact path='/orders' component={RestOrders}/>  */}
+       </Route> 
     </div>
     );
 }
-export default RouteRest;
+export default RouteRest;   

@@ -86,6 +86,7 @@ router.post('/signup',  (req,res)=>{
   con.query(sql, function (err,result){
     if(err)
     {
+      console.log("YES");
       res.status(403).send("There were some errors while performing the action");
       
     }
@@ -125,7 +126,7 @@ router.post('/signup',  (req,res)=>{
      }
     }
     catch(error)
-    {
+    { console.log("Puneet")
       res.sendStatus(403).send("There were some errors while performing the action");
     }
     }
