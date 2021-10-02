@@ -2,11 +2,11 @@ import {Switch, Route} from "react-router-dom";
 import SignUp from  './pages/SignUp';
 import Login from './pages/Login';
 import RestHome from "./pages/RestHome";
-import RouteRest from "./RouteRest";
-import Dashboard from "./pages/Dashboard";
 import RestNavig from "./RestNavig";
 import RestOrders from "./pages/RestOrders"; 
-
+import Home from "./pages/Home";
+import NavigBar from "./NavigBar";
+import Dashboard from "./pages/Dashboard";
 
 
 function RouteLogin()
@@ -24,12 +24,16 @@ function RouteLogin()
             <SignUp/>
             
         </Route>   
-        
+        <Route path="/home" >
+            <NavigBar/>
+          <Home />
+        </Route>
+   <Route path="/dash" component={Dashboard}/>
 
         
         <Route exact path="/dashboard" >
-            <RestNavig/>
-        <RestHome/>
+        <RestNavig/>
+         <RestHome/> 
         </Route>   
          <Route exact path='/orders' component={RestOrders}/>  
          </Switch>

@@ -1,11 +1,20 @@
 import { Container,Row,Col, Navbar,Button, NavItem,Nav } from "react-bootstrap";
 import brandlogo from "./logo2.svg";
 import "./RestNavig.css";
-import {Link}
+import {Link,useHistory}
  from 'react-router-dom';
+ 
 //  import brandlogo from "./brand.svg";
 
 function RestNavig() {
+const history=useHistory();
+
+const logout=(e)=>{
+  e.preventDefault();
+  localStorage.clear();
+  history.push('/login');
+}
+
   return (
     <Container fluid style={{padding:'0'}}>
         <Navbar style={{paddingRight:"0"}} bg="dark">
@@ -42,7 +51,7 @@ function RestNavig() {
                
                <div id="rest_nav_button" className="col-sm text-center">
                <NavItem id="rest_nav_button">
-                   <Button >Log Out</Button>
+                   <Button onClick={(e)=>{logout(e)}} >Log Out</Button>
                    </NavItem>
                </div>
             

@@ -8,11 +8,14 @@ import {useState} from "react";
 import "./NavigBar.css";
 import SideDrawer from "./SideDrawer";
 import BackDrop from "./BackDrop";
+import {useHistory} from "react-router-dom";
 
 function NavigBar(props) {
-
+  const history=useHistory();
   const [sideDrawerView,setSideDrawerView] =useState(false);
- 
+  
+  
+
   const sd_click_handler=()=>{
     setSideDrawerView((prevState)=>{
       return (!prevState)
@@ -21,6 +24,8 @@ function NavigBar(props) {
   const closeSideDrawerHandler=()=>{
     setSideDrawerView(false);
   }
+
+ 
 
   return (
     <div>

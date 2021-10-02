@@ -2,11 +2,12 @@
 import './SideDrawer.css';
 import {Row,Col, Container } from 'react-bootstrap';
 import blankuser from  './Images/blankuser.jpeg';
-import {Link} from 'react-router-dom';
+import {Link,useHistory} from 'react-router-dom';
 import  * as MdIcons from 'react-icons/md';
+import * as FiIcons from 'react-icons/fi';
 import {ListGroup} from 'react-bootstrap';
 import * as RiIcons from 'react-icons/ri';
-import BackDrop from './BackDrop';
+
 import "./SideDrawer.css"
 function alert_message()
 {
@@ -14,8 +15,13 @@ function alert_message()
 }
 function SideDrawer(props)  
 {
+    const history=useHistory();
     let uname="Puneet";
-
+    const logout=(e)=>{
+        e.preventDefault();
+        localStorage.clear();
+        history.push('/login');
+      }
     return(
     <Container fluid>
        
@@ -48,6 +54,7 @@ function SideDrawer(props)
                     <ListGroup class="drawerlist" onClick={props.bd_click_handler}>
                     <ListGroup.Item><Link to='/Orders' style={{color:"black",textDecoration:"none"}}><RiIcons.RiBillFill/>Orders</Link></ListGroup.Item>
                          <ListGroup.Item  ><Link to='/Favorites' style={{color:"black",textDecoration:"none"}}><MdIcons.MdFavorite/>Favorites</Link></ListGroup.Item>
+                         <ListGroup.Item onClick={(e)=>{logout(e)}} style={{color:"black",cursor:"pointer",textDecoration:"none"}}><FiIcons.FiLogOut/>Log Out</ListGroup.Item>
                          
   
                     </ListGroup>

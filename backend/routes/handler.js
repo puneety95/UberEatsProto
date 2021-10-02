@@ -9,14 +9,13 @@ const multer=require('multer');
 
 
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
+
 router.post('/signup',  (req,res)=>{
-  console.log("puneet");
-  console.log(req.body)
+  
     let val=(req.body);
     let sql=`select count(*) as ecount from user_login where email='${val.signup_email}';`;
-   
     let resq;
-   con.query(sql ,  function (err, result) {
+   con.query(sql , function (err, result) {
       if (err)
          {   
          
@@ -34,8 +33,7 @@ router.post('/signup',  (req,res)=>{
     
      try{
      
-    // val.signup_pass= bcrypt.hash(val.signup_pass,10);
-    const pp= bcrypt.hashSync(val.signup_pass, 10);
+      const pp= bcrypt.hashSync(val.signup_pass, 10);
        
         sql = `INSERT INTO user_login  (id,email,password,location,role,name) VALUES`
         sql=sql+ `((select * from (select max(id)+1 from uber_eats.user_login b) as  temp), '${val.signup_email}' ,'${pp}','${val.signup_location}','${val.role}','${val.signup_name}');`;
@@ -47,18 +45,40 @@ router.post('/signup',  (req,res)=>{
        {
         sql=sql+` Insert into rest_info (r_id) values((select max(id) from user_login));`;
        }
-        console.log(sql);
-           con.query(sql ,function (err, result) {
-              if (err)
+       
+           con.query(sql ,function (error, result) {
+              if (error)
               {
-                console.log("Here---");
-                console.log(err);
+                console.log("Here--->>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                console.log(error);
                 res.status(403).send("There were some errors while performing this action");
                   
               } 
               else
               {
-                res.send("Db Success");
+                console.log("Puneet->>>>>>>>>>>>");
+                sql=`select id,email,role from user_login where id = (select max(id) from user_login);`;
+                console.log(sql);
+                con.query(sql,function(err,result){
+                  if(err)
+                  {
+                    
+                    console.log(err);
+                    res.status(403).send("There were some error while performing the action");
+                  }
+                  else
+                  {
+                    console.log("Result after signing up");
+                    console.log(result[0]);  
+                
+                   
+                   val={loginEmail:req.body.signup_email}
+                  // const accessToken= jwt.sign(val,secret_jwt_token);
+                    res.json({id:result[0].id, role:result[0].role, email:result[0].email});
+                   
+                  }
+                })
+                
               }
               
             }); 
@@ -102,7 +122,7 @@ router.post('/signup',  (req,res)=>{
     
      if( bcrypt.compareSync(val.loginPassword, upass[0].password))
       {
-        let sql2=`select id,name from user_login where email='${val.loginEmail}';`
+        let sql2=`select id,role,email from user_login where email='${val.loginEmail}';`
         
         con.query(sql2, function(err2,result2){
           if(err2){   
@@ -112,10 +132,13 @@ router.post('/signup',  (req,res)=>{
           
           let id2=result2;
        
+          val={loginEmail:req.body.loginEmail}
+          console.log("-------val",val)
+          console.log(result2);
           const accessToken= jwt.sign(val,secret_jwt_token);
-         
-           res.json({accessToken:accessToken,
-                     id:id2 });
+        
+          res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, email:result2[0].email});
+           
         }); 
         
         const jwt=require('jsonwebtoken');
@@ -135,21 +158,24 @@ router.post('/signup',  (req,res)=>{
 
 function authenticateToken(req,res,next)
 {
+ 
   const authHeader =req.headers.authorization;
  
   const token =authHeader.split(' ')[1];
   
   if(token==null)
   {
+     
     res.sendStatus(401);
   }
   jwt.verify(token,secret_jwt_token,(err,user)=>{
     if(err)
       {
-       
+ 
         res.sendStatus(403);
       }
-      
+
+      console.log("use----------",user);
     req.user=user;
     
     next();
@@ -159,16 +185,18 @@ function authenticateToken(req,res,next)
 
 //REST DASHBOARD - PROFILE
 router.get('/RestProfile',authenticateToken,(req,res)=>{
-    //console.log(req);
-    sql=`select r.r_id, u.location, r.r_description, u.name,r.r_contact, r_timings from rest_info r inner join user_login u on u.id=r.r_id where u.email='${req.user.loginEmail}'; `;
     
+    
+  sql=`select r.r_id, u.location, r.r_description, u.name,r.r_contact, r_timings from rest_info r inner join user_login u on u.id=r.r_id where u.email='${req.user.loginEmail}'; `;
+    
+  console.log(sql);
     con.query(sql,function(err,result){
         if(err)
         {
-          
+          console.log("Iside error  -->>>>>>>>>>>>>");
           res.send(500);
         }
-        
+        console.log(result);
         res.json({profileDetails:result});
     });
   
@@ -185,6 +213,7 @@ router.post('/RestProfileUpdate',authenticateToken,(req,res)=>{
   con.query(sql,function(err,result){
     if(err)
     {
+      
       console.log(err);
       res.sendStatus(500);
     }

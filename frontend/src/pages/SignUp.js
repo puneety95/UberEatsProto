@@ -1,15 +1,18 @@
-import {Container,Row,Col,Form} from 'react-bootstrap';
+import {Container,Row,Form} from 'react-bootstrap';
 import {useState} from 'react';
 import axios from 'axios';
 import './SignUp.css';
 import validator from 'validator';
-import { Link,useHistory} from 'react-router-dom';
-
+import {useHistory} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import {signUpGetUserDetails} from '../state/action-creators/actions';
+import {bindActionCreators} from "redux";
 
 
 function SignUp()
 {
     const history=useHistory();
+    const dispatch=useDispatch();
     const [signup_name,set_signup_name] =useState("");
     const [signup_pass,set_signup_pass] =useState("");
     const [signup_email ,set_signup_email]=useState("");
@@ -63,9 +66,13 @@ function SignUp()
             url:'http://localhost:4000/signup',
             data : JSON.stringify(signup_data),
             headers:{"Content-Type":"application/json"}
-        }).then ((response)=>{alert("Sign Up Successful !!! ");
-                               history.push('/');
-                             })
+        }).then ((response)=>{  
+          alert("Sign Up Successfull!!! ");
+          const signUpUserDetails=bindActionCreators(signUpGetUserDetails,dispatch);
+          signUpUserDetails(response.data);
+          history.push('/');
+          
+                })
         .catch((error) => {
             console.log(error.response)
             alert(error.response.data);

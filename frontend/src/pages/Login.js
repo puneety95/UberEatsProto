@@ -1,16 +1,20 @@
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row,Form } from "react-bootstrap";
 import "./Login.css";
-import { Link, useRedirect,useHistory } from "react-router-dom";
-import {  } from "history";
-import { Redirect } from "react-router-dom";
+import { Link,useHistory } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import App from "../App";
+import {bindActionCreators} from "redux";
+import {useSelector,useDispatch} from 'react-redux';
+import {logingetUserDetails} from '../state/action-creators/actions';
+
+
 
 function Login() {
  let history = useHistory();
+ const dispatch=useDispatch();
+ const state=useSelector((state)=>state.user);
  
-;  const [loginEmail, setLoginEmail] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   function loginButtonHandler(e) {
@@ -30,12 +34,21 @@ function Login() {
       headers: { "Content-Type": "application/json" },
     })
       .then((response) => {
-        //    alert("Sign in success");
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("id", response.data.id[0].id);
         
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("id", response.data.id);
+               
+        const loginUserDetails=bindActionCreators(logingetUserDetails,dispatch);
+        delete response.data.accessToken;
+        loginUserDetails(response.data);
+       
+        if(response.data.role===2)
+        {
         history.push('/dashboard');
-    
+        }
+        else{
+          history.push('/home');
+        }
       })
       .catch((error) => {
         alert(error.response);

@@ -3,20 +3,22 @@ import RouteRest  from "./RouteRest";
 import RouteLogin from "./RouteLogin";
 import { useEffect,useState } from "react";
 import {useHistory,Route} from "react-router-dom";
-import Switch from "react-bootstrap/esm/Switch";
-import Login from './pages/Login';
-import Dashboard from "./pages/Dashboard";
-import RestHome from "./pages/RestHome";
-import RestOrders from "./pages/RestOrders";
 
+
+import {getUserDetails} from "./state/action-creators/actions.js";
  function App() {
    const history = useHistory();
    const [isLogin,setIsLogin] =useState(false);
-  
+ //  console.log("_______________REDUX___________");
+ //  const state=useSelector((state)=>state.user);
+ 
+  //console.log(state);
+ 
+   
    if(localStorage.getItem('accessToken'))
    {
       history.push('/dashboard');
-   }
+   } 
    else{
       history.push('/login');
    }
@@ -25,12 +27,7 @@ import RestOrders from "./pages/RestOrders";
   return (
      <div>
        <RouteLogin/> 
-      
-       
-      
-       
-          
-     </div>
+      </div>
     
   );
 }
