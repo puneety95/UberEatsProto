@@ -37,6 +37,7 @@ function Login() {
         
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("id", response.data.id);
+        localStorage.setItem("role",response.data.role);
                
         const loginUserDetails=bindActionCreators(logingetUserDetails,dispatch);
         delete response.data.accessToken;

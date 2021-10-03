@@ -183,49 +183,8 @@ function authenticateToken(req,res,next)
   })
 }
 
-//REST DASHBOARD - PROFILE
-router.get('/RestProfile',authenticateToken,(req,res)=>{
-    
-    
-  sql=`select r.r_id, u.location, r.r_description, u.name,r.r_contact, r_timings from rest_info r inner join user_login u on u.id=r.r_id where u.email='${req.user.loginEmail}'; `;
-    
-  console.log(sql);
-    con.query(sql,function(err,result){
-        if(err)
-        {
-          console.log("Iside error  -->>>>>>>>>>>>>");
-          res.send(500);
-        }
-        console.log(result);
-        res.json({profileDetails:result});
-    });
-  
 
-});
 
-//REST PROFILE UPDATE
-router.post('/RestProfileUpdate',authenticateToken,(req,res)=>{
-  console.log(req.body);
-  let val=req.body;
-  sql=`update  rest_info set r_description='${val.r_description}',r_contact='${val.r_contact}',r_timings='10pm' where r_id=${val.r_id};`;
-  sql=sql+ `update user_login set name='${val.name}' , location='${val.location}' where id=${val.r_id};`;
-  console.log(sql);
-  con.query(sql,function(err,result){
-    if(err)
-    {
-      
-      console.log(err);
-      res.sendStatus(500);
-    }
-    else{
-      res.send('ok')
-    }
-   
-  })
-});
-
-//route.post('/FileUpload')
 
 
 module.exports=router;
-// ('+'(select max(id)+1 from user_login),' +values.signup_email+','+values.signup_pass+','+values.signup_location+','+values.role+','+values.signup_name + ');';

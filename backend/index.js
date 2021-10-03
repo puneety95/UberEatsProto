@@ -21,13 +21,14 @@ var cors_options ={
 
 
 const routesHandler=require('./routes/handler.js');
-const imageRoutesHandler=require('./routes/imageHandler.js');
+
+const restRoutesHandler=require('./routes/restaurantRoutes.js');
+
 
 
 
 app.use('/',routesHandler);
-app.use('/',imageRoutesHandler);
-
+app.use('/',restRoutesHandler);
 const PORT =4000;
 app.listen(PORT,()=>{
     console.log('Back end Server is running on'+ PORT);

@@ -16,27 +16,30 @@ function RouteLogin()
     <Switch>
     <Route path="/" exact>
             <Login/>
-            </Route>
-        <Route path="/login" >
+    </Route>
+    <Route path="/login" >
             <Login/>
-        </Route>
-        <Route path="/signup">
+     </Route>
+    <Route path="/signup">
             <SignUp/>
-            
-        </Route>   
-        <Route path="/home" >
+    </Route>   
+    <Route path="/home" >
             <NavigBar/>
-          <Home />
-        </Route>
+            <Home />
+    </Route>
    <Route path="/dash" component={Dashboard}/>
 
         
-        <Route exact path="/dashboard" >
+    <Route exact path="/dashboard" >
         <RestNavig/>
          <RestHome/> 
-        </Route>   
-         <Route exact path='/orders' component={RestOrders}/>  
-         </Switch>
+    </Route>   
+    
+    <Route exact path='/orders'>
+         <RestNavig/>
+         <RestOrders/>
+    </Route>
+    </Switch>
      </div>
     );
 }
