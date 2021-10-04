@@ -1,6 +1,5 @@
 import {ListGroup,Button,Modal,Form,Col,Container,Row} from 'react-bootstrap';
-import ImageButton from 'react-image-button';
- import blankuser from '../Images/blankuser.jpeg';
+import blankuser from '../Images/blankuser.jpeg';
 import './Profile.css';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
@@ -120,6 +119,26 @@ function Profile()
                 </div>
                 <div className="col-sm-9">
                 <input style={{marginBottom:"8%"}} type="text" name="dob"   />
+                </div>
+        
+         </Row>
+
+         <Row>
+                <div className="col-sm-3 text-center">
+                <label for="nickname">Nickname</label>
+                </div>
+                <div className="col-sm-9">
+                <input style={{marginBottom:"8%"}} type="text" name="nickname"   />
+                </div>
+        
+         </Row>
+
+         <Row>
+                <div className="col-sm-3 text-center">
+                <label for="country">Country</label>
+                </div>
+                <div className="col-sm-9">
+                <input style={{marginBottom:"8%"}} type="text" name="country"   />
                 </div>
         
          </Row>

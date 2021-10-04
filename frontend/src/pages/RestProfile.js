@@ -7,20 +7,20 @@ function RestProfile()
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const[coverImageUrl,setCoverImageUrl]=useState();
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     
     const [profDetails,setProfDetails] =useState([]);
     const [dumProfDetails,setDumProfDetails] =useState([]);
 
-    const handleUpdateChange=(e)=>
+    const handleUpdateChange=(e)=>  
     {
         const {name ,value}=e.target;        
         setDumProfDetails(prevState=>({
           ...prevState,
           [name] :value
         }));
-       
-    }
+       }
     
   const handleSubmit = (e) => {
     
@@ -54,11 +54,14 @@ function RestProfile()
         
       })
         .then((response) => {
+          //console.log(response.data.profileDetails[0].profile_pic);
+         // console.log("----------",response.data.profDetails[0]);
          setProfDetails(response.data.profileDetails[0]);
          setDumProfDetails(response.data.profileDetails[0]);
+        setCoverImageUrl(response.data.profileDetails[0].profile_pic);
         })
         .catch((error) => {
-          console.log((error.response.data));
+          console.log((error.response));
         });
     },[])
    
@@ -66,47 +69,33 @@ function RestProfile()
     const imageHandler=async (e)=>{
       e.preventDefault();
     const imageInput = document.querySelector("#imageInput");
-    
     const file = imageInput.files[0];
-    const formData = new FormData();
-    formData.append("image", file);
-    console.log("before file");
-    console.log(formData);
-    let url;
-        
-    await  axios({
-        method: "get",
-        url: "http://localhost:4000/s3Url",
-        headers: { "Content-Type": "application/json","Authorization": bearer  },
-        
-      })
-        .then((response) => {
-          
-          url=response.data.url;
-          console.log("Url after ->",url);
-          
-        })
-        .catch((error) => {
-          console.log((error.response.data));
-        });
+    const { url } = await fetch("http://localhost:4000/s3Url").then(res => res.json())
+     // post the image direclty to the s3 bucket
+  await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "multipart/form-data"
+    },
+    body: file
+  })
 
-      axios({
-        method:"put",
-        url:url,
-        headers: {"Content-Type": "multipart/form-data"},
-        body: file
-      
-         }).then((response)=>{
-           console.log(response);
-
-         }) 
-         .catch((error) => {
-          console.log(error);
-        }); 
-        
-        const imageUrl = url.split('?')[0]
-        console.log("URL of the uploaded image",imageUrl);
-
+  const imageUrl = url.split('?')[0]
+  let id =localStorage.getItem('id');
+  let data ={imageUrl,id};
+  await axios({
+    method:"POST",
+    url:"http://localhost:4000/RestProfileImageUpdate",
+    headers:{"Content-Type":"application/json","Authorization": bearer},
+    data: data
+  }).then((res)=>{
+    console.log("Image Uploaded")
+  })
+  .catch((error)=>{
+    alert("There were some errrs while updating image photo");
+  })
+  console.log(imageUrl)
+  //{require("../Images/food22.jpg").default}
     }
     
     let dish_image2="./food1.jpg";
@@ -115,7 +104,7 @@ function RestProfile()
             <Row>
                 <div className="col-sm">
                 <div className="image_over_Text2">
-                 <img style={{width:'100%',height:'240px',objectFit:'cover'}}  src={require("../Images/food22.jpg").default} alt="cover_image" /> 
+                 <img style={{width:'100%',height:'240px',objectFit:'cover'}}  src={coverImageUrl} alt="cover_image" /> 
                 
                  <form id="imageForm">
                  <input id="imageInput"  type="file" accept="image/*"/> 
@@ -249,7 +238,7 @@ function RestProfile()
                   
           </div>
           <div className="col-sm-3">
-          <input type="time" id="appt_from" name="appt"/> 
+          <input onChange type="time" id="appt_from" name="appt"/> 
           </div>
           <div className="col-sm-3">
           <input type="time" id="appt_to" name="appt"/> 

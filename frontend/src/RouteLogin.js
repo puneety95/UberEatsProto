@@ -7,6 +7,7 @@ import RestOrders from "./pages/RestOrders";
 import Home from "./pages/Home";
 import NavigBar from "./NavigBar";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 
 
 function RouteLogin()
@@ -39,6 +40,15 @@ function RouteLogin()
          <RestNavig/>
          <RestOrders/>
     </Route>
+ 
+    <Route exact path="/profile" >
+       <NavigBar/>
+         <Profile/> 
+    </Route> 
+
+
+
+
     </Switch>
      </div>
     );
