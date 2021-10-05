@@ -117,7 +117,7 @@ function Dashboard()
 
             <Row>
                 <Container>
-             <CustomerDish/>
+             <CustomerDish id={id}/>
              </Container>
 
             </Row>

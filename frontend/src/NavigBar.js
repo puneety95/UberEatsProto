@@ -9,12 +9,13 @@ import "./NavigBar.css";
 import SideDrawer from "./SideDrawer";
 import BackDrop from "./BackDrop";
 import {useHistory} from "react-router-dom";
+import Cart from "./components/Cart";
 
 function NavigBar(props) {
   const history=useHistory();
   const [sideDrawerView,setSideDrawerView] =useState(false);
   
-  
+  const [cartModal,setCartModal]=useState(false);
 
   const sd_click_handler=()=>{
     setSideDrawerView((prevState)=>{
@@ -29,6 +30,9 @@ function NavigBar(props) {
     history.push('/home')
   }
  
+  const renderCart=()=>{
+    setCartModal(! cartModal);
+  }
 
   return (
     <div>
@@ -93,11 +97,12 @@ function NavigBar(props) {
           </div>
           </Nav>
           <Nav className="ms-auto" >
-              <Button id="cart_button" className="rounded-pill">
+              <Button id="cart_button" onClick={()=>{renderCart()}} className="rounded-pill">
                  <CGIcons.CgShoppingCart/>Cart
               </Button>
           </Nav>
       </Navbar>
+      {cartModal && <Cart p={renderCart}/>}
     </div>
   );
 }

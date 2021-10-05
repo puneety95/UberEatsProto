@@ -2,15 +2,18 @@ import { Container,Form,Dropdown,Row,Button,Modal } from "react-bootstrap";
 import {useState,useEffect} from 'react';
 import * as BiIcons from 'react-icons/bi';
 import * as FiIcons from 'react-icons/fi';
+import {useCart} from 'react-use-cart';
 
 //FiPlus ,FiMinus ,
 
 import axios from 'axios';
 
 
-function CustomerDish()
+function CustomerDish(props)
 {
     const [show, setShow] = useState(false);
+    const [product, setProduct]=useState({});
+    const { addItem } = useCart();
     const handleClose = () => setShow(false);
     const handleShow = (id) => {
       setShow(true);
@@ -49,11 +52,28 @@ function CustomerDish()
         setShowDishesModal(false);
      }
 
-     const addToCart=()=>{
+     const addToCart=(name,id,price)=>{
+       console.log("YESSSSSSSSSSSSSSSSSSSSSSSSs");
        if(count <0)
-       {
+       {        
          alert("Quantity can't be negative");
        }
+       
+       let r_id=props.id;
+       let pp={name,id,price,count,r_id};
+      
+      console.log("value",pp);
+      console.log("product =",product)
+       setProduct(pp);
+       console.log("ITems----",product);
+       addItem(pp);
+       
+       //handleClose();
+      
+       alert("Item Added to Cart");
+       setProduct({});
+       
+
      }
     return(
     <Container style={{paddingRight:"10%"}}>
@@ -137,7 +157,7 @@ function CustomerDish()
                                   $ {count * dish.price}
                                 </div>
                                 <div style={{fontSize:'20px'}} className='col-sm-3 text-center'>
-                                 <Button onClick={addToCart} style={{backgroundColor:'green'}}>Add</Button>
+                                 <Button onClick={()=>addToCart(dish.name,dish.id,dish.price)} style={{backgroundColor:'green'}}>Add</Button>
                                 </div>
                                 
                               </Row>
