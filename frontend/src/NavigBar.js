@@ -3,7 +3,7 @@ import { Button, Navbar, ButtonGroup, Nav, Form } from "react-bootstrap";
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import * as CGIcons from "react-icons/cg";
-import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.css";  
 import {useState} from "react";
 import "./NavigBar.css";
 import SideDrawer from "./SideDrawer";

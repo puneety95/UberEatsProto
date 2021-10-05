@@ -53,7 +53,7 @@ function CustomerDish(props)
      }
 
      const addToCart=(name,id,price)=>{
-       console.log("YESSSSSSSSSSSSSSSSSSSSSSSSs");
+       
        if(count <0)
        {        
          alert("Quantity can't be negative");

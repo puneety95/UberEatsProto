@@ -3,6 +3,7 @@ import { useState } from "react";
 import {useCart} from "react-use-cart";
 import * as FiIcons from 'react-icons/fi';
 import * as GrIcons from 'react-icons/gr';
+import {Link} from 'react-router-dom';
 function Cart(props) {
   const [show, setShow] = useState(true);
   const [qty,ChangeQty]  =useState(true);
@@ -81,7 +82,7 @@ function Cart(props) {
         <Modal.Footer style={{padding:'0',paddingLeft:'0'}}>
         <Row style={{flex:'1'}}>
          <div className='col-sm-12'>
-         <Button style={{backgroundColor:'green',width:'-webkit-fill-available'}}>Go To Check Out</Button>
+       <Link to='/checkout'>  <Button  onClick={handleClose} style={{backgroundColor:'green',width:'-webkit-fill-available'}}>Go To Check Out</Button> </Link>
          </div>
        </Row>
          </Modal.Footer>

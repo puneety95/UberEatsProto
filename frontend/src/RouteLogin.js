@@ -9,6 +9,7 @@ import NavigBar from "./NavigBar";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Favorites from "./pages/Favorites";
+import Checkout from "./pages/Checkout";
 
 
 
@@ -47,8 +48,13 @@ function RouteLogin()
     </Route>   
     
     <Route exact path='/orders'>
-         <RestNavig/>
+    <RestNavig/>
          <RestOrders/>
+    </Route>
+    <Route exact path='/checkout'>
+         
+        <Checkout/>
+
     </Route>
  
     <Route exact path="/profile" >
