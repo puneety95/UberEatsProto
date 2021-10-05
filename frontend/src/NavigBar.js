@@ -25,6 +25,9 @@ function NavigBar(props) {
     setSideDrawerView(false);
   }
 
+  const goToHome=()=>{
+    history.push('/home')
+  }
  
 
   return (
@@ -39,8 +42,8 @@ function NavigBar(props) {
           </Button>
         </Nav>
         <Nav id="space">
-          <Navbar.Brand>
-            <img
+          <Navbar.Brand style={{cursor:'pointer'}}>
+            <img onClick={goToHome}
               width="146px"
               height="24px"
               className="img-responsive"

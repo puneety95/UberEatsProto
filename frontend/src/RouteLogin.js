@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import NavigBar from "./NavigBar";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Favorites from "./pages/Favorites";
+
 
 
 function RouteLogin()
@@ -28,12 +30,20 @@ function RouteLogin()
             <NavigBar/>
             <Home />
     </Route>
-   <Route path="/dash" component={Dashboard}/>
+    <Route exact path="/dash/:id" >
+    <NavigBar/>
+            <Dashboard /> 
+    </Route>  
 
         
     <Route exact path="/dashboard" >
         <RestNavig/>
          <RestHome/> 
+    </Route>  
+
+    <Route exact path="/Favorites" >
+    <NavigBar/>
+         <Favorites/> 
     </Route>   
     
     <Route exact path='/orders'>
@@ -42,12 +52,9 @@ function RouteLogin()
     </Route>
  
     <Route exact path="/profile" >
-       <NavigBar/>
+       
          <Profile/> 
     </Route> 
-
-
-
 
     </Switch>
      </div>

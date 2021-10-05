@@ -210,19 +210,7 @@ function RestDish()
                             
                             
                             }
-
-
-
-
-
-                        </div>
-
-                   
-                      
-                    
-                    
-                    
-
+            </div>
                 )
             })
        

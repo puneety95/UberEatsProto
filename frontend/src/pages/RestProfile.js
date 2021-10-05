@@ -254,7 +254,6 @@ function RestProfile()
                 <div className="col-sm-9">
                 <textarea onChange={(e)=>{handleUpdateChange(e)}}  class="form-control " name="r_description" value={dumProfDetails.r_description}  rows="5"></textarea>
                 </div>
-                
          </Row>
                            
      </Form>
