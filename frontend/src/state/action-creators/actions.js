@@ -19,3 +19,28 @@ export const signUpGetUserDetails=(details)=>{
             )
         }
 }
+
+export const deliveryDetails=(details)=>{
+    return(dispatch)=>{
+        dispatch(
+            {
+                type: "delivery_details",
+                payload:details
+
+            }
+        )
+    }
+}
+
+export const filter_details=(details)=>{
+    return(dispatch)=>{
+
+        dispatch(
+            {                
+                type: "filter",
+                payload:details
+
+            }
+        )
+    }
+}

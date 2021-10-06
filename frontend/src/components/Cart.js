@@ -5,6 +5,7 @@ import * as FiIcons from 'react-icons/fi';
 import * as GrIcons from 'react-icons/gr';
 import {Link} from 'react-router-dom';
 function Cart(props) {
+ 
   const [show, setShow] = useState(true);
   const [qty,ChangeQty]  =useState(true);
   
@@ -29,6 +30,7 @@ function Cart(props) {
   
  
   const { items } = useCart();
+  console.log(items);
  
   return (
     <Container>

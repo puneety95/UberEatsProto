@@ -4,18 +4,37 @@ import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import * as CGIcons from "react-icons/cg";
 import "bootstrap/dist/css/bootstrap.css";  
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import "./NavigBar.css";
 import SideDrawer from "./SideDrawer";
 import BackDrop from "./BackDrop";
 import {useHistory} from "react-router-dom";
 import Cart from "./components/Cart";
-
+import {bindActionCreators} from "redux";
+import {useSelector,useDispatch} from 'react-redux';
+import {deliveryDetails} from './state/action-creators/actions';
+//class='btn btn-primary shadow-none'
 function NavigBar(props) {
   const history=useHistory();
   const [sideDrawerView,setSideDrawerView] =useState(false);
-  
   const [cartModal,setCartModal]=useState(false);
+  const [toggle,setToggle]=useState('Delivery');
+  const dispatch=useDispatch();
+  
+  let l=localStorage.getItem('location');
+  const [custlocation , setCustLocation] = useState(l);
+
+  
+  
+  useEffect(()=>{
+    
+    const deliveryDetails2=bindActionCreators(deliveryDetails,dispatch);
+    let data={toggle}       
+    deliveryDetails2(data);
+
+  },[toggle])
+
+
 
   const sd_click_handler=()=>{
     setSideDrawerView((prevState)=>{
@@ -32,6 +51,34 @@ function NavigBar(props) {
  
   const renderCart=()=>{
     setCartModal(! cartModal);
+  }
+
+  const toggleNavBtn=(e)=>{
+    e.preventDefault();
+    if(e.target.innerText==toggle)
+    {
+      return;
+    }
+    
+    e.target.style.backgroundColor='white';
+    setToggle(!toggle);
+   if(e.target.id=='b2')
+   {
+    let id_grey=document.getElementById('b1');
+    id_grey.style.backgroundColor='#EEEEEE';
+    id_grey.style.borderColor='#EEEEEE';
+    setToggle('Pickup');
+   }
+   else
+   {
+    let id_grey=document.getElementById('b2');
+    id_grey.style.backgroundColor='#EEEEEE';
+    id_grey.style.borderColor='#EEEEEE';
+    setToggle('Delivery');
+   }
+
+
+
   }
 
   return (
@@ -61,6 +108,7 @@ function NavigBar(props) {
             <ButtonGroup id="gg" data-toggle="Buttons">
               <Button
                 type="radio"
+                onClick={(e)=>{toggleNavBtn(e)}}
                 id="b1"
                 name="toggle"
                 className="rounded-pill"
@@ -70,6 +118,7 @@ function NavigBar(props) {
               <Button
                 type="radio"
                 id="b2"
+                onClick={(e)=>{toggleNavBtn(e)}}
                 name="toggle"
                 className="rounded-pill"
               >
@@ -81,16 +130,17 @@ function NavigBar(props) {
         <Nav id="space">
           <Button id="navaddress" className="rounded-pill">
             <MdIcons.MdLocationOn />
-            754 The Alameda. Now
+           {custlocation}
           </Button>
         </Nav>
         <Nav className="flex-container">
           <div id="navsearch">
             <FaIcons.FaSearch id="icon" />
             <Form>
-              <Form.Control
+              <Form.Control className='shadow-none'
                 id="navform"
                 type="text"
+                style={{display:'flex'}}
                 placeholder="What are you craving?"
               />
             </Form>

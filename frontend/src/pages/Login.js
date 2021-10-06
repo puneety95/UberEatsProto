@@ -38,9 +38,12 @@ function Login() {
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("id", response.data.id);
         localStorage.setItem("role",response.data.role);
+        localStorage.setItem("location",response.data.location);
                
         const loginUserDetails=bindActionCreators(logingetUserDetails,dispatch);
         delete response.data.accessToken;
+        console.log("RESponseDAta",response.data);
+
         loginUserDetails(response.data);
        
         if(response.data.role===2)

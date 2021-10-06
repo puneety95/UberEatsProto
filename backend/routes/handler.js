@@ -122,7 +122,7 @@ router.post('/signup',  (req,res)=>{
     
      if( bcrypt.compareSync(val.loginPassword, upass[0].password))
       {
-        let sql2=`select id,role,email from user_login where email='${val.loginEmail}';`
+        let sql2=`select id,role,email,location from user_login where email='${val.loginEmail}';`
         
         con.query(sql2, function(err2,result2){
           if(err2){   
@@ -133,11 +133,10 @@ router.post('/signup',  (req,res)=>{
           let id2=result2;
        
           val={loginEmail:req.body.loginEmail}
-          console.log("-------val",val)
-          console.log(result2);
+          
           const accessToken= jwt.sign(val,secret_jwt_token);
         
-          res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, email:result2[0].email});
+          res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, location:result2[0].location, email:result2[0].email});
            
         }); 
         

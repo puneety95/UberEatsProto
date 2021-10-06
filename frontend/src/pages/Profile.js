@@ -1,190 +1,413 @@
-import {ListGroup,Button,Modal,Form,Col,Container,Row} from 'react-bootstrap';
-import blankuser from '../Images/blankuser.jpeg';
-import './Profile.css';
-import {useState,useEffect} from 'react';
-import axios from 'axios';
-import Countries from '../components/Countries';
-import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-function Profile()
-{
-    const [show, setShow] = useState(false);
-    const[showImage,setShowImage]=useState(false);
-    const[custDetails,setCustDetails]=useState([]);
-    const[dumCustDetails,setDumCustDetails]=useState([]);
+import {
+  ListGroup,
+  Button,
+  Modal,
+  Form,
+  Col,
+  Container,
+  Row,
+} from "react-bootstrap";
+import blankuser from "../Images/blankuser.jpeg";
+import {Link} from 'react-router-dom';
+import "./Profile.css";
+import { useState, useEffect ,useMemo} from "react";
+import axios from "axios";
+import Select from 'react-select'
+import countryList from 'react-select-country-list'
 
-     useEffect(()=>{
-        axios.get("http://localhost:4000/profile").then((response)=>{
-          console.log(response.data);
-        });
-   
-    },[]);
+function Profile() {
+  const [show, setShow] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [custDetails, setCustDetails] = useState({});
+  const [dumCustDetails, setDumCustDetails] = useState([]);
+  const [country,selectCountry]=useState();
+  const [region,selectRegion]=useState();
+  const updateImage = () => setShowImage(true);
 
-    const updateImage=()=>setShowImage(true);
-    const updateImageClose=()=>setShowImage(false);
+  const options = useMemo(() => countryList().getData(), [])
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-    let uname="Puneet Yadav";
-    let emailid="punyad2@gmail.com";
-    let phonenumber="9911294356";
-    let dob="09/25/1995";
-    let country="United States  of America";
-    let state="California";
-    let Nickname="Puneet";
+  const updateImageClose = () =>{
+    setShowImage(false); 
     
-    return(
-        <div>
+  } 
+  const handleClose = () =>{ 
+    setShow(false);
+    console.log("Puneet",custDetails);
+    setDumCustDetails(custDetails);
+  }
+  const handleShow = () => setShow(true);
+  let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
+  let id=localStorage.getItem('id');
+  
+  
+  useEffect(()=>{
+    axios({
+      method: "get",
+      url:`http://localhost:4000/getCustProfile?id=${id}`,
+      headers: { "Content-Type": "application/json","Authorization": bearer  },
+      
+    })
+      .then((response) => {
+        console.log("PUneettttttttttt--",response.data[0]);
+        setCustDetails(response.data[0]);
+        setDumCustDetails(response.data[0]);
+      })
+      .catch((error) => {
+        alert("There were some error whilefetching customer details");
+        console.log((error.response));
+      });
+  },[])
+ 
 
-    <div style={{display:'flex',postion:'relative',justifyContent:'center',marginRight:'5%',marginTop:'5%'}}>
-        
-        <Container>
-        <Row>
-             <div className="col-sm-6" style={{display:'flex',justifyContent:'flex-end'}}>
-                <img onClick={updateImage} src={blankuser} width='80px' height='80px' id="profileimagedrawer" style={{borderRadius:'50%',cursor:'pointer'}} alt="user" ></img> 
-             </div>
-             <div className="col-sm-6">        
-                <div>Puneet Yadav</div>
-                <Button className='shadow-none' style={{color:'green',background:'white',border:'none'}} id="profile_image_space"><u>Favourties</u></Button>
-             </div>
-        </Row>
-        </Container>
-                
-        
-    </div>
-   
-    <div id="profile_details">
+ 
+
+ const handleUpdateChange=(e)=>  
+ {
+     const {name ,value}=e.target;        
+     setDumCustDetails(prevState=>({
+       ...prevState,
+       [name] :value
+     }));
+    }
+
+//Upate changes
+const handleSubmit = (e) => {
+  let ele = document.getElementById("customer_details");
+  let chk_status = ele.checkValidity();
+  ele.reportValidity();
+ 
+  if (!chk_status) {
+    return;
+  }
+    e.preventDefault();
+       axios({
+         method:"post",
+         url:"http://localhost:4000/CustProfileUpdate",
+         headers:{"Content-Type":"application/json","Authorization": bearer},
+         data: dumCustDetails
+       })
+       .then((response)=>{
+         alert("Data Updated");
+         setCustDetails(dumCustDetails);
+         handleClose();
+       })
+       .catch((error)=>{
+         alert("There were some error while updating the data");
+       });
+
+     handleClose() ;
+
      
-      <Container>
-       <Row>
-           <div style={{display:'flex',justifyContent:'flex-end'}}className="col-sm-6">
-        <ListGroup>
-               <ListGroup.Item>Email ID</ListGroup.Item>
+   } 
+
+
+  //To Upload data and get the url
+  const imageHandler = async (e) => {
+    e.preventDefault();
+    const imageInput = document.querySelector("#imageInput");
+    const file = imageInput.files[0];
+    if(!file)
+    {
+      alert("Please select image to upload");
+      return;
+    }
+    const { url } = await fetch("http://localhost:4000/s3Url").then((res) =>
+      res.json()
+    );
+    
+    // post the image direclty to the s3 bucket
+    await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      body: file,
+    });
+
+    const imageUrl = url.split("?")[0];
+    console.log("Puneee",imageUrl);
+    let id = localStorage.getItem("id");
+    let data = { imageUrl, id };
+    await axios({
+      method: "POST",
+      url: "http://localhost:4000/updateCustomerProfilePic",
+      headers: { "Content-Type": "application/json", Authorization: bearer },
+      data: data,
+    })
+      .then((res) => {
+        alert("Image Uploaded");
+      })
+      .catch((error) => {
+        alert("There were some errrs while updating image photo");
+      });
+      updateImageClose();
+     };
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "flex",
+          postion: "relative",
+          justifyContent: "center",
+          marginRight: "5%",
+          marginTop: "5%",
+        }}
+      >
+        <Container>
+          <Row>
+            <div
+              className="col-sm-6"
+              style={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              <img
+                onClick={updateImage}
+                src={custDetails.profile_pic}
+                width="80px"
+                height="80px"
+                id="profileimagedrawer"
+                style={{ borderRadius: "50%", cursor: "pointer" }}
+                alt="user"
+              ></img>
+            </div>
+            <div className="col-sm-6">
+              <div>{custDetails.name}</div>
+            <Link to='/Favorites'>  <Button
+                className="shadow-none"
+                style={{ color: "green", background: "white", border: "none" }}
+                id="profile_image_space"
+              >
+                <u>Favourties</u>
+              </Button>
+              </Link>
+            </div>
+          </Row>
+        </Container>
+      </div>
+
+      <div id="profile_details">
+        <Container>
+          <Row>
+            <div
+              style={{ display: "flex", justifyContent: "flex-end" }}
+              className="col-sm-6"
+            >
+              <ListGroup>
+                <ListGroup.Item>Email ID</ListGroup.Item>
                 <ListGroup.Item>Phone Number</ListGroup.Item>
                 <ListGroup.Item>Date of Birth</ListGroup.Item>
                 <ListGroup.Item>City</ListGroup.Item>
                 <ListGroup.Item>State</ListGroup.Item>
                 <ListGroup.Item>Country</ListGroup.Item>
                 <ListGroup.Item>Nick Name</ListGroup.Item>
+                <ListGroup.Item>About</ListGroup.Item>
+              </ListGroup>
+            </div>
+            <div className="col-sm-6">
+              <ListGroup style={{ fontWeight: "300" }}>
+                <ListGroup.Item>{custDetails.email}</ListGroup.Item>
+                <ListGroup.Item>{custDetails.phone}</ListGroup.Item>
+                <ListGroup.Item>{custDetails.dob}</ListGroup.Item>
+                <ListGroup.Item>{custDetails.city}</ListGroup.Item>
+                <ListGroup.Item>{custDetails.state}</ListGroup.Item>
+                <ListGroup.Item>{custDetails.country}</ListGroup.Item>
+                <ListGroup.Item>{custDetails.nickname}</ListGroup.Item>
+                <ListGroup.Item>{custDetails.about}</ListGroup.Item>
+              </ListGroup>
+            </div>
+          </Row>
+        </Container>
+      </div>
+      <div>
+        <Button
+          className="shadow-none"
+          onClick={handleShow}
+          style={{ marginLeft: "44%", marginTop: "1%" }}
+          id="updateprofile"
+        >
+          Update Details
+        </Button>
+      </div>
 
-            </ListGroup>
-        </div>
-        <div className="col-sm-6">
-        <ListGroup style={{fontWeight:'300'}}>
-                <ListGroup.Item>emailid</ListGroup.Item>
-                <ListGroup.Item>phone</ListGroup.Item>
-                <ListGroup.Item>do</ListGroup.Item>
-                <ListGroup.Item>Sahibabad</ListGroup.Item>
-                <ListGroup.Item>state</ListGroup.Item>
-                <ListGroup.Item>state</ListGroup.Item>
-                <ListGroup.Item>Nickname</ListGroup.Item>
-
-            </ListGroup>
-        </div>
-        </Row>
-       </Container>
-    </div>
-        <div>
-        <Button className="shadow-none" onClick={handleShow} style={{marginLeft:"44%",marginTop:"1%"}} id="updateprofile">Update Details</Button>
-        </div>
-        
-        <Modal show={show} onHide={handleClose}>
-        <Modal.Header >
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header>
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
         <Container fluid>
-        <Modal.Body>
-            
-        <Form style={{marginTop:'6%'}} id="customer_signup">
-            <Row>
+          <Modal.Body>
+            <Form style={{ marginTop: "6%" }} id="customer_details">
+              <Row>
                 <div className="col-sm-3 text-center">
-                <label for="name">Name</label>
+                  <label for="name">Name</label>
                 </div>
                 <div className="col-sm-9">
-                <input  style={{marginBottom:"8%"}} type="text" name="name" />
+                  <input
+                    style={{ marginBottom: "8%" }}
+                    type="text"
+                    name="name"
+                    value={dumCustDetails.name}
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}}
+                  />
                 </div>
-        
-         </Row>
-         <Row>
+              </Row>
+              <Row>
                 <div className="col-sm-3 text-center">
-                <label for="phoneNumber">Phone Number</label>
+                  <label for="phone">Phone Number</label>
                 </div>
                 <div className="col-sm-9">
-                <input  style={{marginBottom:"8%"}} type="text" name="phoneNumber"   />
-                </div>
-        
-         </Row>
-         <Row>
-                <div className="col-sm-3 text-center">
-                <label for="dob">Date of Birth</label>
-                </div>
-                <div className="col-sm-9">
-                <input style={{marginBottom:"8%"}} type="text" name="dob"   />
-                </div>
-        
-         </Row>
+                  <input
+                    style={{ marginBottom: "8%" }}
+                    type="tel"
+                    patern="[0-9]{3} [0-9]{3} [0-9]{4}"
+                    name="phone"
+                    value={dumCustDetails.phone}
+                    oninvalid="this.setCustomValidity('Enter User Name Here')"
+                    oninput="this.setCustomValidity('')"
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}}
 
-         <Row>
+                  />
+                </div>
+              </Row>
+              <Row>
                 <div className="col-sm-3 text-center">
-                <label for="nickname">Nickname</label>
+                  <label for="dob">Date of Birth</label>
                 </div>
                 <div className="col-sm-9">
-                <input style={{marginBottom:"8%"}} type="text" name="nickname"   />
+                  <input
+                    style={{ marginBottom: "8%" }}
+                    type="date"
+                    placeholder="dd-mm-yyyy"
+                    name="dob"
+                    value={dumCustDetails.dob}
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}}
+                  />
                 </div>
-        
-         </Row>
+              </Row>
 
-         <Row>
+              <Row>
                 <div className="col-sm-3 text-center">
-                <label for="country">Country</label>
+                  <label for="nickname">Nickname</label>
                 </div>
                 <div className="col-sm-9">
-                <input style={{marginBottom:"8%"}} type="text" name="country"   />
+                  <input
+                    style={{ marginBottom: "8%" }}
+                    type="text"
+                    name="nickname"
+                    value={dumCustDetails.nickname}
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}}
+                  />
                 </div>
-        
-         </Row>
-         
-         
-                           
-     </Form>
-     </Modal.Body>
-            </Container>
+              </Row>
+
+              <Row>
+                <div className="col-sm-3 text-center">
+                  <label for="country">Country</label>
+                </div>
+                <div className="col-sm-6">
+                
+                                                  
+                </div>
+              </Row>
+
+              <Row>
+                <div className="col-sm-3 text-center">
+                  <label for="state">State</label>
+                </div>
+                <div className="col-sm-9">
+
+               
+                  {/* <input
+                    style={{ marginBottom: "8%" }}
+                    type="text"
+                    name="state"
+                    value={dumCustDetails.state}
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}} onChange={(e)=>{handleUpdateChange(e)}
+                  /> */}
+                </div>
+              </Row>
+
+              <Row>
+                <div className="col-sm-3 text-center">
+                  <label for="city">City</label>
+                </div>
+                <div className="col-sm-9">
+                  <input
+                    style={{ marginBottom: "8%" }}
+                    type="text"
+                    name="city"
+                    value={dumCustDetails.city}
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}}
+                  />
+                </div>
+              </Row>
+
+              <Row>
+                <div className="col-sm-3 text-center">
+                  <label for="about">About Me</label>
+                </div>
+                <div className="col-sm-9">
+                  <textarea
+                    style={{ marginBottom: "8%" }}
+                    type="textarea"
+                    name="about"
+                    value={dumCustDetails.about}
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}}
+                  />
+                </div>
+              </Row>
+
+
+
+             
+
+            </Form>
+          </Modal.Body>
+        </Container>
 
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" style={{backgroundColor:"green"}}  value="button" id="dish_form_modal"  >
+          <Button
+          onClick={(e)=>{handleSubmit(e)}}
+            variant="primary"
+            style={{ backgroundColor: "green" }}
+            value="button"
+            id="dish_form_modal"
+          >
             Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
-   
 
-    <Modal show={showImage} onHide={updateImageClose}>
-    <Modal.Header >
+      <Modal show={showImage} onHide={updateImageClose}>
+        <Modal.Header>
           <Modal.Title>Edit Image</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        <Container>
+        </Modal.Header>
+        <Modal.Body>
+          <Container>
             <Row>
-            <Col>
-            Please upload file to change the profile image.
-            </Col>
-            
+              <Col>Please upload file to change the profile image.</Col>
             </Row>
-            <Row style={{marginTop:'2%'}}>
-                <div className="col-sm-6">
-            <input type='file'></input>
-            </div>
+            <Row style={{ marginTop: "2%" }}>
+              <div className="col-sm-6">
+                <input id="imageInput" type="file"></input>
+              </div>
+              <div className="col-sm-6">
+                <Button onClick={(e)=>{imageHandler(e)}}> Update</Button>
+              </div>
             </Row>
-            
-        </Container>
-
-    </Modal.Body>
-
-    </Modal>
-
-   
-    </div>);
+          </Container>
+        </Modal.Body>
+      </Modal>
+    </div>
+  );
 }
 export default Profile;

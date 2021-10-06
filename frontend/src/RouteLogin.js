@@ -12,7 +12,6 @@ import Favorites from "./pages/Favorites";
 import Checkout from "./pages/Checkout";
 
 
-
 function RouteLogin()
 {
     return(
@@ -58,7 +57,7 @@ function RouteLogin()
     </Route>
  
     <Route exact path="/profile" >
-       
+        <NavigBar/>
          <Profile/> 
     </Route> 
 

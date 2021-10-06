@@ -3,7 +3,7 @@ const express=require('express');
 const customerRouter=express.Router();
 const con=require('../SQL_Connection.js');
 const { commit } = require('../SQL_Connection.js');
-
+let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
 
 function authenticateToken(req,res,next)
@@ -30,23 +30,51 @@ function authenticateToken(req,res,next)
   })
 }
 
-customerRouter.post('/profile',(res,req)=>{
-    let sql=`select name,dob,city,nickname,phone from cust_profile where id=${res.body.id};`;
-    con.query(sq,function(err,result){
+//To get Customer Profile -> /Profile
+customerRouter.get('/getCustProfile',authenticateToken,(req,res)=>{
+    let sql=`select a.id,a.about,u.name,a.profile_pic,u.email,a.state,a.country,a.dob,a.city,a.nickname,a.phone from cust_profile as a, user_login as u where a.id=${req.query.id} and u.id=a.id;`;
+    
+    con.query(sql,function(err,result){
       if(err)
       {
-        res.statusCode(500);
+        console.log(err);
+        res.sendStatus(500);
       }
       else{
+               
         res.send(result);
       }
     })
 })
 
+
+//To update customer profile CustProfileUpdate
+customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
+  console.log(req.body);
+  let val=req.body;
+  let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.nickname}' ,  state='${val.phone}' ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
+   sql=sql + `update user_login set name='${val.name}' where id='${val.id}' ; `
+  console.log(sql);
+  con.query(sql,function(err,result){
+    if(err)
+    {
+      console.log(err);
+      res.sendStatus(500);
+    }
+    else{
+             
+      res.send(result);
+    }
+  })
+})
+
+
+//to get restaurant at home page
 customerRouter.get('/getRestaurant',(req,res)=>{
-    
+    console.log("HErr--->",req.query);
   let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type='${req.query.type}';`;
-    con.query(sql,(error,result)=>{
+  console.log("QUERY__------->",query)  ;
+  con.query(sql,(error,result)=>{
     if(error)
     {
       res.sendStatus(500);
@@ -74,7 +102,7 @@ customerRouter.get('/getRestaurant',(req,res)=>{
 })
 
 
-
+//TO get selected restaurant details
 customerRouter.get('/getRestaurantCustomer',(req,res)=>{
   console.log("Get restuarant details----------------------------------");
   
@@ -139,6 +167,22 @@ customerRouter.get('/getFavourites',(req,res)=>{
       }
   })
 
+})
+
+customerRouter.post('/updateCustomerProfilePic',(req,res)=>{
+  console.log("Inside customer Profile Pic upload");
+  let sql = `Update cust_profile set profile_pic='${req.body.imageUrl}' where id='${req.body.id}'; `
+  console.log(sql);
+  con.query(sql,(error,result)=>{
+    if(error)
+    {
+      res.sendStatus(500);
+    }
+    else
+    {
+      res.send(200);
+    }
+  })
 })
 
 module.exports=customerRouter;

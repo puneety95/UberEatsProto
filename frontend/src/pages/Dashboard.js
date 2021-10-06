@@ -27,10 +27,12 @@ function Dashboard()
           url: `http://localhost:4000/getRestaurantCustomer?id=${id}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
+          
         })
           .then((response) => {
+            
             setRestDetails(response.data);
-           //console.log("Details",setRestList);
+           console.log("Details",response);
           })
           .catch((error) => {
               //alert("PP");
@@ -117,7 +119,7 @@ function Dashboard()
 
             <Row>
                 <Container>
-             <CustomerDish id={id}/>
+             <CustomerDish id={id} n={restDetails[0].name} />
              </Container>
 
             </Row>

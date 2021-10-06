@@ -5,50 +5,82 @@ import * as RiIcons from "react-icons/ri";
 import {useEffect,useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import React from 'react';
+import {useSelector} from 'react-redux';
+import {bindActionCreators} from "redux";
+import {useDispatch} from 'react-redux';
+import {filter_details} from '../state/action-creators/actions';
+
+
 //GiThreeLeaves GiChickenOven RiRestaurantFill
 
 function Home()
 {
+  const dispatch=useDispatch();
+  const state2=useSelector((state)=>state.delivery);
+  console.log("DELIVERRRRR----------->",state2);
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [restList,setRestList] = useState([{}]);
+    const [filter,setFilter] = useState({veg:false,nonVeg:false,vegan:false});
     let id=localStorage.getItem('id');
     const history =useHistory();
     const restOpen=(id)=>{
         history.push('/dash/'+id);
     }
 
+    const handleFilterChange=(e)=>  
+      {
+     const {id ,checked}=e.target;        
+     setFilter(prevState=>({
+       ...prevState,
+       [id] :checked
+     }));
+    }
+
     useEffect(()=>{
+    
+      const filterGetDetails2=bindActionCreators(filter_details,dispatch);
+      let data={filter}       
+      filterGetDetails2(data);
+  
+    },[filter])
+  
+
+    const state3=useSelector((state)=>state.filter);
+    console.log("stateeeee>",state3);
+   
+    useEffect(()=>{
+      alert("YES");
         axios({
           method: "get",
-          url: `http://localhost:4000/getRestaurant?id=${id}&type=Delivery`,
+          url: `http://localhost:4000/getRestaurant?id=${id}&type=${Delivery}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
         })
           .then((response) => {
             setRestList(response.data);
            console.log("PPP",response.data);
-           //console.log("Details",setRestList);
+          
           })
           .catch((error) => {
             console.log((error.response));
           });
       },[])
-
+ console.log("FIlter details=====>",filter);
     return (
         <Container>
 
             <Row style={{paddingTop:"3%"}}>
                 <div className="col-sm ">
                 <div class="form-check form-check-inline">
-                    <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1"/>
+                    <input className="form-check-input" type="checkbox" id="veg" value="option1" onChange={(e)=>{handleFilterChange(e)}}/>
                         <label className="form-check-label" for="inlineCheckbox1"><GiIcons.GiThreeLeaves/>Veg</label>
                 </div>
                 <div className="form-check form-check-inline">
-                     <input className="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2"/>
+                     <input className="form-check-input" type="checkbox" id="nonVeg" value="option2" onChange={(e)=>{handleFilterChange(e)}}/>
                      <label className="form-check-label" for="inlineCheckbox2"><GiIcons.GiChickenOven/>Non-Veg</label>
                 </div>
                 <div className="form-check form-check-inline">
-                      <input className="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" />
+                      <input className="form-check-input" type="checkbox" id="vegan" value="option3" onChange={(e)=>{handleFilterChange(e)}} />
                      <label className="form-check-label" for="inlineCheckbox3"><GiIcons.GiPawHeart/>Vegan</label>
                 </div>
                 </div>
@@ -86,9 +118,6 @@ function Home()
             
         
            </Row>
-                
-
-
         </Container>
 
 

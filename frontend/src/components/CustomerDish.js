@@ -10,7 +10,8 @@ import axios from 'axios';
 
 
 function CustomerDish(props)
-{
+{ 
+console.log("Puneeet",props.n);
     const [show, setShow] = useState(false);
     const [product, setProduct]=useState({});
     const { addItem } = useCart();
@@ -60,8 +61,9 @@ function CustomerDish(props)
        }
        
        let r_id=props.id;
-       let pp={name,id,price,count,r_id};
-      
+       let n=props.n;
+       let pp={name,id,price,count,n,r_id};
+            
       console.log("value",pp);
       console.log("product =",product)
        setProduct(pp);
