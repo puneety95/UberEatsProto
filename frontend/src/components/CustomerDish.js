@@ -11,7 +11,7 @@ import axios from 'axios';
 
 function CustomerDish(props)
 { 
-console.log("Puneeet",props.n);
+console.log("Puneeet",props);
     const [show, setShow] = useState(false);
     const [product, setProduct]=useState({});
     const { addItem } = useCart();
@@ -31,7 +31,7 @@ console.log("Puneeet",props.n);
    useEffect(()=>{
     axios({
       method: "get",
-      url: `http://localhost:4000/getDishes?id=44}`,
+      url: `http://localhost:4000/getDishes?id=${props.id}}`,
       headers: { "Content-Type": "application/json","Authorization": bearer  },
       
     })

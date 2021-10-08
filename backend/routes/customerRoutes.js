@@ -71,38 +71,44 @@ customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
 
 //to get restaurant at home page
 customerRouter.get('/getRestaurant',(req,res)=>{
-    console.log("HErr--->",req.query);
-  let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type='${req.query.type}';`;
-  console.log("QUERY__------->",query)  ;
-  con.query(sql,(error,result)=>{
-    if(error)
-    {
-      res.sendStatus(500);
-    }
-    else
-    {
-      let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type='${req.query.type}' and u.id=r.r_id;`;
-     
-      con.query(sql,(error2,result2)=>{
-        if(error2)
-        {
-          
-          res.sendStatus(500);
-        }
-        else{
-          
-          let d=[...result2, ...result];
-          console.log(d);
-          res.send(d);
-        }
-      })
-    }
-  })
+let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type='${req.query.type}';`;
+ let filter=req.query.filter;
+ if(filter.length==0)
+ {
+   filter="'veg','nonveg','vegan'";
+ }
+ console.log("Value is---->",filter);
+
+con.query(sql,(error,result)=>{
+  if(error)
+  {
+    res.sendStatus(500);
+  }
+  else
+  {
+    let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type='${req.query.type}' and u.id=r.r_id;`;
+   
+    con.query(sql,(error2,result2)=>{
+      if(error2)
+      {
+        
+        res.sendStatus(500);
+      }
+      else{
+        
+        let d=[...result2, ...result];
+        console.log(d);
+        res.send(d);
+      }
+    })
+  }
+})
 
 })
 
 
-//TO get selected restaurant details
+
+//TO get selected restaurant details - Dashboard
 customerRouter.get('/getRestaurantCustomer',(req,res)=>{
   console.log("Get restuarant details----------------------------------");
   

@@ -17,7 +17,9 @@ function Home()
 {
   const dispatch=useDispatch();
   const state2=useSelector((state)=>state.delivery);
-  console.log("DELIVERRRRR----------->",state2);
+   const [loadResult,setLoadResult] = useState();
+  console.log(state2);
+  
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [restList,setRestList] = useState([{}]);
     const [filter,setFilter] = useState({veg:false,nonVeg:false,vegan:false});
@@ -34,25 +36,36 @@ function Home()
        ...prevState,
        [id] :checked
      }));
+
+      
     }
 
-    useEffect(()=>{
     
-      const filterGetDetails2=bindActionCreators(filter_details,dispatch);
-      let data={filter}       
-      filterGetDetails2(data);
-  
-    },[filter])
   
 
     const state3=useSelector((state)=>state.filter);
-    console.log("stateeeee>",state3);
+    
    
     useEffect(()=>{
-      alert("YES");
+      
+      const filterGetDetails2=bindActionCreators(filter_details,dispatch);
+      let data={filter}      
+      filterGetDetails2(data);
+      //converting filter json to array
+      let filter_array=[];
+      for(let i in filter)
+      {
+        if(filter[i]==true)
+        {
+          filter_array.push("'"+i+"'");
+        }
+       
+      }
+    
+      
         axios({
           method: "get",
-          url: `http://localhost:4000/getRestaurant?id=${id}&type=${Delivery}`,
+          url: `http://localhost:4000/getRestaurant?id=${id}&type=${state2.toggle}&filter=${filter_array}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
         })
@@ -64,8 +77,9 @@ function Home()
           .catch((error) => {
             console.log((error.response));
           });
-      },[])
- console.log("FIlter details=====>",filter);
+      },[state2,filter])
+ 
+    console.log("PPPPPPPPPPP___",state3.filter);
     return (
         <Container>
 
@@ -76,7 +90,7 @@ function Home()
                         <label className="form-check-label" for="inlineCheckbox1"><GiIcons.GiThreeLeaves/>Veg</label>
                 </div>
                 <div className="form-check form-check-inline">
-                     <input className="form-check-input" type="checkbox" id="nonVeg" value="option2" onChange={(e)=>{handleFilterChange(e)}}/>
+                     <input className="form-check-input" type="checkbox" id="nonveg" value="option2" onChange={(e)=>{handleFilterChange(e)}}/>
                      <label className="form-check-label" for="inlineCheckbox2"><GiIcons.GiChickenOven/>Non-Veg</label>
                 </div>
                 <div className="form-check form-check-inline">

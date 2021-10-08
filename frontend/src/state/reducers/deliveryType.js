@@ -1,4 +1,4 @@
-const reducer2 =(state={},action) =>{
+const reducer2 =(state='Delivery',action) =>{
     
     switch(action.type)
     {
