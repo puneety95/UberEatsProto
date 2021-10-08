@@ -13,10 +13,13 @@ import Cart from "./components/Cart";
 import {bindActionCreators} from "redux";
 import {useSelector,useDispatch} from 'react-redux';
 import {deliveryDetails} from './state/action-creators/actions';
+import { FiAlertTriangle } from "react-icons/fi";
 //class='btn btn-primary shadow-none'
 function NavigBar(props) {
   const history=useHistory();
   const [sideDrawerView,setSideDrawerView] =useState(false);
+  const [searchCriteria,setSearchCriteria] =useState("");
+  const[searchCriteriaValue,setSearchCriteriaValue]=useState("");
   const [cartModal,setCartModal]=useState(false);
   const [toggle,setToggle]=useState('Delivery');
   const dispatch=useDispatch();
@@ -51,6 +54,18 @@ function NavigBar(props) {
  
   const renderCart=()=>{
     setCartModal(! cartModal);
+  }
+
+  const search=(e)=>{
+    const form = new FormData(e.target);
+    const value = form.get("searchCriteria");
+    e.preventDefault();
+       
+    history.push({
+      pathname:'/home',
+      searchCriteria:value
+    })
+
   }
 
   const toggleNavBtn=(e)=>{
@@ -128,20 +143,23 @@ function NavigBar(props) {
           </div>
         </Nav>
         <Nav id="space">
-          <Button id="navaddress" className="rounded-pill">
+          <Button id="navaddress"  className="rounded-pill">
             <MdIcons.MdLocationOn />
            {custlocation}
           </Button>
         </Nav>
         <Nav className="flex-container">
           <div id="navsearch">
-            <FaIcons.FaSearch id="icon" />
-            <Form>
+            <FaIcons.FaSearch id="icon" style={{cursor:'pointer'}} onClick={(e)=>{search(e)}} />
+            <Form onSubmit={(e)=>{search(e)}}>
               <Form.Control className='shadow-none'
                 id="navform"
                 type="text"
+                name="searchCriteria"
+                onChange={(e)=>{setSearchCriteriaValue(e.target.value)}}
                 style={{display:'flex'}}
                 placeholder="What are you craving?"
+                
               />
             </Form>
           </div>

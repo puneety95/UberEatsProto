@@ -3,18 +3,23 @@ import axios from 'axios';
 import * as GiIcons from "react-icons/gi";
 import * as RiIcons from "react-icons/ri";
 import {useEffect,useState} from 'react';
-import {useHistory} from 'react-router-dom';
+import {useHistory,useLocation} from 'react-router-dom';
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {bindActionCreators} from "redux";
 import {useDispatch} from 'react-redux';
 import {filter_details} from '../state/action-creators/actions';
+//import { search } from '../../../backend/routes/customerRoutes';
 
 
 //GiThreeLeaves GiChickenOven RiRestaurantFill
 
 function Home()
 {
+  const location=useLocation(); 
+  
+  
+  
   const dispatch=useDispatch();
   const state2=useSelector((state)=>state.delivery);
    const [loadResult,setLoadResult] = useState();
@@ -23,6 +28,13 @@ function Home()
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [restList,setRestList] = useState([{}]);
     const [filter,setFilter] = useState({veg:false,nonVeg:false,vegan:false});
+   // const [search,setSearch] =useState(); 
+    let search=location.searchCriteria;
+   
+      
+   
+      
+    
     let id=localStorage.getItem('id');
     const history =useHistory();
     const restOpen=(id)=>{
@@ -65,7 +77,7 @@ function Home()
       
         axios({
           method: "get",
-          url: `http://localhost:4000/getRestaurant?id=${id}&type=${state2.toggle}&filter=${filter_array}`,
+          url: `http://localhost:4000/getRestaurant?id=${id}&type=${state2.toggle}&filter=${filter_array}&search=${search}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
         })
@@ -77,7 +89,7 @@ function Home()
           .catch((error) => {
             console.log((error.response));
           });
-      },[state2,filter])
+      },[state2,filter,search])
  
     console.log("PPPPPPPPPPP___",state3.filter);
     return (

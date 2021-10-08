@@ -71,14 +71,22 @@ customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
 
 //to get restaurant at home page
 customerRouter.get('/getRestaurant',(req,res)=>{
-let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type='${req.query.type}';`;
+let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type='${req.query.type}'`;
+
+let search=""
+if(!(req.query.search))
+{
+  search=req.query.search
+}
  let filter=req.query.filter;
  if(filter.length==0)
  {
    filter="'veg','nonveg','vegan'";
  }
- console.log("Value is---->",filter);
-
+ 
+filter="(" + filter +")";
+sql=sql + `and u.name like '%${search}%' and r.r_id  in (select rest_id from dishes where filter in ${filter} and name like '%${search}%' );`
+console.log("Value is---->",sql);
 con.query(sql,(error,result)=>{
   if(error)
   {
@@ -86,7 +94,9 @@ con.query(sql,(error,result)=>{
   }
   else
   {
-    let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type='${req.query.type}' and u.id=r.r_id;`;
+    let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type='${req.query.type}' and u.id=r.r_id `;
+    sql=sql + `and u.name like '%${search}%' and r.r_id   in (select rest_id from dishes where filter in ${filter} and name like '%${search}%' );`
+    console.log("query is ", sql);
    
     con.query(sql,(error2,result2)=>{
       if(error2)
@@ -95,6 +105,8 @@ con.query(sql,(error,result)=>{
         res.sendStatus(500);
       }
       else{
+        
+        console.log("-------------",result);
         
         let d=[...result2, ...result];
         console.log(d);
