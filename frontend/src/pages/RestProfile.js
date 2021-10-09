@@ -123,13 +123,10 @@ function RestProfile()
         <Container>
             <Row>
                 <div className="col-sm">
-                <div className="image_over_Text2">
+                <div className="image_over_Text2" style={{position:'relative'}}>
                  <img style={{width:'100%',height:'240px',objectFit:'cover'}}  src={(coverImageUrl)?coverImageUrl:company_logo} alt="cover_image" /> 
-                
-                 <form id="imageForm">
-                 {/* <input id="imageInput"  type="file" accept="image/*"/>  */}
-                     <Button onClick={(e)=>{imageHandler(e)}} style={{position:"absolute",borderColor:"green",backgroundColor:"dimgrey",top:"18%",left:"76%"}}>Change Cover</Button>
-                     </form>
+                     <Button onClick={(e)=>{imageHandler(e)}} style={{position:"absolute",borderColor:"green",backgroundColor:"dimgrey",top:"0",right:"0"}}>Change Cover</Button>
+      
                      </div>
                      </div>
             
@@ -190,11 +187,12 @@ function RestProfile()
              </div>
              </Row>
 
-            <Row>
+            <Row style={{marginBottom:'4%',marginTop:'2%'}}>
               <div className="col-sm text-center">
                 <Button onClick={handleShow}>Update</Button>
               </div>
             </Row>
+            
             <Modal show={show} onHide={handleClose}>
         <Modal.Header >
           <Modal.Title>Edit Dish</Modal.Title>
@@ -233,10 +231,13 @@ function RestProfile()
 
          <Row>
                 <div className="col-sm-3 text-center">
-                <label for="r_contact">Mode of Delivery</label>
+                <label for="type">Mode of Delivery</label>
                 </div>
                 <div className="col-sm-9">
-                <input onChange={(e)=>{handleUpdateChange(e)}} style={{marginBottom:"8%"}} type="text" name="type"  value={dumProfDetails.type} />
+                <select name="type" id="type" value={setDumProfDetails.type} onChange={(e)=>{handleUpdateChange(e)}}>
+                  <option value="Delivery">Delivery</option>
+                  <option value="Pickup">Pickup</option>
+                </select>
                 </div>
         
          </Row>
@@ -247,7 +248,7 @@ function RestProfile()
                 </div>
                 <div className="col-sm-3">
                   <span> From:</span>
-                  <select id="from_day" className="custom-select" >
+                  <select id="from_day" name="r_timings" value={setDumProfDetails.type} onChange={(e)=>{handleUpdateChange(e)}} onChangeclassName="custom-select" >
                     <option>Sunday</option>
                     <option>Monday</option>
                     <option>Tuesday</option>

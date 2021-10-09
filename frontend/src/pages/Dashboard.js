@@ -11,6 +11,7 @@ import Heart from "react-animated-heart";
 
 
 
+
 function Dashboard()
 {
     const {id} = useParams();
@@ -19,25 +20,48 @@ function Dashboard()
     const [isHeart, setIsHeart] = useState(false);
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
      const [restDetails,setRestDetails] =useState([{}]);
-      console.log("YESsssssssssssss------------------");
+       
 
       useEffect(()=>{
-          axios({
-          method: "get",
-          url: `http://localhost:4000/getRestaurantCustomer?id=${id}`,
-          headers: { "Content-Type": "application/json","Authorization": bearer  },
-          
-          
-        })
-          .then((response) => {
+        axios({
+            method: "get",
+            url: `http://localhost:4000/getRestaurantCustomer?id=${id}}`,
+            headers: { "Content-Type": "application/json","Authorization": bearer  },
             
-            setRestDetails(response.data);
-           console.log("Details",response);
+            
           })
-          .catch((error) => {
-              //alert("PP");
-            console.log(("Error----------------",error));
-          });
+            .then((response) => {
+              
+              setRestDetails(response.data);
+             console.log("Details",response);
+            })
+            .catch((error) => {
+                //alert("PP");
+              console.log(("Error----------------",error));
+            });
+
+            let uid=localStorage.getItem('id');
+        
+            axios({
+                method: "get",
+                url: `http://localhost:4000/getHeart?id=${id}&uid=${uid}}`,
+                headers: { "Content-Type": "application/json","Authorization": bearer  },
+                })
+                .then((response) => {
+                    if(response.data.length > 0)
+                    {
+                     setIsHeart(true);
+                    }
+                })
+                .catch((error) => {
+                    //alert("PP");
+                  console.log(("Error----------------",error));
+                });
+
+
+
+
+
       },[])
 
 
@@ -59,7 +83,7 @@ function Dashboard()
             
           })
             .then((response) => {
-              alert("Restaurantadded as favourite");
+             // alert("Restaurant added as favourite");
             })
             .catch((error) => {
                 //alert("PP");
@@ -88,13 +112,7 @@ function Dashboard()
             <Row id="rest_description" style={{paddingLeft:'3%',paddingRight:'3%',paddingTop:'1%',textAlign:'justify'}}>
                 <div className="col-sm-8">
                     {restDetails[0].r_description}
-                </div>
-                <div className="col-sm-4">
-                <Heart isClick={isHeart} onClick={() => favouriteHandler()} />
-                </div>
-                
-            </Row>            
-            <Row style={{paddingLeft:'3%',paddingTop:'1%',fontWeight:500}}>
+                    <Row style={{paddingLeft:'3%',paddingTop:'2%',fontWeight:500}}>
                 <div className="col-sm-8">
                     <MdIcons.MdLocationOn/>
                     {restDetails[0].location}
@@ -106,6 +124,13 @@ function Dashboard()
                     {restDetails[0].r_contact}
                 </div>
             </Row>
+                </div>
+                <div className="col-sm-4">
+                <Heart isClick={isHeart} onClick={() => favouriteHandler()} />
+                </div>
+                
+            </Row>            
+           
            
             <Row>
                 <hr class="one" ></hr>

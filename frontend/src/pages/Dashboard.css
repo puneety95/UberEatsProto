@@ -33,7 +33,7 @@
 
 #rest_card_text{
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow:hidden;
     font-family: sans-serif ;
@@ -42,6 +42,6 @@
    }
    #rest_dish_cat2{
      object-fit: cover;
-     height: 13vh;
+     height: 100%;
      
    }

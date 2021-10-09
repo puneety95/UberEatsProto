@@ -5,7 +5,7 @@ function DishesAddModal(props)
 {
     
     const [show, setShow] = useState(props.val);
-    const [addDetail,setAddDetails] = useState({category:'1'});
+    const [addDetail,setAddDetails] = useState({});
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
 
    //To update details in the state of the newly added data 
@@ -13,19 +13,20 @@ function DishesAddModal(props)
 
    const handleUpdateChange=(e)=>  
     {
-        let ele = document.getElementById("addDishForm");
-        let chk_status = ele.checkValidity();
-         ele.reportValidity();
+    
+    //     let ele = document.getElementById("addDishForm");
+    //     let chk_status = ele.checkValidity();
+    //      ele.reportValidity();
    
-    if (!chk_status) {
-      return;
-    }
+    // if (!chk_status) {
+    //   return;
+    // }
         const {name ,value}=e.target;   
         console.log(name,"vale",value);
-        setAddDetails(prevState=>({
-          ...prevState,
+        setAddDetails({
+          ...addDetail,
           [name] :value
-        }));
+        });
        }
 
 
@@ -38,6 +39,7 @@ function DishesAddModal(props)
       return;
     }
         e.preventDefault();
+        
         const imageInput = document.querySelector("#imageInput");
         const file = imageInput.files[0];
         const { url } = await fetch("http://localhost:4000/s3Url").then(res => res.json())
@@ -64,14 +66,14 @@ function DishesAddModal(props)
       .catch((error)=>{
         alert("There were some errrs while updating image photo");
       })
-
+     props.ModalToggle();
     }
 
     
     return(
        <Container>
             <Modal show={show} onHide={props.ModalToggle}>
-        <Modal.Header closeButton>
+        <Modal.Header >
           <Modal.Title>Add Dishes</Modal.Title>
         </Modal.Header>
         <Container fluid>
@@ -92,7 +94,20 @@ function DishesAddModal(props)
                 <label for="price">Price</label>
                 </div>
                 <div className="col-sm-9">
-                <input onChange={(e)=>{handleUpdateChange(e)}}  style={{marginBottom:"8%"}} type="text" name="price" required  />
+                <input  onChange={(e)=>{handleUpdateChange(e)}}  style={{marginBottom:"8%"}} type="text" name="price" required  />
+                </div>
+        
+         </Row>
+         <Row style={{paddingBottom:'3%'}}>
+         <div className="col-sm-3 text-center">
+                <label for="type">Type</label>
+                </div>
+                <div className="col-sm-3">
+                    <select  onChange={(e)=>{handleUpdateChange(e)}} id="type" name="type" className="custom-select" >
+                    <option value="veg">veg</option>
+                    <option value="nonveg">nonveg</option>
+                    <option value="vegan" >vegan</option>
+                    </select>
                 </div>
         
          </Row>
@@ -119,7 +134,7 @@ function DishesAddModal(props)
          <label for="dish_image">Image</label>
              </div>
          <div className="col-sm-3 ">
-             <input id="imageInput" type='file'/>
+             <input  id="imageInput" type='file'/>
              </div>
         </Row>
          <Row style={{paddingTop:"2%"}}>

@@ -3,48 +3,76 @@ import {useState,useEffect} from 'react';
 import * as BiIcons from 'react-icons/bi';
 import DishesAddModal from '../components/DishesAddModal';
 import axios from 'axios';
+import { server_url } from '../values';
 
 
 function RestDish()
 {
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = (id) => {
-      setShow(true);
-      setModalDishId(id);
-    }
     const [showDishesModal, setShowDishesModal]=useState(false);
     const [dropDown ,setDropDown] =useState(1);
-   const [dishDetails,setDishDetails] =useState([{}]);
-   const [modalDishID ,setModalDishId] =useState(false);
+    const [dishDetails,setDishDetails] =useState([{}]);
+    const [dummyDishDetails,setDummyDishDetails] =useState({});
+
+    const [modalDishID ,setModalDishId] =useState(false);
+ 
+    const handleShow = (props) => {
+    
+     console.log("YES");
+     setShow(true);
+     console.log("VALUESSE-->",props);
+     setDummyDishDetails(props)
+     setModalDishId(props.id);
+     console.log("values==",dummyDishDetails);
+       }
+
+    const handleClose = () =>{
+      setShow(false); 
+      setDummyDishDetails({});
+    }  
+   
+   const handleUpdateChange=(e)=>  
+   {
+          const {name ,value}=e.target;   
+       console.log(name,"vale",value);
+       setDummyDishDetails({
+         ...dummyDishDetails,
+         [name] :value
+       });
+
+
+      }//closing
+
+
 
    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
    let r_id=localStorage.getItem('id');
    useEffect(()=>{
     axios({
       method: "get",
-      url: `http://localhost:4000/getDishes?id=${r_id}`,
-      headers: { "Content-Type": "application/json","Authorization": bearer  },
+      url:server_url+`/getDishes?id=${r_id}`,
+      headers: { "Content-Type": "application/json","Authorization": bearer  }
       
     })
       .then((response) => {
-        //console.log(response.data.profileDetails[0].profile_pic);
-       // console.log("----------",response.data.profDetails[0]);
        
        setDishDetails(response.data);
+      
        console.log("PPP",response.data);
        console.log("Details",dishDetails);
       })
       .catch((error) => {
         console.log((error.response));
       });
-  },[])
+  },[showDishesModal])
     
-    let dish_price="$100"
-    let dish_image2="../food1.jpg";
-    let dishDescription="chopped romaine, curly kale, quinoa & millet, housemade superfood krunchies, black bean, roasted corn & jicama succotash, red onions, cilantro, cotija cheese, grape tomatoes, avocado (400 cal) with chipotle vinaigrette (250 cal) + shaved, roasted chicken breast $3 (110 cal) vegetarian & gluten free";
+    const UpdateDishes=(e)=>{
+      console.log(dummyDishDetails);
+
+    }
+
      const ModalToggle=()=>{
-        setShowDishesModal(false);
+        setShowDishesModal(!showDishesModal);
      }
     return(
     <Container style={{paddingRight:"10%"}}>
@@ -97,18 +125,18 @@ function RestDish()
             dishDetails.map(dish=>{
                 return(
                 
-                <div className="col-sm-4" style={{paddingTop:'1%',paddingBottom:'1%'}}>
-                            <div className="card" onClick={()=>handleShow(dish.id)} style={{paddingLeft:'2%',cursor:'pointer'}}>
+                <div className="col-sm-4  d-flex align-items-stretch" style={{paddingTop:'1%',paddingBottom:'1%'}}>
+                            <div className="card" onClick={()=>handleShow(dish)} style={{paddingLeft:'2%',cursor:'pointer'}}>
                             <div className="card-body" style={{padding:'0'}}>
                                 <Row>
-                                    <div className="col-sm-6" >
+                                    <div className="col-sm-6 " >
                                        <h5 className="card-title">{dish.name}</h5>
                                         <p id="rest_card_text" className="card-text">{dish.description}</p>
-                                        <p id="rest_card_text"  className="card-text">{dish.price}</p>
+                                        <p   className="card-text"><b>${dish.price}</b></p>
                                         
                                    </div>
                                    <div className="col-sm-6">
-                                       <img style={{width:'100%'}} id ="rest_dish_cat2" src={dish.images} alt="dish_image" />
+                                       <img style={{width:'100%',objectFit:'cover',height:'100%'}}  src={dish.images} alt="dish_image" />
                                  </div>
                                 </Row>
                                
@@ -131,7 +159,7 @@ function RestDish()
                                     <label for="Name">Name</label>
                                     </div>
                                     <div className="col-sm-9">
-                                    <input style={{marginBottom:"8%"}} type="text" name="Name" value={dish.name}  required/>
+                                    <input style={{marginBottom:"8%"}} onChange={(e)=>{handleUpdateChange(e)}} type="text" name="name" defaultValue={dish.name}  required/>
                                     </div>
                             
                              </Row>
@@ -140,7 +168,7 @@ function RestDish()
                                     <label for="Price">Price</label>
                                     </div>
                                     <div className="col-sm-9">
-                                    <input style={{marginBottom:"8%"}} type="text" name="Price" value={dish.price} required/>
+                                    <input style={{marginBottom:"8%"}} onChange={(e)=>{handleUpdateChange(e)}} type="text" name="price" defaultValue={dish.price} required/>
                                     </div>
                             
                              </Row>
@@ -150,7 +178,7 @@ function RestDish()
                 <label for="category">Category</label>
                 </div>
                 <div className="col-sm-3">
-                    <select  id="category" name="category" value={dish.cat} className="custom-select" >
+                    <select  id="category" name="category" onChange={(e)=>{handleUpdateChange(e)}} defaultvalue={dish.cat} className="custom-select" >
                     <option value="1">Appetizer</option>
                     <option value="2">Salads</option>
                     <option value="3" >Main Course</option>
@@ -160,15 +188,15 @@ function RestDish()
                   </select>
                 </div>
                                
-         </Row>
-                            
+         </Row>                            
                              </Row>
                              <Row  style={{paddingTop:"2%"}}>
                                     <div className="col-sm-3 text-center">
                                     <label for="Image">Image</label>
                                     </div>
                                     <div className="col-sm-9">
-                                    <Button  style={{backgroundColor:"green",border:"none"}} name="Image">Click here to upload new image</Button>
+                                    <input type="file"></input>
+                                    <Button  style={{backgroundColor:"green",border:"none"}} defaultvalue={dish.images} name="Image">Click here to upload new image</Button>
                                     </div>
                             
                              </Row>
@@ -177,7 +205,7 @@ function RestDish()
                                     <label for="Ingredients">Ingredients</label>
                                     </div>
                                     <div className="col-sm-9">
-                                    <textarea class="form-control " name="Ingredients" value={dish.ingredients} rows="5"></textarea>
+                                    <textarea class="form-control " name="Ingredients" onChange={(e)=>{handleUpdateChange(e)}} defaultvalue={dish.ingredients} rows="5"></textarea>
                                     </div>
                             
                              </Row>
@@ -186,7 +214,7 @@ function RestDish()
                                     <label for="Description">Description</label>
                                     </div>
                                     <div className="col-sm-9">
-                                    <textarea class="form-control " name="Description" value={dish.description} rows="5"></textarea>
+                                    <textarea class="form-control "  onChange={(e)=>{handleUpdateChange(e)}} name="Description" defaultvalue={dish.description} rows="5"></textarea>
                                     </div>
                             
                              </Row>
@@ -202,7 +230,7 @@ function RestDish()
                               <Button variant="secondary" onClick={handleClose}>
                                 Close
                               </Button>
-                              <Button variant="primary" id="dish_form_modal" onClick={handleClose}>
+                              <Button variant="primary" id="dish_form_modal" onClick={(e)=>{UpdateDishes(e)}}>
                                 Save Changes
                               </Button>
                             </Modal.Footer>

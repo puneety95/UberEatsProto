@@ -1,80 +1,101 @@
-import { Container,Row,Table,Dropdown,Form } from "react-bootstrap";
+import {Container,Row,Col,Button} from 'react-bootstrap';
+import {useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
+import axios from 'axios';
+import { server_url } from '../values';
 
 function RestOrders()
 {
+        let id=localStorage.getItem('id');
+        let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
+
+        const [filter,setFilter] = useState({"new_order":false,"delivered":false,"cancelled":false});
+        
+
+        useEffect(()=>{
+            axios({
+                method:'get',
+                url:server_url+`\RestOrderDetails?id=${id}`,
+                headers: { "Content-Type": "application/json","Authorization": bearer  }
+            }).then((response)=>{
+                console.log("Success");
+              })
+              .catch((error) => {
+                console.log((error.response));
+              });
+
+        },[filter]);
+
+
+        const handleUpdateChange=(e)=>  
+        {
+            const {name ,checked}=e.target;   
+            setFilter({
+              ...filter,
+              [name] :checked
+            });
+        }
+
+        console.log("VAlues=>",filter);
+
+
+
+
     return(
-       <Container>
-          <Row>
-                <div style={{marginTop:'4%'}} className="col-sm">
-                    <h5>All Orders View</h5>
+        <Container>
+            <Row style={{paddingTop:'3%'}}>
+                <div className='col-sm-2'>
+                    <input type="checkbox" onChange={(e)=>{handleUpdateChange(e)}} value="new_order" name="new_order"/>
+                    <label for ="new_order">New Order</label>
                 </div>
-          </Row>
-          <Row>
-              <div className="col-sm">
-              <hr class="one" ></hr>  
-              </div>
-          </Row>
+                <div className='col-sm-2'>
+                    <input type="checkbox"  onChange={(e)=>{handleUpdateChange(e)}} value="delivered" name="delivered"/>
+                    <label for ="delivered_order">Delivered</label>
+                </div>
+                <div className='col-sm-2'>
+                    <input type="checkbox"  onChange={(e)=>{handleUpdateChange(e)}} value="cancelled" name="cancelled"/>
+                    <label for ="cancelled_order">Cancelled</label>
+                </div>
+            </Row>
+            <Row>
+                <hr className="one"></hr>
+            </Row>
 
-          <Row style={{padding:'3%'}}>
-              <div  className="col-sm-2">
-                    <Form>
-                        <input type="checkbox" id="cancelled_order" name="cancelled_order"/>
-                        <label style={{marginLeft:"2%"}} for="cancelled_order">Cancelled Order</label>
-                    </Form>
-              </div>
-              <div  className="col-sm-2">
-                    <Form>
-                        <input type="checkbox" id="new_order" name="new_order"/>
-                        <label style={{marginLeft:"2%"}} for="new_order">New Order</label>
-                    </Form>
-              </div>
-              <div  className="col-sm-2">
-                    <Form>
-                        <input type="checkbox" id="delieverd_order" name="delieverd_order"/>
-                        <label style={{marginLeft:"2%"}} for="delieverd_order">Delievered Order</label>
-                    </Form>
-              </div>
-              <div className="col-sm-6">
-                 
-              </div>
-          </Row>
 
-          <Row style={{marginTop:'3%'}}>
-          <div className="col-sm-6">
-                       Name
-                   </div>
-                   <div className="col-sm-6">
-                       Moti Mahal
-                   </div>
-                   <div className="col-sm-6">
-                       Location
-                   </div>
-                   <div className="col-sm-6">
-                       San Jose
-                   </div>
-                   <div className="col-sm-6">
-                       Contact
-                   </div>
-                   <div className="col-sm-6">
-                       9911294357
-                   </div>
-                   <div className="col-sm-6">
-                       Timings
-                   </div>
-                   <div className="col-sm-6">
-                       9pm-10pm
-                   </div>
-                   <div className="col-sm-6">
-                       Description
-                   </div>
-                   <div className="col-sm-6">
-                   Wish you could ask someone what's the best thing on the menu? The jasmine rice is one of the most ordered items on the menu and the pen pineapple fried rice and the sesame chicken are two of the items most commonly ordered together at this evening go-to. • $ • Thai • Asian • Noodles • Alcohol
-                   </div>
+            <Row>
+                <div className='col-sm-3'>
+                    <div><b>Order Id</b></div>
+                    <div> 
+                        <select name="cars" id="cars">
+                            <option value="1">Recived</option>
+                            <option value="1">Preparing</option>
+                            <option value="3">Delivered</option>
+                            <option value="4">On the way</option>
+                        </select>
+                    </div>
+                    <div>
+                     <Button style={{marginTop:'1%',backgroundColor:'grey'}}>Update</Button>
+                    </div>
 
-          </Row>
+                </div>    
+                <div className='col-sm-2'>
+                    Current Status    
+                </div> 
+                <div className='col-sm-5'>
+                    Puneet    
+                </div> 
+                     
+                <div className='col-sm-2'>
+                  <Button style={{backgroundColor:'black'}}>Customer</Button>   
+                </div>    
 
-       </Container>
+            </Row>
 
-    ); 
+        </Container>
+
+
+    )
+
 }
+
 export default RestOrders;

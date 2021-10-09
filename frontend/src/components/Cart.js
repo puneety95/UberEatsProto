@@ -19,7 +19,7 @@ function Cart(props) {
     {
         if(items[i].id==item_id)
         {
-          items[i].quantity=value;
+          items[i].size=value;
           ChangeQty(!qty);
 
         }  
@@ -30,7 +30,8 @@ function Cart(props) {
   
  
   const { items } = useCart();
-  console.log(items);
+
+  console.log("--------------",items);
  
   return (
     <Container>
@@ -51,7 +52,7 @@ function Cart(props) {
              
              <Row>
              <div className="col-sm-1">
-             <select onChange={(e)=>{changeQty(item.id,e.target.value)}} value = {item.quantity} name="qty" id="qty">
+             <select onChange={(e)=>{changeQty(item.id,e.target.value)}} defaultValue = {item.size} name="qty" id="qty">
                <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -69,10 +70,10 @@ function Cart(props) {
                 <b> {item.name}</b>
                </div>
                <div className='col-sm-3'>
-                 {item.price} x {item.quantity}
+                 {item.price} x  {item.size}
                </div>
                <div className='col-sm-2 text-right'>
-                <FiIcons.FiDollarSign/> {item.price * item.quantity}
+                <FiIcons.FiDollarSign/> {item.price *  item.size}
                </div>
              </Row>
             

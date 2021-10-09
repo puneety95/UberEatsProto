@@ -7,35 +7,41 @@ import {
   Container,
   Row,
 } from "react-bootstrap";
+import validator from 'validator';
 import blankuser from "../Images/blankuser.jpeg";
 import {Link} from 'react-router-dom';
 import "./Profile.css";
 import { useState, useEffect ,useMemo} from "react";
 import axios from "axios";
-import Select from 'react-select'
-import countryList from 'react-select-country-list'
+import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 
 function Profile() {
   const [show, setShow] = useState(false);
   const [showImage, setShowImage] = useState(false);
+  const [profileupdate,setprofileupdate] =useState(false);
+  
   const [custDetails, setCustDetails] = useState({});
   const [dumCustDetails, setDumCustDetails] = useState([]);
-  const [country,selectCountry]=useState();
-  const [region,selectRegion]=useState();
+  const [country,setCountry]=useState();
+    const [region,setRegion]=useState();
+    const [city,setCity]=useState();
   const updateImage = () => setShowImage(true);
 
-  const options = useMemo(() => countryList().getData(), [])
+  
 
   const updateImageClose = () =>{
     setShowImage(false); 
     
   } 
   const handleClose = () =>{ 
-    setShow(false);
-    console.log("Puneet",custDetails);
     setDumCustDetails(custDetails);
+    setShow(false);
+    
   }
-  const handleShow = () => setShow(true);
+  const handleShow = () =>{
+    setDumCustDetails(custDetails);
+    setShow(true);
+  }
   let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
   let id=localStorage.getItem('id');
   
@@ -56,7 +62,7 @@ function Profile() {
         alert("There were some error whilefetching customer details");
         console.log((error.response));
       });
-  },[])
+  },[profileupdate])
  
 
  
@@ -72,6 +78,26 @@ function Profile() {
 
 //Upate changes
 const handleSubmit = (e) => {
+
+  if (!(validator.isEmail(dumCustDetails.email))) {
+          
+     alert('Enter valid Email!');
+           
+    return ;
+  }
+
+  if(!(validator.isMobilePhone(dumCustDetails.phone))) 
+  {
+    if((dumCustDetails.phone.length !== 10))
+    {
+
+      alert('Enter valid Phone number!');
+    }
+  
+    
+    return ;
+  }
+
   let ele = document.getElementById("customer_details");
   let chk_status = ele.checkValidity();
   ele.reportValidity();
@@ -88,15 +114,23 @@ const handleSubmit = (e) => {
        })
        .then((response)=>{
          alert("Data Updated");
+         localStorage.setItem('location',dumCustDetails.city)
          setCustDetails(dumCustDetails);
+         setDumCustDetails(custDetails);
          handleClose();
        })
        .catch((error)=>{
-         alert("There were some error while updating the data");
+         if(error.response.status==403)
+         {
+           alert("Email id already exists !!!! , could not update data")
+         }
+         else
+         {
+          alert("There were some error while updating the data");
+         }  
        });
 
-     handleClose() ;
-
+    handleClose() ;
      
    } 
 
@@ -136,6 +170,7 @@ const handleSubmit = (e) => {
     })
       .then((res) => {
         alert("Image Uploaded");
+        setprofileupdate(!(profileupdate));
       })
       .catch((error) => {
         alert("There were some errrs while updating image photo");
@@ -162,11 +197,11 @@ const handleSubmit = (e) => {
             >
               <img
                 onClick={updateImage}
-                src={custDetails.profile_pic}
+                src={custDetails.profile_pic?custDetails.profile_pic:blankuser}
                 width="80px"
                 height="80px"
                 id="profileimagedrawer"
-                style={{ borderRadius: "50%", cursor: "pointer" }}
+                style={{ borderRadius: "50%", cursor: "pointer" ,objectFit:'cover'}}
                 alt="user"
               ></img>
             </div>
@@ -212,7 +247,7 @@ const handleSubmit = (e) => {
                 <ListGroup.Item>{custDetails.state}</ListGroup.Item>
                 <ListGroup.Item>{custDetails.country}</ListGroup.Item>
                 <ListGroup.Item>{custDetails.nickname}</ListGroup.Item>
-                <ListGroup.Item>{custDetails.about}</ListGroup.Item>
+                <ListGroup.Item><textarea  style={{ fontWeight: "300" }} readonly value={custDetails.about}></textarea></ListGroup.Item>
               </ListGroup>
             </div>
           </Row>
@@ -230,7 +265,7 @@ const handleSubmit = (e) => {
       </div>
 
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header>
+        <Modal.Header> 
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
         <Container fluid>
@@ -251,6 +286,25 @@ const handleSubmit = (e) => {
                   />
                 </div>
               </Row>
+
+              <Row>
+                <div className="col-sm-3 text-center">
+                  <label for="email">Email</label>
+                </div>
+                <div className="col-sm-9">
+                  <input
+                    style={{ marginBottom: "8%" }}
+                    type="text"
+                    name="email"
+                    value={dumCustDetails.email}
+                    required
+                    onChange={(e)=>{handleUpdateChange(e)}}
+                  />
+                </div>
+              </Row>
+
+
+
               <Row>
                 <div className="col-sm-3 text-center">
                   <label for="phone">Phone Number</label>
@@ -308,30 +362,41 @@ const handleSubmit = (e) => {
                   <label for="country">Country</label>
                 </div>
                 <div className="col-sm-6">
-                
-                                                  
+                    <CountryDropdown  style={{paddingBottom:'2%',width:'-webkit-fill-available'}}
+                      value={(dumCustDetails.country) ? dumCustDetails.country:country}
+                    
+                      name="country"
+                      onChange={
+                        (val,e) => 
+                        {
+                          setCountry(val);
+                          handleUpdateChange(e);
+                        }} />                                                 
                 </div>
               </Row>
 
-              <Row>
+              <Row style={{paddingTop:'2%'}}>
                 <div className="col-sm-3 text-center">
                   <label for="state">State</label>
                 </div>
-                <div className="col-sm-9">
-
+                <div className="col-sm-6">
+                <RegionDropdown  name="state" style={{paddingBottom:'2%',marginTop:'2%',width:'-webkit-fill-available'}}
+                   country={(dumCustDetails.country) ? dumCustDetails.country:country}
+                   value={(dumCustDetails.state) ? dumCustDetails.state:region}
+                  onChange={(val,e) => {setRegion(val)
+                    if(val=='-')
+                    {
+                     setRegion(dumCustDetails.state)
+                     }
+                     handleUpdateChange(e);
+                    }
+          } />
                
-                  {/* <input
-                    style={{ marginBottom: "8%" }}
-                    type="text"
-                    name="state"
-                    value={dumCustDetails.state}
-                    required
-                    onChange={(e)=>{handleUpdateChange(e)}} onChange={(e)=>{handleUpdateChange(e)}
-                  /> */}
+                  
                 </div>
               </Row>
 
-              <Row>
+              <Row style={{paddingTop:'2%'}}>
                 <div className="col-sm-3 text-center">
                   <label for="city">City</label>
                 </div>

@@ -1,9 +1,9 @@
-import { Container,Form,Dropdown,Row,Button,Modal } from "react-bootstrap";
+import { Container,Row,Button,Modal } from "react-bootstrap";
 import {useState,useEffect} from 'react';
 import * as BiIcons from 'react-icons/bi';
 import * as FiIcons from 'react-icons/fi';
 import {useCart} from 'react-use-cart';
-
+import {useSelector} from 'react-redux';
 //FiPlus ,FiMinus ,
 
 import axios from 'axios';
@@ -26,12 +26,24 @@ console.log("Puneeet",props);
    const [modalDishID ,setModalDishId] =useState(false);
    const [count,setCount] = useState(1);
 
+   const state3=useSelector((state)=>state.filter);
+      console.log("filterssss are --->",state3);
+      let filter_array=[];
+      for(let i in state3.filter)
+      {
+        if(state3.filter[i]==true)
+        {
+          filter_array.push("'"+i+"'");
+        }
+       
+      } 
+ console.log(filter_array);
    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
    let r_id=localStorage.getItem('id');
    useEffect(()=>{
     axios({
       method: "get",
-      url: `http://localhost:4000/getDishes?id=${props.id}}`,
+      url: `http://localhost:4000/getDishes2?id=${props.id}&filter=${filter_array}`,
       headers: { "Content-Type": "application/json","Authorization": bearer  },
       
     })
@@ -62,13 +74,14 @@ console.log("Puneeet",props);
        
        let r_id=props.id;
        let n=props.n;
-       let pp={name,id,price,count,n,r_id};
+       let size=count;
+       
+       let pp={name,id,price,size,n,r_id};
             
       console.log("value",pp);
-      console.log("product =",product)
-       setProduct(pp);
-       console.log("ITems----",product);
-       addItem(pp);
+      setProduct(pp);
+      addItem(pp);
+
        
        //handleClose();
       
@@ -152,7 +165,7 @@ console.log("Puneeet",props);
                                 <div className='col-sm-5' style={{paddingRight:'0%'}}>
                                   <Button onClick={()=>setCount(count-1)} style={{backgroundColor:'black'}} className='rounded-circle'><FiIcons.FiMinus/></Button>
                                   <span style={{fontSize:'20px',paddingTop:'1%',paddingLeft:'3%',paddingRight:'3%'}}>{count}</span>
-                                  <Button onClick={(prevState)=>setCount(count+1)} style={{backgroundColor:'black'}} className='rounded-circle'><FiIcons.FiPlus/> </Button>
+                                  <Button onClick={()=>setCount(count+1)} style={{backgroundColor:'black'}} className='rounded-circle'><FiIcons.FiPlus/> </Button>
                                 </div>
 
                                 <div style={{fontSize:'20px',backgroundColor:'beige'}} className='col-sm-3'>

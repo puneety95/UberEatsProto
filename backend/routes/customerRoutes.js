@@ -51,21 +51,86 @@ customerRouter.get('/getCustProfile',authenticateToken,(req,res)=>{
 //To update customer profile CustProfileUpdate
 customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
   console.log(req.body);
-  let val=req.body;
-  let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.nickname}' ,  state='${val.phone}' ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
-   sql=sql + `update user_login set name='${val.name}' where id='${val.id}' ; `
-  console.log(sql);
-  con.query(sql,function(err,result){
-    if(err)
+  let check=`select email from user_login where email='${req.body.email}';`;
+  con.query(check,(error,result)=>{
+    if(error)
     {
-      console.log(err);
-      res.sendStatus(500);
+      res.sendStatus(500)
     }
-    else{
-             
-      res.send(result);
+    else
+    {
+      //console.log("---",result[0].email);
+      console.log(result)
+        if(result.length>0)
+        {
+         let test=result[0].email;
+         let test2=req.body.email;
+         console.log(test);
+         console.log(test2);
+          if(test != test2)
+       //  if(5 != 3) 
+         {
+            console.log("HERERER");
+           res.sendStatus(403);
+          }
+
+          else
+        {
+          let val=req.body;
+          let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.phone}'  ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
+          sql=sql + `update user_login set name='${val.name}' ,  location='${val.city}' , email='${val.email}' where id='${val.id}' ; `
+          console.log(sql);
+          con.query(sql,function(err,result){
+          if(err)       
+            {
+            
+            if(err.errno == 1062)
+            {
+              res.sendStatus(403);
+            }
+            else{
+              
+              res.sendStatus(500);
+            }
+           
+            }
+          else{
+               res.send(result);
+              }       
+            })
+
+        }
+
+
+        }
+        else
+        {
+          let val=req.body;
+          let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.phone}'  ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
+          sql=sql + `update user_login set name='${val.name}' , location='${val.city}', email='${val.email}' where id='${val.id}' ; `
+          console.log(sql);
+          con.query(sql,function(err,result){
+          if(err)       
+            {
+            console.log(err);
+            res.sendStatus(500);
+            }
+          else{
+               res.send(result);
+              }       
+            })
+
+        }
+
     }
+
   })
+
+
+
+
+
+  
 })
 
 
@@ -73,11 +138,13 @@ customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
 customerRouter.get('/getRestaurant',(req,res)=>{
 let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type='${req.query.type}'`;
 
-let search=""
-if(!(req.query.search))
+let search="";
+console.log("Valuessss are ---->",req.query);
+if((req.query.search)!="undefined")
 {
-  search=req.query.search
+   search=req.query.search
 }
+
  let filter=req.query.filter;
  if(filter.length==0)
  {
@@ -85,7 +152,8 @@ if(!(req.query.search))
  }
  
 filter="(" + filter +")";
-sql=sql + `and u.name like '%${search}%' and r.r_id  in (select rest_id from dishes where filter in ${filter} and name like '%${search}%' );`
+sql=sql + ` and r.r_id  in (select rest_id from dishes where filter in ${filter} )`
+sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
 console.log("Value is---->",sql);
 con.query(sql,(error,result)=>{
   if(error)
@@ -95,8 +163,9 @@ con.query(sql,(error,result)=>{
   else
   {
     let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type='${req.query.type}' and u.id=r.r_id `;
-    sql=sql + `and u.name like '%${search}%' and r.r_id   in (select rest_id from dishes where filter in ${filter} and name like '%${search}%' );`
-    console.log("query is ", sql);
+    sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
+    sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
+    console.log("query is------------------------ >", sql);
    
     con.query(sql,(error2,result2)=>{
       if(error2)
@@ -123,9 +192,11 @@ con.query(sql,(error,result)=>{
 //TO get selected restaurant details - Dashboard
 customerRouter.get('/getRestaurantCustomer',(req,res)=>{
   console.log("Get restuarant details----------------------------------");
-  
-  let sql=`select r.profile_pic,u.name,r.r_description,r.r_contact,r.r_timings,r.type,u.location from rest_info as r , user_login as u where u.id=r.r_id and r.r_id = '${req.query.id}';`;  
-  
+
+
+  let sql=`select r.profile_pic,u.name,r.r_description,r.r_contact,r.r_timings,r.type,u.location from rest_info as r , user_login as u where u.id=r.r_id and r.r_id = '${req.query.id}';`;
+ // sql=sql + ` and r.r_id in (select rest_id from dishes where rest_id='${req.query.id}' and filter in ${filter});`  
+  console.log('ppppppp',sql);
   con.query(sql,(error,result)=>{
     if(error)
     {
@@ -243,7 +314,7 @@ customerRouter.post('/createOrder',(req,res)=>{
  
   let val=req.body.order;
   let val2=req.body.items;
-  let sql=`insert into orders values('0','${val.cust_id}','${val.rest_id}','${val.time}','1','${val.mode}','${val.del_add}');`;
+  let sql=`insert into orders values('0','${val.cust_id}','${val.rest_id}','${val.time}','1','${val.mode}','${val.del_add}','1');`;
   
   con.query(sql,(error,result)=>{
     if(error)
@@ -309,5 +380,48 @@ customerRouter.get('/getCustOrders',(req,res)=>{
      }
   })
 })
+
+
+customerRouter.get('/getDishes2',authenticateToken,(req,res)=>{
+  console.log("FILTERS");
+  let filter=req.query.filter;
+  console.log(filter);
+  console.log("Filter up");
+   if(filter.length==0)
+ {
+   filter="'veg','nonveg','vegan'";
+ }
+ 
+filter="(" + filter +")";
+  let sql=`select d.id,d.rest_id,d.name,d.ingredients,d.price,d.description,d.cat,c.type,d.images from dishes d, category c where`;
+  sql=sql+` d.cat=c.id and  rest_id='${req.query.id}' and filter in ${filter};`
+  console.log(sql);
+  con.query(sql,(error,result)=>{
+    if(error){
+      console.log(error);
+      res.sendStatus(500);
+    }
+    else{
+      console.log("Success");
+      res.send(result);
+    }
+  })
+
+})
+
+customerRouter.get('/getHeart',(req,res)=>{
+  let sql=`select * from favourites where rest_id = '${req.query.id}' and cust_id='${req.query.uid}' ;`;
+  console.log("favoirut",sql);
+  con.query(sql,(err,result)=>{
+    if(result)
+    {
+      console.log(result);
+      res.send(result);
+      
+    }
+  })
+})
+
+
 
 module.exports=customerRouter;

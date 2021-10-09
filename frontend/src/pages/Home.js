@@ -30,6 +30,7 @@ function Home()
     const [filter,setFilter] = useState({veg:false,nonVeg:false,vegan:false});
    // const [search,setSearch] =useState(); 
     let search=location.searchCriteria;
+    console.log("Locatoin ---------->",search);
    
       
    
@@ -72,8 +73,7 @@ function Home()
           filter_array.push("'"+i+"'");
         }
        
-      }
-    
+      }    
       
         axios({
           method: "get",

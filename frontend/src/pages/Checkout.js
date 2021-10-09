@@ -62,6 +62,7 @@ function Checkout()
       
     }).then ((response)=>{
       alert("Orde Placed successfully");
+      localStorage.removeItem('react-use-cart');
       goToHome();
 
     })
@@ -121,7 +122,7 @@ function Checkout()
       {
           if(items[i].id==item_id)
           {
-            items[i].quantity=value;
+            items[i].size=value;
             setTotalBill(total);
             ChangeQty(!qty);
   
@@ -133,7 +134,7 @@ function Checkout()
     let total=0;
     for(let i in items)
     {
-         total=total+items[i].price * items[i].quantity;
+         total=total+items[i].price * items[i].size;
     }
 
     useEffect(()=>{
@@ -234,12 +235,12 @@ function Checkout()
              
                </div>
                <div style={{paddingLeft:'4%',lineHeight:'20px',fontSize:'small',fontFamily:'sans-serif '}} className='col-sm-3'>
-                <b> {item.price} x $ {item.quantity}</b>
+                <b> {item.price} x $ {item.size}</b>
              
                </div>
               
                <div className='col-sm-2 text-right'>
-                <FiIcons.FiDollarSign/> {item.price * item.quantity}
+                <FiIcons.FiDollarSign/> {item.price * item.size}
                </div>
              </Row>
              <Row style={{paddingTop:'0%',paddingBottom:'3%',width:'800px'}}>
