@@ -1,4 +1,4 @@
-import {Container,Navbar,Button,Row,Nav} from 'react-bootstrap';
+import {Container,Navbar,Button,Modal,Row,Nav,InputGroup} from 'react-bootstrap';
 import * as FaIcons from 'react-icons/fa';
 import brandlogo from "../brand.svg";
 import {useHistory} from 'react-router-dom';
@@ -8,6 +8,10 @@ import BackDrop from "../BackDrop";
 import {useCart} from "react-use-cart";
 import * as FiIcons from 'react-icons/fi';
 import axios from 'axios';
+import * as BiIcons from 'react-icons/bi';
+import {useSelector} from 'react-redux';
+import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+
 
 
 function Checkout()
@@ -17,6 +21,94 @@ function Checkout()
     const [qty,ChangeQty]  =useState(true);
     const [totalBill,setTotalBill] = useState();
     const [totalAfterTax,setTotalAfterTax] = useState();
+    const [show, setShow] = useState(false);
+    const [country,setCountry]=useState();
+    const [region,setRegion]=useState();
+    const [city,setCity]=useState();
+    const [street,setStreet]=useState();
+    const [savedAdd,setSavedAdd] = useState([{address:""}]);
+    const [addressChecked,setAddressChecked]=useState();
+    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
+    let id=localStorage.getItem('id'); 
+    const state2=useSelector((state)=>state.delivery);
+    const handleClose = () => {
+      setShow(false);
+      setCountry();
+    }
+    const handleShow = () => setShow(true);
+
+    //Function to send order data to server
+    const placeOrder=()=>{
+      
+    if(!addressChecked)
+    {
+      alert("Please select one address");
+    }
+    let rest_id=items[0].r_id;
+    let del_add=addressChecked;
+    let cust_id=id;
+    let time=new Date();
+    let mode=state2.toggle;
+    let data={rest_id,del_add,cust_id,time,mode}
+
+    axios({
+      method: "post",
+      url: `http://localhost:4000/createOrder`,
+      headers: { "Content-Type": "application/json","Authorization": bearer  },
+      data:{
+        order:data,
+        items:items
+      }
+      
+    }).then ((response)=>{
+      alert("Orde Placed successfully");
+      goToHome();
+
+    })
+    .catch((error)=>{
+      console.log("There were some problems were creating the order.")
+    })
+
+    }
+
+    
+   const save_address=()=>{
+   
+     if(!city|| !street )
+     {
+      
+       alert("Please fill all the fields");
+       return;
+     }
+     let address=street +','+city+','+region +','+country;
+    
+     let data={id,address};
+
+     axios({
+      method: "post",
+      url: `http://localhost:4000/addDeliveryAddress`,
+      headers: { "Content-Type": "application/json","Authorization": bearer  },
+      data:data
+      
+    })
+      .then((response) => {
+        alert("Address Updated Successfully");
+        setSavedAdd([{address},...savedAdd])
+        console.log("After sacvingnew address",savedAdd);
+        setCountry();
+        setRegion();
+        setStreet();
+        setCity();
+        handleClose();
+       
+      })
+      .catch((error) => {
+        alert("There were some errors while saving new address");
+        console.log((error.response));
+      });
+
+      handleShow();
+   }
  
     const { items } = useCart();
     console.log("Puneeeeeeeeeeeeeeeeeeeeeeeeeeee",items);
@@ -43,11 +135,29 @@ function Checkout()
     {
          total=total+items[i].price * items[i].quantity;
     }
+
     useEffect(()=>{
       setTotalBill(total);
       let t=total + tax+delivery_fee + ca;
       setTotalAfterTax(t);
 
+
+      axios({
+        method: "get",
+        url: `http://localhost:4000/getDeliveryAddress?id=${id}`,
+        headers: { "Content-Type": "application/json","Authorization": bearer  },
+          
+      })
+        .then((response) => {
+          //console.log(response.data);
+          setSavedAdd(response.data) ;
+          console.log("SAved Addresss-->",savedAdd)                 
+        })
+        .catch((error) => {
+          alert("There were some errors while fetching saved addresses");
+          console.log((error.response));
+        });
+  
          },[]);
    
     const goToHome=()=>{
@@ -62,6 +172,12 @@ function Checkout()
           return (!prevState)
         });   
       }
+
+
+      //TO get data at the time of page load
+      
+
+
 
     return(
         <Container style={{margin:'0',padding:'0'}} fluid>
@@ -90,13 +206,18 @@ function Checkout()
       </Navbar>
 
       <Row>
-        <div style={{fontSize:'36px',fontWeight:'500',paddingLeft:'9%',paddingTop:'3%',fontFamily:'sans-serif'}}><b>{items[0].n}</b>
+        <div style={{fontSize:'36px',fontWeight:'500',paddingLeft:'9%',paddingTop:'3%',fontFamily:'sans-serif'}}><b><BiIcons.BiRestaurant/> {items[0].n}</b>
           </div>  
       </Row>
 
-      <Row style={{paddingTop:'0%',paddingBottom:'3%'}}>
+      <Row style={{paddingTop:'0%',paddingBottom:'2%'}}>
                 <hr  className="one"></hr>
             </Row>  
+
+      <Row>
+        <div style={{fontSize:'36px',fontWeight:'500',paddingLeft:'9%',paddingTop:'1%',fontFamily:'sans-serif',color:'green'}}>Your Items
+          </div>  
+      </Row>     
 
 
            
@@ -110,31 +231,56 @@ function Checkout()
            
                <div style={{paddingLeft:'4%',lineHeight:'20px',fontSize:'x-large',fontFamily:'sans-serif '}} className='col-sm-3'>
                 <b> {item.name}</b>
-                
-
+             
+               </div>
+               <div style={{paddingLeft:'4%',lineHeight:'20px',fontSize:'small',fontFamily:'sans-serif '}} className='col-sm-3'>
+                <b> {item.price} x $ {item.quantity}</b>
+             
                </div>
               
                <div className='col-sm-2 text-right'>
                 <FiIcons.FiDollarSign/> {item.price * item.quantity}
                </div>
              </Row>
+             <Row style={{paddingTop:'0%',paddingBottom:'3%',width:'800px'}}>
+                <hr  className="one"></hr>
+            </Row> 
             </Container>
         
         ))}
       </ul>
-
       
+      <Row>
+        <div style={{fontSize:'36px',fontWeight:'500',paddingLeft:'9%',paddingTop:'1%',fontFamily:'sans-serif',color:'green'}}>Address
+          </div>  
+      </Row> 
 
+      <Row>
+      <div style={{fontSize:'36px',fontWeight:'500',paddingLeft:'9%',paddingTop:'1%'}}>
+          <Button  onClick={handleShow} style={{backgroundColor:'black'}}>Add New Address</Button>
+        
+          </div>  
+      </Row> 
 
+      <Row>
+        {
+      savedAdd.map((add) => (      
+           <div style={{fontSize:'20px',fontWeight:'300',paddingLeft:'9%',paddingTop:'1%'}}>
+            <input type="radio" id={add.address} name="address" onChange={(e)=>{setAddressChecked(e.target.value)}} value={add.address}/>
+            <label for="html">{add.address}</label><br/>
+           </div> 
 
-
+       )) }
+           
+      </Row> 
+     
       <Row>
           <div className='col-sm-12'>
       <div style={{backgroundColor:'whitesmoke',position:'absolute', top:'0',right:'0',height:"100vh",width:"60vh"}}>
             <Container>
               <Row >
                   <div className='col-sm-12' style={{paddingTop:'30%'}}>
-                  <Button style={{backgroundColor:'green',width:'-webkit-fill-available',borderRadius: '0 !important'}}>Place Order</Button>
+                  <Button onClick={placeOrder} style={{backgroundColor:'green',width:'-webkit-fill-available',border:'none',borderRadius: '0 !important'}}>Place Order</Button>
                   </div>
                   <div className='col-sm-12' style={{paddingTop:'4%'}}>
                     <div style={{fontWeight:'200',fontSize:'14px'}}>If you’re not around when the delivery person arrives, they’ll leave your order at the door. By placing your order, you agree to take full responsibility for it once it’s delivered.</div>
@@ -161,25 +307,8 @@ function Checkout()
                     <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${tax}</div>
                   </div>
               </Row>
-              <Row style={{paddingTop:'3%'}}>
-                  <div className='col-sm-6'>
-                    <div style={{fontWeight:'200px',fontSize:'16px',paddingLeft:'10%'}}>Delivery Fee</div>
-                  </div>
-                  <div className='col-sm-6 text-center'>
-                    <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${delivery_fee}</div>
-                  </div>
-              </Row>
-
-              
-              <Row style={{paddingTop:'3%'}}>
-                  <div className='col-sm-6'>
-                    <div style={{fontWeight:'200px',fontSize:'16px',paddingLeft:'10%'}}>CA Driver Benefits</div>
-                  </div>
-                  <div className='col-sm-6 text-center'>
-                    <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${ca}</div>
-                  </div>
-              </Row>
-            
+                          
+                         
               <Row style={{paddingTop:'2%',paddingBottom:'0%'}}>
                 <hr  className="one"></hr>
             </Row>
@@ -195,7 +324,7 @@ function Checkout()
 
               <Row>
             <div className='col-sm-12' style={{paddingTop:'1%'}}>
-                    <div style={{fontWeight:'200',fontSize:'14px'}}>Delivery people are critical to our communities at this time. Add a tip to say thanks.</div>
+                    <div style={{fontWeight:'200',fontSize:'14px'}}>Add a tip to say thanks.</div>
                   </div>
               </Row>
 
@@ -220,6 +349,54 @@ function Checkout()
         </div>
 
       </Row> 
+      <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal.Header>
+          <Modal.Title>Add New Address</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Container>
+          <Row>
+         <CountryDropdown style={{paddingBottom:'2%'}}
+          value={country}
+          onChange={(val) => setCountry(val)} />
+          </Row>
+          <Row>
+            
+        <RegionDropdown  style={{paddingBottom:'2%',marginTop:'2%'}}
+          country={country}
+          value={region}
+          onChange={(val) => {setRegion(val)
+            if(val=='-')
+            {
+              setRegion()
+            }}
+          } />
+          </Row>
+          <Row>
+          {region && 
+            <input onChange={(e)=>setCity(e.target.value)} style={{paddingBottom:'2%',marginTop:'2%'}} type='text-area' placeholder="City"></input>
+          
+          }
+          </Row>
+          <Row>
+          {region && 
+            <input onChange={(e)=>setStreet(e.target.value)} style={{paddingBottom:'2%',marginTop:'2%'}} type='text-area' placeholder="Street and Apartment number"></input>
+          
+          }
+         
+          </Row>
+         
+      </Container>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={save_address}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
        
 

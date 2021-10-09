@@ -28,7 +28,7 @@ restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
   
   //REST PROFILE UPDATE
   restRouter.post('/RestProfileUpdate',authenticateToken,(req,res)=>{
-    console.log("Update Body from restuarant profile----------\n");
+    
     console.log(req.body);
     let val=req.body;
     sql=`update  rest_info set r_description='${val.r_description}',r_contact='${val.r_contact}',r_timings='10pm' where r_id=${val.r_id};`;

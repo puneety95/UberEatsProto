@@ -1,12 +1,19 @@
-import {Container,Row,Form,Modal,Col,Button} from 'react-bootstrap';
+import {Container,Row,Form,Modal,Button} from 'react-bootstrap';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
-import FormData from 'form-data';
+import { server_url } from '../values';
+import company_logo from '../uber_eats_logo.jpg';
 function RestProfile()
 {
+    //For details upload
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    
+    //For image upload
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow2= () => setShow2(true);
     const[coverImageUrl,setCoverImageUrl]=useState();
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     
@@ -30,7 +37,7 @@ function RestProfile()
       
         axios({
           method:"post",
-          url:"http://localhost:4000/RestProfileUpdate",
+          url:server_url+"/RestProfileUpdate",
           headers:{"Content-Type":"application/json","Authorization": bearer},
           data: dumProfDetails
         })
@@ -49,7 +56,7 @@ function RestProfile()
     useEffect(()=>{
       axios({
         method: "get",
-        url: "http://localhost:4000/RestProfile",
+        url: server_url+"/RestProfile",
         headers: { "Content-Type": "application/json","Authorization": bearer  },
         
       })
@@ -66,48 +73,61 @@ function RestProfile()
     },[])
    
 
-    const imageHandler=async (e)=>{
+    const imageHandler=async (e)=>
+    {
       e.preventDefault();
-    const imageInput = document.querySelector("#imageInput");
-    const file = imageInput.files[0];
-    const { url } = await fetch("http://localhost:4000/s3Url").then(res => res.json())
-     // post the image direclty to the s3 bucket
-  await fetch(url, {
-    method: "PUT",
-    headers: {
+      handleShow2();
+     }
+
+     const image_upload_handler=async()=>
+    {
+     const imageInput = document.querySelector("#imageInput");
+     const file = imageInput.files[0];
+     if(!file)
+     {
+       alert("Please select an image to upload");
+       return;
+     }
+     const { url } = await fetch(server_url+"/s3Url").then(res => res.json())
+    
+  // post the image direclty to the s3 bucket
+     await fetch(url, {
+     method: "PUT",
+     headers: {
       "Content-Type": "multipart/form-data"
     },
     body: file
-  })
+    })
 
-  const imageUrl = url.split('?')[0]
-  let id =localStorage.getItem('id');
-  let data ={imageUrl,id};
-  await axios({
+    const imageUrl = url.split('?')[0]
+    let id =localStorage.getItem('id');
+    let data ={imageUrl,id};
+    await axios({
     method:"POST",
-    url:"http://localhost:4000/RestProfileImageUpdate",
+    url:server_url+"/RestProfileImageUpdate",
     headers:{"Content-Type":"application/json","Authorization": bearer},
     data: data
-  }).then((res)=>{
-    console.log("Image Uploaded")
+    }).then((res)=>{
+    setCoverImageUrl(data.imageUrl);
+    handleClose2();
   })
   .catch((error)=>{
-    alert("There were some errrs while updating image photo");
+    alert("There were some errrs while updating profile photo");
   })
-  console.log(imageUrl)
-  //{require("../Images/food22.jpg").default}
-    }
+  
+  }
+
     
-    let dish_image2="./food1.jpg";
+    
     return (
         <Container>
             <Row>
                 <div className="col-sm">
                 <div className="image_over_Text2">
-                 <img style={{width:'100%',height:'240px',objectFit:'cover'}}  src={coverImageUrl} alt="cover_image" /> 
+                 <img style={{width:'100%',height:'240px',objectFit:'cover'}}  src={(coverImageUrl)?coverImageUrl:company_logo} alt="cover_image" /> 
                 
                  <form id="imageForm">
-                 <input id="imageInput"  type="file" accept="image/*"/> 
+                 {/* <input id="imageInput"  type="file" accept="image/*"/>  */}
                      <Button onClick={(e)=>{imageHandler(e)}} style={{position:"absolute",borderColor:"green",backgroundColor:"dimgrey",top:"18%",left:"76%"}}>Change Cover</Button>
                      </form>
                      </div>
@@ -149,6 +169,15 @@ function RestProfile()
                 </div>
                 <div className="col-sm-6 "> 
                 <span>{profDetails.r_timings}</span>
+             </div>
+             </Row>
+
+             <Row style={{paddingTop:'2%',backgroundColor:'whitesmoke'}}>
+             <div style={{textAlign:'right'}} className="col-sm-6 ">
+                <span style={{fontSize:"larger",fontWeight:"500"}}>Mode of Delivery : </span>
+                </div>
+                <div className="col-sm-6 "> 
+                <span>{profDetails.type}</span>
              </div>
              </Row>
 
@@ -198,6 +227,16 @@ function RestProfile()
                 </div>
                 <div className="col-sm-9">
                 <input onChange={(e)=>{handleUpdateChange(e)}} style={{marginBottom:"8%"}} type="text" name="r_contact"  value={dumProfDetails.r_contact} />
+                </div>
+        
+         </Row>
+
+         <Row>
+                <div className="col-sm-3 text-center">
+                <label for="r_contact">Mode of Delivery</label>
+                </div>
+                <div className="col-sm-9">
+                <input onChange={(e)=>{handleUpdateChange(e)}} style={{marginBottom:"8%"}} type="text" name="type"  value={dumProfDetails.type} />
                 </div>
         
          </Row>
@@ -269,6 +308,27 @@ function RestProfile()
           </Button>
         </Modal.Footer>
       </Modal>
+
+
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header >
+          <Modal.Title>Upload Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <input id="imageInput"  type="file" accept="image/*"/> 
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={image_upload_handler}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
+
         </Container>
     );
 }

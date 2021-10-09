@@ -7,6 +7,7 @@ import {useHistory} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import {signUpGetUserDetails} from '../state/action-creators/actions';
 import {bindActionCreators} from "redux";
+import { server_url } from '../values';
 
 
 function SignUp()
@@ -63,7 +64,7 @@ function SignUp()
        // console.log(signup_data);
         axios({
             method:'post',
-            url:'http://localhost:4000/signup',
+            url:server_url+'/signup',
             data : JSON.stringify(signup_data),
             headers:{"Content-Type":"application/json"}
         }).then ((response)=>{  
@@ -75,7 +76,14 @@ function SignUp()
                 })
         .catch((error) => {
             console.log(error.response)
-            alert(error.response.data);
+            if(error.response.status==403)
+            {
+              alert("Email ID already exist. Please use different one!!!!")
+            }
+            else
+            {
+            alert("There were some  errrors while signing up");
+            }
           });
 
     };

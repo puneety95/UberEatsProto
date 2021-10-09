@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Favorites from "./pages/Favorites";
 import Checkout from "./pages/Checkout";
+import CustomerOrder from "./pages/custOrders";
 
 
 function RouteLogin()
@@ -41,10 +42,15 @@ function RouteLogin()
          <RestHome/> 
     </Route>  
 
+    <Route exact path="/custorder" >
+    <NavigBar/>
+         <CustomerOrder/> 
+    </Route>  
+
     <Route exact path="/Favorites" >
     <NavigBar/>
          <Favorites/> 
-    </Route>   
+    </Route>  
     
     <Route exact path='/orders'>
     <RestNavig/>

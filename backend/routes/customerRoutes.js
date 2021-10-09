@@ -2,7 +2,7 @@ const jwt=require('jsonwebtoken');
 const express=require('express');
 const customerRouter=express.Router();
 const con=require('../SQL_Connection.js');
-const { commit } = require('../SQL_Connection.js');
+const { commit, getMaxListeners } = require('../SQL_Connection.js');
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
 
@@ -200,6 +200,113 @@ customerRouter.post('/updateCustomerProfilePic',(req,res)=>{
     {
       res.send(200);
     }
+  })
+});
+
+//To add delivery addrees - Checkout
+customerRouter.post('/addDeliveryAddress',authenticateToken,(req,res)=>{
+  let sql=`insert into delivery_address values ('${req.body.id}' , '${req.body.address}') ;`
+  con.query(sql,(error,result)=>{
+    if(error)
+    {
+      console.log(error);
+      res.sendStatus(500);
+    }
+    else
+    {
+      res.sendStatus(200);
+    }
+  })
+})
+
+//To get delivery addrees - Checkout
+customerRouter.get('/getDeliveryAddress',authenticateToken,(req,res)=>{
+  console.log("Inside=--------------");
+  let sql=`select address from delivery_address where cust_id='${req.query.id}' ;`;
+  console.log(sql);
+  con.query(sql,(error,result)=>{
+    if(error)
+    {
+      console.log(error);
+      res.sendStatus(500);
+    }
+    else
+    {
+      console.log("HERERERERER____",result);
+      
+      res.send(result);
+    }
+  })
+})
+//To create order - checkout
+customerRouter.post('/createOrder',(req,res)=>{
+ 
+  let val=req.body.order;
+  let val2=req.body.items;
+  let sql=`insert into orders values('0','${val.cust_id}','${val.rest_id}','${val.time}','1','${val.mode}','${val.del_add}');`;
+  
+  con.query(sql,(error,result)=>{
+    if(error)
+    {
+      console.log(error);
+      res.sendStatus(500);
+    }
+    else{
+
+        let sql=`select max(id) as maxID   from orders;`
+        con.query(sql,(err,result2)=>{
+          if(err) res.sendStatus(500)
+          else
+          {
+            
+            let sql=`insert into order_item values?`
+             let values = [];
+            for (let i = 0; i < val2.length; i++) {
+            values.push([result2[0].maxID, val2[i].name, val2[i].quantity,val2[i].price])
+                  }
+            console.log("Query is ===>",sql);
+            con.query(sql, [values], (err, result3) => {
+              if (err)
+                {
+                  console.log(err);
+                  } 
+              else
+                {
+                console.log("rows affected " + result3.affectedRows);
+                res.sendStatus(200);
+                }        
+          });
+          }
+        })
+    }
+  })
+})
+
+//To get customer order data
+customerRouter.get('/getCustOrders',(req,res)=>{
+  console.log("YESESESEESSEESSEES=-------");
+  let sql;
+  if(req.query.status==7)
+  {
+     sql=`select o.* , i.* from orders o, order_item i where i.id=o.id and o.cust_id='${req.query.id}';`;
+  }
+  else
+  {
+     sql=`select o.* , i.* from orders o, order_item i where i.id=o.id and o.cust_id='${req.query.id}'and o.status ='${req.query.status}';`;
+  }
+  
+  console.log("----------->",sql);
+  con.query(sql,(error,result)=>{
+     if(error)
+     {
+       
+       res.sendStatus(500);
+     }
+     else
+     {
+       console.log("Results--->",result);
+       res.send(result);
+     }
   })
 })
 

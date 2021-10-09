@@ -9,6 +9,7 @@ function DishesAddModal(props)
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
 
    //To update details in the state of the newly added data 
+   
 
    const handleUpdateChange=(e)=>  
     {

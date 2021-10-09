@@ -4,15 +4,16 @@ import { Link,useHistory } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import {bindActionCreators} from "redux";
-import {useSelector,useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {logingetUserDetails} from '../state/action-creators/actions';
+import { server_url } from '../values';
 
 
 
 function Login() {
  let history = useHistory();
  const dispatch=useDispatch();
- const state=useSelector((state)=>state.user);
+ //const state=useSelector((state)=>state.user);
  
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -29,7 +30,7 @@ function Login() {
     const loginData = { loginEmail, loginPassword };
     axios({
       method: "post",
-      url: "http://localhost:4000/login",
+      url: server_url+"/login",
       data: JSON.stringify(loginData),
       headers: { "Content-Type": "application/json" },
     })
@@ -55,7 +56,7 @@ function Login() {
         }
       })
       .catch((error) => {
-        alert(error.response);
+        alert(error.response.data);
       });
   }
   return (

@@ -52,7 +52,7 @@ function SideDrawer(props)
                 <div id="Drawermenu">
                    
                     <ListGroup class="drawerlist" onClick={props.bd_click_handler}>
-                    <ListGroup.Item><Link to='/Orders' style={{color:"black",textDecoration:"none"}}><RiIcons.RiBillFill/>Orders</Link></ListGroup.Item>
+                    <ListGroup.Item><Link to='/custorder' style={{color:"black",textDecoration:"none"}}><RiIcons.RiBillFill/>Orders</Link></ListGroup.Item>
                          <ListGroup.Item  ><Link to='/Favorites' style={{color:"black",textDecoration:"none"}}><MdIcons.MdFavorite/>Favorites</Link></ListGroup.Item>
                          <ListGroup.Item onClick={(e)=>{logout(e)}} style={{color:"black",cursor:"pointer",textDecoration:"none"}}><FiIcons.FiLogOut/>Log Out</ListGroup.Item>
                          

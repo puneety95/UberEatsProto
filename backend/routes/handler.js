@@ -10,24 +10,25 @@ const multer=require('multer');
 
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
+//handles signup - /signup
 router.post('/signup',  (req,res)=>{
-  
+    
     let val=(req.body);
     let sql=`select count(*) as ecount from user_login where email='${val.signup_email}';`;
     let resq;
    con.query(sql , function (err, result) {
       if (err)
          {   
-         
-       res.status(403).send("There were some errors while performing this action");
+           res.status(500).send("There were some errors while performing this action");
          }
      else
       {
         resq=result[0].ecount;
         if(resq!=0)
         {
+          
            res.status(403).send("Email Id already present.");
-           
+ 
         }
     else{
     
@@ -49,32 +50,25 @@ router.post('/signup',  (req,res)=>{
            con.query(sql ,function (error, result) {
               if (error)
               {
-                console.log("Here--->>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 console.log(error);
-                res.status(403).send("There were some errors while performing this action");
+                res.status(500).send("There were some errors while performing this action");
                   
               } 
               else
               {
-                console.log("Puneet->>>>>>>>>>>>");
+                
                 sql=`select id,email,role from user_login where id = (select max(id) from user_login);`;
-                console.log(sql);
                 con.query(sql,function(err,result){
                   if(err)
                   {
                     
-                    console.log(err);
-                    res.status(403).send("There were some error while performing the action");
+                     res.status(500).send("There were some error while performing the action");
                   }
                   else
                   {
-                    console.log("Result after signing up");
-                    console.log(result[0]);  
-                
-                   
+                                  
                    val={loginEmail:req.body.signup_email}
-                  // const accessToken= jwt.sign(val,secret_jwt_token);
-                    res.json({id:result[0].id, role:result[0].role, email:result[0].email});
+                   res.json({id:result[0].id, role:result[0].role, email:result[0].email});
                    
                   }
                 })
@@ -86,7 +80,7 @@ router.post('/signup',  (req,res)=>{
           catch(error)
           {
             console.log(error);
-            res.status(403).send("There were some errors while performing this action");
+            res.status(500).send("There were some errors while performing this action");
           }
           }
         }  
@@ -96,19 +90,16 @@ router.post('/signup',  (req,res)=>{
    });
 
 
+// To login -/login
  router.post('/login',(req,res)=>{
   
   let val=req.body;
- 
-  
   let sql=`select password from user_login where email='${val.loginEmail}' `;
  
   con.query(sql, function (err,result){
     if(err)
     {
-      console.log("YES");
-      res.status(403).send("There were some errors while performing the action");
-      
+      res.status(500).send("There were some errors while performing the action");
     }
     else{
       let upass=result;
@@ -117,9 +108,10 @@ router.post('/signup',  (req,res)=>{
         res.status(403).send("Login Credentials are wrong. Please try again.");
       }
       
-      try{
-
-    
+    else
+    {  
+    try{
+        
      if( bcrypt.compareSync(val.loginPassword, upass[0].password))
       {
         let sql2=`select id,role,email,location from user_login where email='${val.loginEmail}';`
@@ -127,20 +119,20 @@ router.post('/signup',  (req,res)=>{
         con.query(sql2, function(err2,result2){
           if(err2){   
             
-            res.status(403).send("There were some errors while performing the action");        
+            res.status(500).send("There were some errors while performing the action");        
           }
-          
-          let id2=result2;
-       
-          val={loginEmail:req.body.loginEmail}
-          
-          const accessToken= jwt.sign(val,secret_jwt_token);
-        
-          res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, location:result2[0].location, email:result2[0].email});
+
+          else
+          {
+            let id2=result2;
+            val={loginEmail:req.body.loginEmail}
+            const accessToken= jwt.sign(val,secret_jwt_token);
+            res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, location:result2[0].location, email:result2[0].email});
+          }
            
         }); 
         
-        const jwt=require('jsonwebtoken');
+       // const jwt=require('jsonwebtoken');
 
      }
      else{
@@ -148,12 +140,14 @@ router.post('/signup',  (req,res)=>{
      }
     }
     catch(error)
-    { console.log("Puneet")
-      res.sendStatus(403).send("There were some errors while performing the action");
+    {
+      res.sendStatus(500).send("There were some errors while performing the action");
     }
+  }
     }
   });
 });
+
 
 function authenticateToken(req,res,next)
 {
