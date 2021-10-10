@@ -34,8 +34,8 @@ let d=false;
             
           })
             .then((response) => {
-                setOrderStatus(response.data);
-               alert("YES");
+              //  setOrderStatus(response.data);
+              
                console.log("VALUESSSS OF THE OREDER ARE --->",response.data);
                 setStatusValues(response.data);
                 setOrderValues(response.data);

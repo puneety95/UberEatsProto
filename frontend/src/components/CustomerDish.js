@@ -6,15 +6,14 @@ import {useCart} from 'react-use-cart';
 import {useSelector} from 'react-redux';
 import 'reactjs-popup/dist/index.css';
 import "@reach/dialog/styles.css";
-
-
+import { server_url } from '../values';
 
 import axios from 'axios';
 
 
 function CustomerDish(props)
 { 
-console.log("Puneeet",props);
+//console.log("Puneeet",props);
 const { emptyCart } = useCart();
     const [show, setShow] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -33,7 +32,7 @@ const { emptyCart } = useCart();
    const [show2, setShow2] = useState(false);
 
    const handleClose2 = () => setShow2(false);
-   const handleShow2 = () => setShow2(true);
+    const handleShow2 = () => setShow2(true);
 
    const state3=useSelector((state)=>state.filter);
       console.log("filterssss are --->",state3);
@@ -52,7 +51,7 @@ const { emptyCart } = useCart();
    useEffect(()=>{
     axios({
       method: "get",
-      url: `http://localhost:4000/getDishes2?id=${props.id}&filter=${filter_array}`,
+      url: server_url+`/getDishes2?id=${props.id}&filter=${filter_array}`,
       headers: { "Content-Type": "application/json","Authorization": bearer  },
       
     })
@@ -67,9 +66,7 @@ const { emptyCart } = useCart();
       });
   },[])
     
-    let dish_price="$100"
-    let dish_image2="../food1.jpg";
-    let dishDescription="chopped romaine, curly kale, quinoa & millet, housemade superfood krunchies, black bean, roasted corn & jicama succotash, red onions, cilantro, cotija cheese, grape tomatoes, avocado (400 cal) with chipotle vinaigrette (250 cal) + shaved, roasted chicken breast $3 (110 cal) vegetarian & gluten free";
+   
      const ModalToggle=()=>{
         setShowDishesModal(false);
      }
@@ -234,11 +231,11 @@ const { emptyCart } = useCart();
        
        }  
         </Row>
-        <Modal show={show2} onHide={handleClose2}>
+       <Modal show={show2} onHide={handleClose2}>
         <Modal.Header >
           <Modal.Title>Create New Order ?</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{fontWeight:'400'}}>Your order contains items from {items[0].n}. Click on continue to create new order and 
+        <Modal.Body style={{fontWeight:'400'}}>Your order contains items from {show2?items[0].n : 2}. Click on continue to create new order and  */}
         add items from {product.n}</Modal.Body>
         <Modal.Footer>
           <Button style={{backgroundColor:'black'}} variant="secondary" onClick={handleClose2}>
@@ -249,6 +246,7 @@ const { emptyCart } = useCart();
           </Button>
         </Modal.Footer>
       </Modal>
+
 
 
        

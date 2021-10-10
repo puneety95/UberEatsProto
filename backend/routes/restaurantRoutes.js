@@ -51,7 +51,7 @@ restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
   });
 
 
-  restRouter.get('/s3url',async (req,res)=>{
+  restRouter.get('/s3url',authenticateToken,async (req,res)=>{
     console.log("HErerererererer");
       const  url = await s3();
       res.send({url});
@@ -121,7 +121,7 @@ restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
   })
 
 //To get customer order data
-restRouter.get('/getRestOrders',(req,res)=>{
+restRouter.get('/getRestOrders',authenticateToken,(req,res)=>{
   
   let sql;
   if(req.query.status==7)
@@ -130,7 +130,7 @@ restRouter.get('/getRestOrders',(req,res)=>{
   }
   else
   {
-     sql=`select o.* , i.* ,c.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}'and lower(o.status) =lower('${req.query.status}');`;
+     sql=`select o.* , i.* ,c.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}'and lower(o.order_state) =lower('${req.query.status}');`;
   }
   
  
@@ -149,7 +149,7 @@ restRouter.get('/getRestOrders',(req,res)=>{
   })
 })
 
-restRouter.post('/updateDish',(req,res)=>{
+restRouter.post('/updateDish',authenticateToken,(req,res)=>{
   let val=req.body;
  
   let sql= `update dishes set name ='${val.name}' , ingredients='${val.ingredients}' , price='${val.price}' , description='${val.description}' where id='${val.id}' and rest_id='${val.rest_id}';`
@@ -165,6 +165,44 @@ restRouter.post('/updateDish',(req,res)=>{
       res.sendStatus(200);
     }
   })
+})
+
+restRouter.post('/updateOrderStatus',authenticateToken,(req,res)=>{
+  console.log("----------------",req.body.orderStatus2);
+  let val=req.body.orderStatus2;
+  let sql;
+  if(val.status=='4')
+  {
+    sql =`update orders set status='4' , order_state='2' where id='${val.id}' ; `
+    console.log(sql);
+    con.query(sql, (err,result)=>{
+      if(err)
+      {
+        res.sendStatus(500);
+      }
+      else
+       {
+         res.sendStatus(200);
+       }
+    })
+  }
+  else{
+    sql =`update orders set status='${val.status}'  where id='${val.id}' ; `
+    console.log(sql);
+    con.query(sql, (err,result)=>{
+      if(err)
+      {
+        console.log(err);
+        res.sendStatus(500);
+      }
+      else
+       {
+         res.sendStatus(200);
+       }
+    })
+  }
+ 
+  
 })
 
 module.exports=restRouter;

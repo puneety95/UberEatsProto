@@ -137,7 +137,7 @@ customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
 
 
 //to get restaurant at home page
-customerRouter.get('/getRestaurant',(req,res)=>{
+customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
 let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type='${req.query.type}'`;
 
 let search="";
@@ -207,7 +207,7 @@ con.query(sql,(error,result)=>{
 
 
 //TO get selected restaurant details - Dashboard
-customerRouter.get('/getRestaurantCustomer',(req,res)=>{
+customerRouter.get('/getRestaurantCustomer',authenticateToken,(req,res)=>{
   console.log("Get restuarant details----------------------------------");
 
 
@@ -229,7 +229,7 @@ customerRouter.get('/getRestaurantCustomer',(req,res)=>{
 })
 
 
-customerRouter.post('/addfavourite',(req,res)=>{
+customerRouter.post('/addfavourite',authenticateToken,(req,res)=>{
   console.log("inside favouritessss");
   let val=req.body;
   let sql;
@@ -255,7 +255,7 @@ customerRouter.post('/addfavourite',(req,res)=>{
 })
 
 
-customerRouter.get('/getFavourites',(req,res)=>{
+customerRouter.get('/getFavourites',authenticateToken,(req,res)=>{
   console.log("Iside get favourites-----------");
   
   let sql=`select r.r_id , r.profile_pic , u.name from rest_info as r, user_login as u where u.id=r.r_id and  r.r_id in (select rest_id from favourites where cust_id='${req.query.id}');`;
@@ -275,7 +275,7 @@ customerRouter.get('/getFavourites',(req,res)=>{
 
 })
 
-customerRouter.post('/updateCustomerProfilePic',(req,res)=>{
+customerRouter.post('/updateCustomerProfilePic',authenticateToken,(req,res)=>{
   console.log("Inside customer Profile Pic upload");
   let sql = `Update cust_profile set profile_pic='${req.body.imageUrl}' where id='${req.body.id}'; `
   console.log(sql);
@@ -327,7 +327,7 @@ customerRouter.get('/getDeliveryAddress',authenticateToken,(req,res)=>{
   })
 })
 //To create order - checkout
-customerRouter.post('/createOrder',(req,res)=>{
+customerRouter.post('/createOrder',authenticateToken,(req,res)=>{
  
   let val=req.body.order;
   let val2=req.body.items;
@@ -371,7 +371,7 @@ customerRouter.post('/createOrder',(req,res)=>{
 })
 
 //To get customer order data
-customerRouter.get('/getCustOrders',(req,res)=>{
+customerRouter.get('/getCustOrders',authenticateToken,(req,res)=>{
   console.log("STATUS_______",req.query);
   let sql;
   if(req.query.status==7)
@@ -427,7 +427,7 @@ filter="(" + filter +")";
 
 })
 
-customerRouter.get('/getHeart',(req,res)=>{
+customerRouter.get('/getHeart',authenticateToken,(req,res)=>{
   let sql=`select * from favourites where rest_id = '${req.query.id}' and cust_id='${req.query.uid}' ;`;
   console.log("favoirut",sql);
   con.query(sql,(err,result)=>{
@@ -440,7 +440,7 @@ customerRouter.get('/getHeart',(req,res)=>{
   })
 })
 
-customerRouter.get('/getCustImage',(req,res)=>{
+customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
   let sql=`select profile_pic from cust_profile where id='${req.query.id}';`
   con.query(sql,(err,result)=>{
      if(err)

@@ -5,9 +5,11 @@ import axios from 'axios';
 function CustomerOrder()
 {    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [orderStatus,setOrderStatus]=useState(7); 
-    const [orderStatus2,setOrderStatus2]=useState(); 
+    // TO change order status
+    const [orderStatus2,setOrderStatus2]=useState({}); 
     const [statusValues,setStatusValues] =useState([{}]);
     const [orderValues,setOrderValues] =useState({});
+    const [display,setDisplay] = useState(false);
     let id=localStorage.getItem('id');
     const status=(e)=>{
 
@@ -15,8 +17,10 @@ function CustomerOrder()
     
     }
 
-    const status2=(e)=>{
-        setOrderStatus2(e.target.value);
+    const status2=(e,id)=>{
+        let status=e.target.value;
+        let d={status , id}
+        setOrderStatus2(d);
     }
 let d=false;
 let st={
@@ -46,12 +50,28 @@ let st={
             .catch((error) => {
               console.log("There were some errors while fetching order status data");
             });
-        },[orderStatus])
+        },[orderStatus,display])
 
 
         const statusChange=()=>{
-            alert("YES")
-            alert(orderStatus2);
+            //alert(orderStatus2);
+            axios({
+                method: "post",
+                url: `http://localhost:4000/updateOrderStatus?`,
+                headers: { "Content-Type": "application/json","Authorization": bearer  },
+                data:{orderStatus2}
+                
+              })
+                .then((response) => {
+                   // setOrderStatus(response.data);
+                   setDisplay(!display);
+                    alert("Successfully updated the status");
+                
+                })
+                .catch((error) => {
+                    alert("THere were some erros while performing the task");
+                  console.log("There were some errors while fetching order status data");
+                });
         }
 
     console.log('----STATUS----', orderValues)
@@ -60,15 +80,12 @@ let st={
 
             <Row>
                 <div className="col-sm-3">
-            <label for="order_status" style={{fontSize:'x-larger',paddingTop:'20%'}}>Order Status:</label>
-                <select name="order_status"  onChange={(e)=>{status(e)}} id="order_status">
-                    <option value="7">All</option>
-                    <option value="1">Order Received</option>
-                    <option value="2">Preparing</option>
-                    <option value="3">On the way</option>
-                    <option value="4">Delivered</option>
-                    <option value="5">Pick up Ready</option>
-                    <option value="6">Picked up</option>
+            <label for="orderstatus" style={{fontSize:'x-larger',paddingTop:'20%'}}>Order Status:</label>
+                <select name="orderstatus"  onChange={(e)=>{status(e)}} id="orderstatus">
+                    <option value="1">New</option>
+                    <option value="2">Delivered</option>
+                    <option value="3">Cancelled</option>
+                   
                 </select>
                 </div>
             </Row>
@@ -84,8 +101,10 @@ let st={
                  const restProfilePic = order && order[0] && order[0].profile_pic;
                  let date = order && order[0] && order[0].date;
                  date=new Date(date).toLocaleString();
-                 const status = order && order[0] && order[0].order_state;
+                 const status = order && order[0] && order[0].status;
                 let t_value=0;
+                const mode = order && order[0] && order[0].mode;
+                let o_id=  order && order[0] && order[0].id;
                
                  console.log('---ORDER----', order);
 
@@ -95,15 +114,26 @@ let st={
                      <div class="row no-gutters">
                          <div class="col-md-3" style={{paddingTop:'5%'}}>
                              {/* <img src={restProfilePic} style={{height:'100%',objectFit:'cover'}} class="card-img" alt="rest_image"/> */}
-                             <select name="order_status2"  onChange={(e)=>{status2(e)}} id="order_status2">
-                             
+                        {  mode == 'Delivery' &&    <select name="order_status2"  defaultValue={0} onChange={(e)=>{status2(e,o_id)}} id="order_status2">
+                              <option value="0">--Select Status--:</option>
                               <option value="1">Order Received</option>
                               <option value="2">Preparing</option>
                               <option value="3">On the way</option>
                               <option value="4">Delivered</option>
-                              <option value="5">Pick up Ready</option>
-                              <option value="6">Picked up</option>
+                              
                        </select>
+                        }
+                        {  mode == 'Pickup' &&    <select name="order_status2" defaultValue={0} onChange={(e)=>{status2(e)}} id="order_status2">
+                             
+                             <option value="1">Order Received</option>
+                             <option value="2">Preparing</option>
+                             <option value="5">Pick up Ready</option>
+                             <option value="6">Picked up</option>
+                           
+                      </select>
+                       }
+
+
                        <Button onClick={statusChange} style={{backgroundColor:'black'}}>Change Status  </Button>
                          </div>
                          <div class="col-md-6">
