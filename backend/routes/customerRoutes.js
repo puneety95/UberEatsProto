@@ -2,7 +2,9 @@ const jwt=require('jsonwebtoken');
 const express=require('express');
 const customerRouter=express.Router();
 const con=require('../SQL_Connection.js');
+var _ = require('lodash');
 const { commit, getMaxListeners } = require('../SQL_Connection.js');
+const { groupBy } = require('lodash');
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
 
@@ -154,7 +156,7 @@ if((req.query.search)!="undefined")
 filter="(" + filter +")";
 sql=sql + ` and r.r_id  in (select rest_id from dishes where filter in ${filter} )`
 sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-console.log("Value is---->",sql);
+//console.log("Value is---->",sql);
 con.query(sql,(error,result)=>{
   if(error)
   {
@@ -165,7 +167,7 @@ con.query(sql,(error,result)=>{
     let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type='${req.query.type}' and u.id=r.r_id `;
     sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
     sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-    console.log("query is------------------------ >", sql);
+    //console.log("query is------------------------ >", sql);
    
     con.query(sql,(error2,result2)=>{
       if(error2)
@@ -175,11 +177,26 @@ con.query(sql,(error,result)=>{
       }
       else{
         
-        console.log("-------------",result);
-        
-        let d=[...result2, ...result];
-        console.log(d);
-        res.send(d);
+        let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location='${req.query.location}' and r.type='${req.query.type}' and u.id=r.r_id `;
+        sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
+        sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
+        console.log("------------------------------>",sql)
+        con.query(sql,(err,result3)=>{
+            if(err)
+            {
+              console.log(error);
+              res.send(500)
+            }
+            else{
+             // console.log("REsult is -->",result)
+              let d=[...result3,...result2, ...result];
+              d=_.uniqBy(d, 'r_id');
+              console.log("uniqueee---------->,",d);
+              res.send(d);
+            }
+
+        })
+       
       }
     })
   }
@@ -333,7 +350,7 @@ customerRouter.post('/createOrder',(req,res)=>{
             let sql=`insert into order_item values?`
              let values = [];
             for (let i = 0; i < val2.length; i++) {
-            values.push([result2[0].maxID, val2[i].name, val2[i].quantity,val2[i].price])
+            values.push([result2[0].maxID, val2[i].name, val2[i].size,val2[i].price])
                   }
             console.log("Query is ===>",sql);
             con.query(sql, [values], (err, result3) => {
@@ -355,18 +372,18 @@ customerRouter.post('/createOrder',(req,res)=>{
 
 //To get customer order data
 customerRouter.get('/getCustOrders',(req,res)=>{
-  console.log("YESESESEESSEESSEES=-------");
+  console.log("STATUS_______",req.query);
   let sql;
   if(req.query.status==7)
   {
-     sql=`select o.* , i.* from orders o, order_item i where i.id=o.id and o.cust_id='${req.query.id}';`;
+     sql=`select o.* , i.* , r.profile_pic, u.name as rest_name  from user_login u,orders o, order_item i, rest_info r where i.id=o.id and u.id=r.r_id and r.r_id =o.rest_id and o.cust_id='${req.query.id}' order by DATE(o.date) desc;`;
   }
   else
   {
-     sql=`select o.* , i.* from orders o, order_item i where i.id=o.id and o.cust_id='${req.query.id}'and o.status ='${req.query.status}';`;
+     sql=`select o.* , i.* ,r.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,rest_info r where i.id=o.id and u.id=r.r_id and r.r_id =o.rest_id and o.cust_id='${req.query.id}'and lower(o.status) =lower('${req.query.status}')  order by DATE(o.date) desc;`;
   }
   
-  console.log("----------->",sql);
+ 
   con.query(sql,(error,result)=>{
      if(error)
      {
@@ -375,8 +392,9 @@ customerRouter.get('/getCustOrders',(req,res)=>{
      }
      else
      {
-       console.log("Results--->",result);
-       res.send(result);
+       result2= _.groupBy(result,'id');
+     
+       res.send(result2);
      }
   })
 })
@@ -422,6 +440,18 @@ customerRouter.get('/getHeart',(req,res)=>{
   })
 })
 
-
+customerRouter.get('/getCustImage',(req,res)=>{
+  let sql=`select profile_pic from cust_profile where id='${req.query.id}';`
+  con.query(sql,(err,result)=>{
+     if(err)
+     {
+       res.sendStatus(500);
+     }
+     else
+     {
+       res.send(result);
+     }
+  })
+})
 
 module.exports=customerRouter;

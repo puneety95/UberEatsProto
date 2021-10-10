@@ -64,10 +64,26 @@ function RestDish()
       .catch((error) => {
         console.log((error.response));
       });
-  },[showDishesModal])
+  },[showDishesModal,modalDishID])
     
+
+    //Update dishes  
     const UpdateDishes=(e)=>{
-      console.log(dummyDishDetails);
+      console.log("THESE ARE THE DETAILS ",dummyDishDetails);
+      axios({
+        method: "post", url: `http://localhost:4000/updateDish`,
+        headers: { "Content-Type": "application/json","Authorization": bearer  },
+        data:dummyDishDetails
+      })
+        .then((response) => {
+          setModalDishId();
+         // ModalToggle();
+        })
+        .catch((error) => {
+            //alert("PP");
+          console.log(("Error----------------",error));
+        });
+
 
     }
 
@@ -205,7 +221,7 @@ function RestDish()
                                     <label for="Ingredients">Ingredients</label>
                                     </div>
                                     <div className="col-sm-9">
-                                    <textarea class="form-control " name="Ingredients" onChange={(e)=>{handleUpdateChange(e)}} defaultvalue={dish.ingredients} rows="5"></textarea>
+                                    <textarea type="text" class="form-control " name="Ingredients" onChange={(e)=>{handleUpdateChange(e)}} defaultValue={dish.ingredients} rows="5"></textarea>
                                     </div>
                             
                              </Row>
@@ -214,7 +230,7 @@ function RestDish()
                                     <label for="Description">Description</label>
                                     </div>
                                     <div className="col-sm-9">
-                                    <textarea class="form-control "  onChange={(e)=>{handleUpdateChange(e)}} name="Description" defaultvalue={dish.description} rows="5"></textarea>
+                                    <textarea class="form-control "  onChange={(e)=>{handleUpdateChange(e)}} name="Description" defaultValue={dish.description} rows="5"></textarea>
                                     </div>
                             
                              </Row>

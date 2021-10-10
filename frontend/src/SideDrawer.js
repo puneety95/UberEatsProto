@@ -7,8 +7,9 @@ import  * as MdIcons from 'react-icons/md';
 import * as FiIcons from 'react-icons/fi';
 import {ListGroup} from 'react-bootstrap';
 import * as RiIcons from 'react-icons/ri';
-
 import "./SideDrawer.css"
+import { useEffect,useState } from 'react';
+import axios from 'axios';
 function alert_message()
 {
     alert("Puneet");
@@ -16,12 +17,34 @@ function alert_message()
 function SideDrawer(props)  
 {
     const history=useHistory();
+    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
+    const [profilePic,setProfilePic] = useState();
+    let id=localStorage.getItem('id');
     let uname="Puneet";
     const logout=(e)=>{
         e.preventDefault();
         localStorage.clear();
         history.push('/login');
       }
+
+      useEffect(()=>{
+        axios({
+          method: "get",
+          url:`http://localhost:4000/getCustImage?id=${id}`,
+          headers: { "Content-Type": "application/json","Authorization": bearer  },
+          
+        })
+          .then((response) => {
+            console.log("PUneettttttttttt--",response.data[0].profile_pic);
+            setProfilePic(response.data[0].profile_pic);
+            
+          })
+          .catch((error) => {
+            alert("There were some error whilefetching customer details");
+            console.log((error.response));
+          });
+      },[])
+
     return(
     <Container fluid>
        
@@ -29,7 +52,7 @@ function SideDrawer(props)
             
                 <div className="drawercont">
                     <div class='flex_cont'>
-                    <img src={blankuser} width='46px' height='46px' id="userimagedrawer" alt="user"></img>
+                    <img src={(profilePic) ? profilePic :blankuser} width='46px' height='46px' style={{objectFit:'cover'}}  id="userimagedrawer" alt="user"></img>
                <div style={{marginLeft:'3%'}}>
                
                <Row>

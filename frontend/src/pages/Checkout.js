@@ -11,6 +11,9 @@ import axios from 'axios';
 import * as BiIcons from 'react-icons/bi';
 import {useSelector} from 'react-redux';
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+import {bindActionCreators} from "redux";
+import {cartRefresh} from "../state/action-creators/actions";
+import {useDispatch} from 'react-redux';
 
 
 
@@ -31,12 +34,14 @@ function Checkout()
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     let id=localStorage.getItem('id'); 
     const state2=useSelector((state)=>state.delivery);
+    const dispatch=useDispatch();
     const handleClose = () => {
       setShow(false);
       setCountry();
     }
+    
     const handleShow = () => setShow(true);
-
+ 
     //Function to send order data to server
     const placeOrder=()=>{
       
@@ -50,7 +55,8 @@ function Checkout()
     let time=new Date();
     let mode=state2.toggle;
     let data={rest_id,del_add,cust_id,time,mode}
-
+     let i=1;
+   
     axios({
       method: "post",
       url: `http://localhost:4000/createOrder`,
@@ -62,8 +68,10 @@ function Checkout()
       
     }).then ((response)=>{
       alert("Orde Placed successfully");
-      localStorage.removeItem('react-use-cart');
+     // emptyCart();
+  
       goToHome();
+      emptyCart();
 
     })
     .catch((error)=>{
@@ -111,7 +119,7 @@ function Checkout()
       handleShow();
    }
  
-    const { items } = useCart();
+    const { items , emptyCart } = useCart();
     console.log("Puneeeeeeeeeeeeeeeeeeeeeeeeeeee",items);
     let tax=3;
     let delivery_fee=2;
@@ -163,6 +171,7 @@ function Checkout()
    
     const goToHome=()=>{
         history.push('/home')
+        
       }
       const closeSideDrawerHandler=()=>{
         setSideDrawerView(false);

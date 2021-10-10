@@ -44,3 +44,16 @@ export const filter_details=(details)=>{
         )
     }
 }
+
+export const locationdetails=(details)=>{
+    return(dispatch)=>{
+        dispatch(
+            {
+                type: "location_details",
+                payload:details
+
+            }
+        )
+    }
+}
+

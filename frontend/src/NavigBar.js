@@ -1,5 +1,5 @@
 import brandlogo from "./brand.svg";
-import { Button, Navbar, ButtonGroup, Nav, Form } from "react-bootstrap";
+import { Button, Navbar, ButtonGroup,Modal, Nav, Form } from "react-bootstrap";
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import * as CGIcons from "react-icons/cg";
@@ -13,6 +13,7 @@ import Cart from "./components/Cart";
 import {bindActionCreators} from "redux";
 import {useSelector,useDispatch} from 'react-redux';
 import {deliveryDetails} from './state/action-creators/actions';
+import {locationdetails} from './state/action-creators/actions';
 import { FiAlertTriangle } from "react-icons/fi";
 //class='btn btn-primary shadow-none'
 function NavigBar(props) {
@@ -22,12 +23,18 @@ function NavigBar(props) {
   const[searchCriteriaValue,setSearchCriteriaValue]=useState("");
   const [cartModal,setCartModal]=useState(false);
   const [toggle,setToggle]=useState('Delivery');
+
+  let ll=localStorage.getItem('location');
+  const [location,setLocation]=useState(ll);
+  const [dummyLocation , setDummyLocation] = useState();
   const dispatch=useDispatch();
   
-  let l=localStorage.getItem('location');
-  const [custlocation , setCustLocation] = useState(l);
+  // let l=localStorage.getItem('location');
+  // const [custlocation , setCustLocation] = useState(l);
 
-  
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   
   useEffect(()=>{
     
@@ -35,7 +42,11 @@ function NavigBar(props) {
     let data={toggle}       
     deliveryDetails2(data);
 
-  },[toggle])
+    const locationdetail=bindActionCreators(locationdetails,dispatch)
+    let data2={location};
+    locationdetail(data2);
+
+  },[toggle,location])
 
 
 
@@ -67,6 +78,8 @@ function NavigBar(props) {
     })
 
   }
+
+
 
   const toggleNavBtn=(e)=>{
     e.preventDefault();
@@ -143,9 +156,9 @@ function NavigBar(props) {
           </div>
         </Nav>
         <Nav id="space">
-          <Button id="navaddress"  className="rounded-pill">
+          <Button id="navaddress" onClick={handleShow} className="rounded-pill">
             <MdIcons.MdLocationOn />
-           {custlocation}
+           {location}
           </Button>
         </Nav>
         <Nav className="flex-container">
@@ -171,6 +184,24 @@ function NavigBar(props) {
           </Nav>
       </Navbar>
       {cartModal && <Cart p={renderCart}/>}
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header >
+          <Modal.Title>Enter Location</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input type="text" onChange={(e)=>{setDummyLocation(e.target.value)}} ></input>
+          
+        </Modal.Body>
+        <Modal.Footer>
+         
+          <Button variant="primary" onClick={(e)=>{
+            setLocation(dummyLocation);
+             handleClose()
+             }}>
+           Search
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

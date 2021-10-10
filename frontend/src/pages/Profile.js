@@ -14,8 +14,11 @@ import "./Profile.css";
 import { useState, useEffect ,useMemo} from "react";
 import axios from "axios";
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+import {useDispatch} from 'react-redux';
+import {bindActionCreators} from "redux";
 
 function Profile() {
+  const dispatch=useDispatch();
   const [show, setShow] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [profileupdate,setprofileupdate] =useState(false);
@@ -46,6 +49,8 @@ function Profile() {
   let id=localStorage.getItem('id');
   
   
+  
+  
   useEffect(()=>{
     axios({
       method: "get",
@@ -57,6 +62,7 @@ function Profile() {
         console.log("PUneettttttttttt--",response.data[0]);
         setCustDetails(response.data[0]);
         setDumCustDetails(response.data[0]);
+       
       })
       .catch((error) => {
         alert("There were some error whilefetching customer details");

@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import {bindActionCreators} from "redux";
 import {useDispatch} from 'react-redux';
 import {filter_details} from '../state/action-creators/actions';
+import { useCart } from 'react-use-cart';
 //import { search } from '../../../backend/routes/customerRoutes';
 
 
@@ -18,12 +19,14 @@ function Home()
 {
   const location=useLocation(); 
   
-  
-  
   const dispatch=useDispatch();
   const state2=useSelector((state)=>state.delivery);
    const [loadResult,setLoadResult] = useState();
   console.log(state2);
+
+  const state_location=useSelector((state)=>state.location);
+   //const [loc,setLoc] = useState("");
+ 
   
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [restList,setRestList] = useState([{}]);
@@ -52,8 +55,15 @@ function Home()
 
       
     }
-
     
+    const duplicate_remove=()=>{
+      let jsonObject = restList.map(JSON.stringify);
+     let  uniqueSet = new Set(jsonObject);
+     let  uniqueArray = Array.from(uniqueSet).map(JSON.parse);
+
+     setRestList(uniqueArray);
+
+    }
   
 
     const state3=useSelector((state)=>state.filter);
@@ -77,19 +87,21 @@ function Home()
       
         axios({
           method: "get",
-          url: `http://localhost:4000/getRestaurant?id=${id}&type=${state2.toggle}&filter=${filter_array}&search=${search}`,
+          url: `http://localhost:4000/getRestaurant?id=${id}&type=${state2.toggle}&filter=${filter_array}&search=${search}&location=${state_location.location}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
         })
           .then((response) => {
             setRestList(response.data);
-           console.log("PPP",response.data);
+           //duplicate_remove();
+
+           console.log("List of restaurants",response.data);
           
           })
           .catch((error) => {
             console.log((error.response));
           });
-      },[state2,filter,search])
+      },[state2,filter,search,state_location])
  
     console.log("PPPPPPPPPPP___",state3.filter);
     return (

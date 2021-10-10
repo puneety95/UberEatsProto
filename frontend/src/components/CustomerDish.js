@@ -4,7 +4,10 @@ import * as BiIcons from 'react-icons/bi';
 import * as FiIcons from 'react-icons/fi';
 import {useCart} from 'react-use-cart';
 import {useSelector} from 'react-redux';
-//FiPlus ,FiMinus ,
+import 'reactjs-popup/dist/index.css';
+import "@reach/dialog/styles.css";
+
+
 
 import axios from 'axios';
 
@@ -12,9 +15,11 @@ import axios from 'axios';
 function CustomerDish(props)
 { 
 console.log("Puneeet",props);
+const { emptyCart } = useCart();
     const [show, setShow] = useState(false);
+    const [visible, setVisible] = useState(false);
     const [product, setProduct]=useState({});
-    const { addItem } = useCart();
+    const { addItem,isEmpty ,items} = useCart();
     const handleClose = () => setShow(false);
     const handleShow = (id) => {
       setShow(true);
@@ -25,6 +30,10 @@ console.log("Puneeet",props);
    const [dishDetails,setDishDetails] =useState([{}]);
    const [modalDishID ,setModalDishId] =useState(false);
    const [count,setCount] = useState(1);
+   const [show2, setShow2] = useState(false);
+
+   const handleClose2 = () => setShow2(false);
+   const handleShow2 = () => setShow2(true);
 
    const state3=useSelector((state)=>state.filter);
       console.log("filterssss are --->",state3);
@@ -65,6 +74,10 @@ console.log("Puneeet",props);
         setShowDishesModal(false);
      }
 
+    
+     let pp;
+   
+
      const addToCart=(name,id,price)=>{
        
        if(count <0)
@@ -76,20 +89,53 @@ console.log("Puneeet",props);
        let n=props.n;
        let size=count;
        
-       let pp={name,id,price,size,n,r_id};
-            
+        pp={name,id,price,size,n,r_id};
+     
       console.log("value",pp);
       setProduct(pp);
-      addItem(pp);
+    
+      if(!isEmpty)
+      {
+        
+        if(pp.r_id==items[0].r_id)
+        {
+         
+          addItem(pp);
+          
+          alert("Items added to the Cart");
+        }
+        else
+        {
+         
+        handleClose();
+        setProduct(pp);  
+        handleShow2();
+         
+        }
 
-       
+      }
+      else
+      {
+        addItem(pp);
+        alert("Items added to the Cart");
+      }
+      handleClose();
        //handleClose();
       
-       alert("Item Added to Cart");
-       setProduct({});
+       //alert("Item Added to Cart");
+     
        
 
      }
+
+     const addcart=()=>{
+      
+      emptyCart();
+      addItem(product);
+      alert("Item added to cart");
+      handleClose2();
+     }
+     
     return(
     <Container style={{paddingRight:"10%"}}>
         
@@ -188,9 +234,25 @@ console.log("Puneeet",props);
        
        }  
         </Row>
+        <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header >
+          <Modal.Title>Create New Order ?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{fontWeight:'400'}}>Your order contains items from {items[0].n}. Click on continue to create new order and 
+        add items from {product.n}</Modal.Body>
+        <Modal.Footer>
+          <Button style={{backgroundColor:'black'}} variant="secondary" onClick={handleClose2}>
+            Close
+          </Button>
+          <Button onClick={addcart} style={{backgroundColor:'green'}} variant="primary">
+            Continue
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
        
-        
-        
+      
     </Container>)
 }
 export default CustomerDish;

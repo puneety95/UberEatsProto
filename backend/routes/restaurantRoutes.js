@@ -4,6 +4,7 @@ const restRouter=express.Router();
 const con=require('../SQL_Connection.js');
 const authenticateToken=require('./authenticateToken');
 const s3 =require('./imageHandler.js');
+var _ = require('lodash');
 
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
@@ -118,5 +119,52 @@ restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
     })
 
   })
+
+//To get customer order data
+restRouter.get('/getRestOrders',(req,res)=>{
+  
+  let sql;
+  if(req.query.status==7)
+  {
+     sql=`select o.* , i.* , c.profile_pic, u.name as cust_name  from user_login u,orders o, order_item i, cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}';`;
+  }
+  else
+  {
+     sql=`select o.* , i.* ,c.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}'and lower(o.status) =lower('${req.query.status}');`;
+  }
+  
+ 
+  con.query(sql,(error,result)=>{
+     if(error)
+     {
+       console.log(error);
+       res.sendStatus(500);
+     }
+     else
+     {
+       result2= _.groupBy(result,'id');
+      console.log("result is ",result2);
+       res.send(result2);
+     }
+  })
+})
+
+restRouter.post('/updateDish',(req,res)=>{
+  let val=req.body;
+ 
+  let sql= `update dishes set name ='${val.name}' , ingredients='${val.ingredients}' , price='${val.price}' , description='${val.description}' where id='${val.id}' and rest_id='${val.rest_id}';`
+  console.log("sql--->",sql);
+  con.query(sql,(err,result)=>{
+    if(err)
+    {
+      console.log(error);
+      res.sendStatus(500);
+    }
+    else{
+    
+      res.sendStatus(200);
+    }
+  })
+})
 
 module.exports=restRouter;

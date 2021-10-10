@@ -7,6 +7,9 @@ const reducer =(state={},action) =>{
 
         case "signup_user_details":
         return action.payload;
+
+        case "customer_profile_pic":
+        return action.payload;
         
         default:
             return state;

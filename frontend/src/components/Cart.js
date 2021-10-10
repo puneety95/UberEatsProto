@@ -1,18 +1,22 @@
 import { Container, Row, Col, Modal, Button } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {useCart} from "react-use-cart";
 import * as FiIcons from 'react-icons/fi';
 import * as GrIcons from 'react-icons/gr';
 import {Link} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 function Cart(props) {
  
   const [show, setShow] = useState(true);
   const [qty,ChangeQty]  =useState(true);
   
+  
   const handleClose = () => {
       setShow(false);
       props.p();
   }
+
+  //const state2=useSelector((state)=>state.cart);
 
   const changeQty=(item_id,value)=>{
     for(let i in items)
@@ -29,8 +33,10 @@ function Cart(props) {
   
   
  
-  const { items } = useCart();
+  const { items, isEmpty } = useCart();
 
+
+  
   console.log("--------------",items);
  
   return (
@@ -45,7 +51,14 @@ function Cart(props) {
         
         </Modal.Header>
         <Modal.Body>
+        {isEmpty && <div style={{fontSize:"larger",textAlign:'center'}}>
+          Your Cart is Empty !!!!
 
+          </div>}
+
+
+      { 
+      ! isEmpty &&     
         <ul>
         {items.map((item) => (  
           <li key={item.id}>
@@ -80,15 +93,16 @@ function Cart(props) {
           </li>
         ))}
       </ul>
-       
+    }
         </Modal.Body>
+        {! isEmpty &&  
         <Modal.Footer style={{padding:'0',paddingLeft:'0'}}>
         <Row style={{flex:'1'}}>
          <div className='col-sm-12'>
        <Link to='/checkout'>  <Button  onClick={handleClose} style={{backgroundColor:'green',width:'-webkit-fill-available'}}>Go To Check Out</Button> </Link>
          </div>
        </Row>
-         </Modal.Footer>
+         </Modal.Footer>}
       </Modal>
     </Container>
   );
