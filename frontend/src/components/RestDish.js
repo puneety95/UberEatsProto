@@ -71,7 +71,7 @@ function RestDish()
     const UpdateDishes=(e)=>{
       console.log("THESE ARE THE DETAILS ",dummyDishDetails);
       axios({
-        method: "post", url: `http://localhost:4000/updateDish`,
+        method: "post", url: server_url+`/updateDish`,
         headers: { "Content-Type": "application/json","Authorization": bearer  },
         data:dummyDishDetails
       })

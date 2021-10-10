@@ -8,6 +8,7 @@ import {useEffect,useState} from 'react';
 import axios from 'axios';
 import CustomerDish from "../components/CustomerDish";
 import Heart from "react-animated-heart";
+import { server_url } from '../values';
 
 
 
@@ -25,7 +26,7 @@ function Dashboard()
       useEffect(()=>{
         axios({
             method: "get",
-            url: `http://localhost:4000/getRestaurantCustomer?id=${id}}`,
+            url: server_url+`/getRestaurantCustomer?id=${id}}`,
             headers: { "Content-Type": "application/json","Authorization": bearer  },
             
             
@@ -44,7 +45,7 @@ function Dashboard()
         
             axios({
                 method: "get",
-                url: `http://localhost:4000/getHeart?id=${id}&uid=${uid}}`,
+                url: server_url+`/getHeart?id=${id}&uid=${uid}}`,
                 headers: { "Content-Type": "application/json","Authorization": bearer  },
                 })
                 .then((response) => {
@@ -77,7 +78,7 @@ function Dashboard()
          let data={id,uid,check};
          axios({
             method: "post",
-            url: `http://localhost:4000/addfavourite`,
+            url: server_url+`/addfavourite`,
             headers: { "Content-Type": "application/json","Authorization": bearer  },
             data:data
             

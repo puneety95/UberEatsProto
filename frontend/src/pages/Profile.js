@@ -15,7 +15,7 @@ import { useState, useEffect ,useMemo} from "react";
 import axios from "axios";
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 import {useDispatch} from 'react-redux';
-import {bindActionCreators} from "redux";
+import { server_url } from '../values';
 
 function Profile() {
   const dispatch=useDispatch();
@@ -54,7 +54,7 @@ function Profile() {
   useEffect(()=>{
     axios({
       method: "get",
-      url:`http://localhost:4000/getCustProfile?id=${id}`,
+      url:server_url+`/getCustProfile?id=${id}`,
       headers: { "Content-Type": "application/json","Authorization": bearer  },
       
     })
@@ -114,7 +114,7 @@ const handleSubmit = (e) => {
     e.preventDefault();
        axios({
          method:"post",
-         url:"http://localhost:4000/CustProfileUpdate",
+         url:server_url+"/CustProfileUpdate",
          headers:{"Content-Type":"application/json","Authorization": bearer},
          data: dumCustDetails
        })
@@ -151,7 +151,7 @@ const handleSubmit = (e) => {
       alert("Please select image to upload");
       return;
     }
-    const { url } = await fetch("http://localhost:4000/s3Url").then((res) =>
+    const { url } = await fetch(server_url+"/s3Url").then((res) =>
       res.json()
     );
     
@@ -170,7 +170,7 @@ const handleSubmit = (e) => {
     let data = { imageUrl, id };
     await axios({
       method: "POST",
-      url: "http://localhost:4000/updateCustomerProfilePic",
+      url:server_url +"/updateCustomerProfilePic",
       headers: { "Content-Type": "application/json", Authorization: bearer },
       data: data,
     })

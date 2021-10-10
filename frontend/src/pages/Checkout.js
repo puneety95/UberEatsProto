@@ -14,6 +14,7 @@ import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-countr
 import {bindActionCreators} from "redux";
 import {cartRefresh} from "../state/action-creators/actions";
 import {useDispatch} from 'react-redux';
+import { server_url } from '../values';
 
 
 
@@ -59,7 +60,7 @@ function Checkout()
    
     axios({
       method: "post",
-      url: `http://localhost:4000/createOrder`,
+      url: server_url + `/createOrder`,
       headers: { "Content-Type": "application/json","Authorization": bearer  },
       data:{
         order:data,
@@ -95,7 +96,7 @@ function Checkout()
 
      axios({
       method: "post",
-      url: `http://localhost:4000/addDeliveryAddress`,
+      url: server_url+`/addDeliveryAddress`,
       headers: { "Content-Type": "application/json","Authorization": bearer  },
       data:data
       
@@ -153,7 +154,7 @@ function Checkout()
 
       axios({
         method: "get",
-        url: `http://localhost:4000/getDeliveryAddress?id=${id}`,
+        url: server_url+`/getDeliveryAddress?id=${id}`,
         headers: { "Content-Type": "application/json","Authorization": bearer  },
           
       })

@@ -13,7 +13,7 @@ function App() {
         history.push('/dashboard');
       }
       else{
-         alert("home")
+         //alert("home")
          history.push('/home');
       }
       

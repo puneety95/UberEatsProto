@@ -9,7 +9,7 @@ import {useSelector} from 'react-redux';
 import {bindActionCreators} from "redux";
 import {useDispatch} from 'react-redux';
 import {filter_details} from '../state/action-creators/actions';
-import { useCart } from 'react-use-cart';
+import { server_url } from '../values';
 //import { search } from '../../../backend/routes/customerRoutes';
 
 
@@ -87,7 +87,7 @@ function Home()
       
         axios({
           method: "get",
-          url: `http://localhost:4000/getRestaurant?id=${id}&type=${state2.toggle}&filter=${filter_array}&search=${search}&location=${state_location.location}`,
+          url: server_url+`/getRestaurant?id=${id}&type=${state2.toggle}&filter=${filter_array}&search=${search}&location=${state_location.location}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
         })

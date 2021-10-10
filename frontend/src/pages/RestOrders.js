@@ -1,6 +1,7 @@
 import {Container,Row,Col,Button} from 'react-bootstrap';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
+import { server_url } from '../values';
 
 function CustomerOrder()
 {    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
@@ -36,7 +37,7 @@ let st={
       
           axios({
             method: "get",
-            url: `http://localhost:4000/getRestOrders?id=${id}&status=${orderStatus}`,
+            url: server_url+`/getRestOrders?id=${id}&status=${orderStatus}`,
             headers: { "Content-Type": "application/json","Authorization": bearer  },
             
           })
@@ -57,7 +58,7 @@ let st={
             //alert(orderStatus2);
             axios({
                 method: "post",
-                url: `http://localhost:4000/updateOrderStatus?`,
+                url: server_url+`/updateOrderStatus?`,
                 headers: { "Content-Type": "application/json","Authorization": bearer  },
                 data:{orderStatus2}
                 

@@ -35,9 +35,9 @@ function RestHome()
                 <div  style={{borderColor:'white',borderStyle:'solid'}} id="cat_buttons2" className="col-sm-2 text-center">
                     <Button   className="shadow-none" style={{backgroundColor:'white',color:'black',border:'none'}} onClick={(e)=>{change_cat_color(e.target.id);setHomeToggle(2)}} id="rest_button2">Dishes</Button>
                 </div>
-                <div  style={{borderColor:'white',borderStyle:'solid'}} id="cat_buttons3" className="col-sm-2 text-center">
+                {/* <div  style={{borderColor:'white',borderStyle:'solid'}} id="cat_buttons3" className="col-sm-2 text-center">
                     <Button  className="shadow-none" style={{backgroundColor:'white',color:'black',border:'none'}} onClick={(e)=>{change_cat_color(e.target.id);setHomeToggle(3)}} id="rest_button3">Pictures</Button>
-                </div>
+                </div> */}
                                 
             </Row>
             <Row>

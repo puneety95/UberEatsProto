@@ -1,13 +1,18 @@
-import {Container,Row,Col,Button} from 'react-bootstrap';
+import {Container,Row,Col,Button,Modal} from 'react-bootstrap';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
-
+import { server_url } from '../values';
 function CustomerOrder()
 {    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [orderStatus,setOrderStatus]=useState(7);
     const [statusValues,setStatusValues] =useState([{}]);
     const [orderValues,setOrderValues] =useState({});
+    const [showReceipt,setShowReceipt] = useState(false);
     let id=localStorage.getItem('id');
+    const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
     const status=(e)=>{
 
         setOrderStatus(e.target.value);
@@ -29,7 +34,7 @@ let d=false;
       
           axios({
             method: "get",
-            url: `http://localhost:4000/getCustOrders?id=${id}&status=${orderStatus}`,
+            url: server_url+`/getCustOrders?id=${id}&status=${orderStatus}`,
             headers: { "Content-Type": "application/json","Authorization": bearer  },
             
           })
@@ -79,6 +84,7 @@ let d=false;
                  let date = order && order[0] && order[0].date;
                  date=new Date(date).toLocaleString()
                  const status = order && order[0] && order[0].order_state;
+                // const id = order && order[0] && order[0].id;
                  let t_value=0;
                
                  console.log('---ORDER----', order);
@@ -95,6 +101,7 @@ let d=false;
                            <h5 class="card-title">{restName}</h5>
                             
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
+                               <p class="card-text" onClick={()=>{setShowReceipt(id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
                               {order && order.map(item => {
                                   t_value=t_value + item.cost * item.quantity
                                   return (
@@ -103,7 +110,7 @@ let d=false;
                                            <p>{item.name}  ${item.cost} x {item.quantity} </p>
                                       
                                       </Row>
-                                 
+
                                   </div>
                                   )
                               })}

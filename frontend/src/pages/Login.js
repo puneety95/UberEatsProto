@@ -28,6 +28,7 @@ function Login() {
     }
     e.preventDefault();
     const loginData = { loginEmail, loginPassword };
+    console.log("---------------------data",JSON.stringify(loginData));
     axios({
       method: "post",
       url: server_url+"/login",
@@ -35,7 +36,6 @@ function Login() {
       headers: { "Content-Type": "application/json" },
     })
       .then((response) => {
-        
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("id", response.data.id);
         localStorage.setItem("role",response.data.role);

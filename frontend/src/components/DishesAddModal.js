@@ -1,6 +1,7 @@
 import {Container,Modal,Button,Form,Row} from 'react-bootstrap';
 import {useState} from 'react';
 import axios from 'axios';
+import { server_url } from '../values';
 function DishesAddModal(props)
 {
     
@@ -42,7 +43,7 @@ function DishesAddModal(props)
         
         const imageInput = document.querySelector("#imageInput");
         const file = imageInput.files[0];
-        const { url } = await fetch("http://localhost:4000/s3Url").then(res => res.json())
+        const { url } = await fetch(server_url+"/s3Url").then(res => res.json())
          // post the image direclty to the s3 bucket
       await fetch(url, {
         method: "PUT",
@@ -57,7 +58,7 @@ function DishesAddModal(props)
       let data ={imageUrl,id,...addDetail};
       await axios({
         method:"POST",
-        url:"http://localhost:4000/RestDishesAdd",
+        url:server_url+"/RestDishesAdd",
         headers:{"Content-Type":"application/json","Authorization": bearer},
         data: data
       }).then((res)=>{

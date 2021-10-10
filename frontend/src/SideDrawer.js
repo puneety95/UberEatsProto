@@ -10,6 +10,7 @@ import * as RiIcons from 'react-icons/ri';
 import "./SideDrawer.css"
 import { useEffect,useState } from 'react';
 import axios from 'axios';
+import { server_url } from './values';
 function alert_message()
 {
     alert("Puneet");
@@ -30,7 +31,7 @@ function SideDrawer(props)
       useEffect(()=>{
         axios({
           method: "get",
-          url:`http://localhost:4000/getCustImage?id=${id}`,
+          url:server_url +`/getCustImage?id=${id}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
         })

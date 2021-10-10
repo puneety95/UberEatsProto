@@ -92,7 +92,7 @@ router.post('/signup',   (req,res)=>{
 
 // To login -/login
  router.post('/login',(req,res)=>{
-  
+  console.log(req.body);
   let val=req.body;
   let sql=`select password from user_login where email='${val.loginEmail}' `;
  

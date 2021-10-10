@@ -1,1 +1,1 @@
-export let  server_url='http://localhost:4000';
+export let  server_url='https://18.191.47.174/4000';

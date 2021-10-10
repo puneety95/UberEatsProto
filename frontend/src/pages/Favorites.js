@@ -5,6 +5,7 @@ import * as RiIcons from "react-icons/ri";
 import {useEffect,useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import React from 'react';
+import { server_url } from '../values';
 //GiThreeLeaves GiChickenOven RiRestaurantFill
 
 function Favorites()
@@ -20,7 +21,7 @@ function Favorites()
     useEffect(()=>{
         axios({
           method: "get",
-          url: `http://localhost:4000/getFavourites?id=${id}`,
+          url: server_url+`/getFavourites?id=${id}`,
           headers: { "Content-Type": "application/json","Authorization": bearer  },
           
         })
