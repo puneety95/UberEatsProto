@@ -13,9 +13,10 @@ console.log(process.env.NODE_ENV);
 const con=require('./SQL_Connection.js')
 
 app.use(cors());
-var cors_options ={
-    origin:'https://18.191.47.174/3000'
+var cors_options ={ //18.224.14.188
+    origin:'http://18.224.14.188:3000'
  }
+ //http://localhost:3000
  app.use(cors(cors_options));
 
 

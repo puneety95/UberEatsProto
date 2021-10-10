@@ -7,9 +7,9 @@ function CustomerOrder()
     const [orderStatus,setOrderStatus]=useState(7);
     const [statusValues,setStatusValues] =useState([{}]);
     const [orderValues,setOrderValues] =useState({});
-    const [showReceipt,setShowReceipt] = useState(false);
+    const [showReceipt,setShowReceipt] = useState();
     let id=localStorage.getItem('id');
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(true);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -17,6 +17,10 @@ function CustomerOrder()
 
         setOrderStatus(e.target.value);
     
+    }
+    const setShowReceiptmodal=(id)=>{
+        handleShow();
+        setShowReceipt(id);
     }
 
     let st={
@@ -84,6 +88,7 @@ let d=false;
                  let date = order && order[0] && order[0].date;
                  date=new Date(date).toLocaleString()
                  const status = order && order[0] && order[0].order_state;
+                 const id=order && order[0] && order[0].id;
                 // const id = order && order[0] && order[0].id;
                  let t_value=0;
                
@@ -101,7 +106,7 @@ let d=false;
                            <h5 class="card-title">{restName}</h5>
                             
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
-                               <p class="card-text" onClick={()=>{setShowReceipt(id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
+                               <p class="card-text" onClick={()=>{setShowReceiptmodal(id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
                               {order && order.map(item => {
                                   t_value=t_value + item.cost * item.quantity
                                   return (
@@ -110,7 +115,31 @@ let d=false;
                                            <p>{item.name}  ${item.cost} x {item.quantity} </p>
                                       
                                       </Row>
+                                         {showReceipt==id && 
+                                            <Modal show={show} onHide={handleClose}>
+                                                 <Modal.Header >
+                                              <Modal.Title>Receipt - {restName}</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
 
+                                            <Row>   
+                                           <p>{item.name}  ${item.cost} x {item.quantity} </p>
+                                             </Row>
+                                             <Row>
+                                             <h5 style={{paddingTop:'10%'}}>Total - ${t_value}</h5>
+                                             </Row>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                              <Button variant="secondary" onClick={handleClose}>
+                                                Close
+                                              </Button>
+                                              
+                                            </Modal.Footer>
+                                          </Modal>
+                                        
+                                        
+                                        
+                                        } 
                                   </div>
                                   )
                               })}
