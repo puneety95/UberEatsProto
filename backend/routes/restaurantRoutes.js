@@ -51,7 +51,7 @@ restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
   });
 
 
-  restRouter.get('/s3url',authenticateToken,async (req,res)=>{
+  restRouter.get('/s3url',async (req,res)=>{
     console.log("HErerererererer");
       const  url = await s3();
       res.send({url});

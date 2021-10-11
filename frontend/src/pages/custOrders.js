@@ -108,7 +108,7 @@ let d=false;
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
                                <p class="card-text" onClick={()=>{setShowReceiptmodal(id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
                               {order && order.map(item => {
-                                  t_value=t_value + item.cost * item.quantity
+                                 t_value=parseFloat(t_value + item.cost * item.quantity).toFixed(2);
                                   return (
                                       <div>
                                        <Row>   
@@ -123,7 +123,8 @@ let d=false;
                                             <Modal.Body>
 
                                             <Row>   
-                                           <p>{item.name}  ${item.cost} x {item.quantity} </p>
+                                           <p>Spicy Chicken $15.79 x 1</p>
+                                             <p>{item.name}  ${item.cost} x {item.quantity} </p>
                                              </Row>
                                              <Row>
                                              <h5 style={{paddingTop:'10%'}}>Total - ${t_value}</h5>

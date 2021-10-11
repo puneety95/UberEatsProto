@@ -5,7 +5,7 @@ import { server_url } from '../values';
 
 function CustomerOrder()
 {    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
-    const [orderStatus,setOrderStatus]=useState(7); 
+    const [orderStatus,setOrderStatus]=useState(1); 
     // TO change order status
     const [orderStatus2,setOrderStatus2]=useState({}); 
     const [statusValues,setStatusValues] =useState([{}]);
@@ -143,7 +143,7 @@ let st={
                             
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
                               {order && order.map(item => {
-                                  t_value=t_value + item.cost * item.quantity
+                                  t_value=parseFloat(t_value + item.cost * item.quantity).toFixed(2);
                                   return (
                                       <div>
                                        <Row>   

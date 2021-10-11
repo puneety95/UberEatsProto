@@ -20,6 +20,7 @@ function SideDrawer(props)
     const history=useHistory();
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [profilePic,setProfilePic] = useState();
+    const [profileNane,setProfileName] = useState();
     let id=localStorage.getItem('id');
     let uname="Puneet";
     const logout=(e)=>{
@@ -38,6 +39,7 @@ function SideDrawer(props)
           .then((response) => {
             console.log("PUneettttttttttt--",response.data[0].profile_pic);
             setProfilePic(response.data[0].profile_pic);
+            setProfileName(response.data[0].name);
             
           })
           .catch((error) => {
@@ -57,7 +59,7 @@ function SideDrawer(props)
                <div style={{marginLeft:'3%'}}>
                
                <Row>
-                        <Col xs='2'>{uname}</Col>
+                        <Col xs='2'>{profileNane}</Col>
                         </Row>
                         <Row>
                         <Col onCLick={alert_message} cs='2'><Link to='/profile'>

@@ -18,8 +18,8 @@ router.post('/signup',   (req,res)=>{
     let resq;
    con.query(sql , function (err, result) {
       if (err)
-         {   
-           res.status(500).send("There were some errors while performing this action");
+         {   console.log(err);
+                     res.status(500).send("There were some errors while performing this action");
          }
      else
       {

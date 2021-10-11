@@ -79,14 +79,14 @@ function Cart(props) {
                   
              </select>
              </div>
-               <div style={{paddingLeft:'4%'}} className='col-sm-6'>
+               <div style={{paddingLeft:'4%'}} className='col-sm-4'>
                 <b> {item.name}</b>
                </div>
                <div className='col-sm-3'>
                  {item.price} x  {item.size}
                </div>
-               <div className='col-sm-2 text-right'>
-                <FiIcons.FiDollarSign/> {item.price *  item.size}
+               <div className='col-sm-3 text-right'>
+                <FiIcons.FiDollarSign/> {parseFloat(item.price *  item.size).toFixed(2)}
                </div>
              </Row>
             

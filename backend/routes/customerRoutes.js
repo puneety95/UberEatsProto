@@ -139,14 +139,11 @@ customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
 //to get restaurant at home page
 customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
   console.log("-------------------------------",req.query);
-  // if(req.query.type=='Pickup')
-  // {
-  //   req.query.type=req.query.type + "," +
-  // }
+ 
 let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type in ('${req.query.type}','Delivery')`;
 
 let search="";
-console.log("Valuessss are ---->",req.query);
+
 if((req.query.search)!="undefined")
 {
    search=req.query.search
@@ -161,7 +158,7 @@ if((req.query.search)!="undefined")
 filter="(" + filter +")";
 sql=sql + ` and r.r_id  in (select rest_id from dishes where filter in ${filter} )`
 sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-//console.log("Value is---->",sql);
+console.log("Value 111111 is---->",sql);
 con.query(sql,(error,result)=>{
   if(error)
   {
@@ -172,7 +169,7 @@ con.query(sql,(error,result)=>{
     let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type in ('${req.query.type}' , 'Delivery') and u.id=r.r_id `;
     sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
     sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-    //console.log("query is------------------------ >", sql);
+    console.log("query22222222 is------------------------ >", sql);
    
     con.query(sql,(error2,result2)=>{
       if(error2)
@@ -185,7 +182,7 @@ con.query(sql,(error,result)=>{
         let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location='${req.query.location}' and r.type in ('${req.query.type}','Delivery') and u.id=r.r_id `;
         sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
         sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-        console.log("------------------------------>",sql)
+        console.log("quer333------------------------------>",sql)
         con.query(sql,(err,result3)=>{
             if(err)
             {
@@ -446,10 +443,11 @@ customerRouter.get('/getHeart',authenticateToken,(req,res)=>{
 })
 
 customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
-  let sql=`select profile_pic from cust_profile where id='${req.query.id}';`
+  let sql=`select c.profile_pic, u.name from cust_profile c , user_login u where c.id='${req.query.id}' and c.id=u.id;`
   con.query(sql,(err,result)=>{
      if(err)
      {
+       console.log(err);
        res.sendStatus(500);
      }
      else

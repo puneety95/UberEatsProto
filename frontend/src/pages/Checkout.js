@@ -250,7 +250,7 @@ function Checkout()
                </div>
               
                <div className='col-sm-2 text-right'>
-                <FiIcons.FiDollarSign/> {item.price * item.size}
+                <FiIcons.FiDollarSign/> {parseFloat(item.price * item.size).toFixed(2)}
                </div>
              </Row>
              <Row style={{paddingTop:'0%',paddingBottom:'3%',width:'800px'}}>
@@ -307,7 +307,7 @@ function Checkout()
                     <div style={{fontWeight:'200px',fontSize:'16px',paddingLeft:'10%'}}>Subtotal</div>
                   </div>
                   <div className='col-sm-6 text-center'>
-                    <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${totalBill}</div>
+                    <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${parseFloat(totalBill).toFixed(2)}</div>
                   </div>
               </Row>
               <Row style={{paddingTop:'3%'}}>
@@ -351,7 +351,7 @@ function Checkout()
                     <div style={{fontWeight:'bold',fontSize:'20px',paddingLeft:'10%'}}>Total</div>
                   </div>
                   <div className='col-sm-6 text-center'>
-                    <div style={{fontWeight:'200px',right:'0',fontSize:'20px',paddingLeft:'10%'}}><b>${totalAfterTax}</b></div>
+                    <div style={{fontWeight:'200px',right:'0',fontSize:'20px',paddingLeft:'10%'}}><b>{parseFloat(totalAfterTax).toFixed(2)}</b></div>
                   </div>
               </Row>
 

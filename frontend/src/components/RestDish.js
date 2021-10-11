@@ -6,7 +6,7 @@ import axios from 'axios';
 import { server_url } from '../values';
 
 
-function RestDish() {
+function RestDish() {  
   const [show, setShow] = useState(false);
   const [showDishesModal, setShowDishesModal] = useState(false);
   const [dropDown, setDropDown] = useState(1);
@@ -103,35 +103,8 @@ function RestDish() {
           <Button style={{ width: "48%", marginLeft: "2%" }}> Delete</Button>
         </div>
       </Row>
-      <Row>
-        <div className="col-sm">
-          <Dropdown>
-            <Dropdown.Toggle id="cateogary_dish">
-              <span id="cateogary_drop_text">Category</span>
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => { setDropDown(6) }}>All</Dropdown.Item>
-              <Dropdown.Item onClick={() => { setDropDown(1) }}>Appetizer</Dropdown.Item>
-              <Dropdown.Item onClick={() => { setDropDown(2) }}>Salads</Dropdown.Item>
-              <Dropdown.Item onClick={() => { setDropDown(3) }}>Main Course</Dropdown.Item>
-              <Dropdown.Item onClick={() => { setDropDown(4) }}>Desserts</Dropdown.Item>
-              <Dropdown.Item onClick={() => { setDropDown(5) }}>Beverages</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-      </Row>
-      <Row style={{ paddingTop: "3%" }}>
-        <div className="col-sm-6">
-          {dropDown == 1 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu /> </span> Appetizer</div>}
-          {dropDown == 2 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu /> </span> Salads</div>}
-          {dropDown == 3 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu /> </span> Main Course</div>}
-          {dropDown == 4 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu /> </span> Desserts</div>}
-          {dropDown == 5 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu /> </span> Beverages</div>}
-          {dropDown == 6 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu /> </span> All</div>}
-
-        </div>
-      </Row>
-      <Row>
+      
+      <Row style={{ paddingTop: "2%" }}>
         <hr className="one"></hr>
       </Row>
       <Row style={{ paddingTop: "2%" }}>

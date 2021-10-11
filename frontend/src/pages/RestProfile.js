@@ -22,11 +22,21 @@ function RestProfile()
 
     const handleUpdateChange=(e)=>  
     {
-        const {name ,value}=e.target;        
+        const {name ,value}=e.target; 
+        if(name=='r_timings')  
+        {
+          setDumProfDetails(prevState=>({
+            ...prevState,
+            [name] :value + prevState.r_timings
+          }));
+        }    
+        else
+        {
         setDumProfDetails(prevState=>({
           ...prevState,
           [name] :value
         }));
+      }
        }
     
   const handleSubmit = (e) => {
@@ -234,8 +244,9 @@ function RestProfile()
                 <label for="type">Mode of Delivery</label>
                 </div>
                 <div className="col-sm-9">
-                <select name="type" id="type" value={setDumProfDetails.type} onChange={(e)=>{handleUpdateChange(e)}}>
-                  <option value="Delivery">Delivery</option>
+                <select name="type" id="type" value={setDumProfDetails.type} onChange={(e)=>{
+                  handleUpdateChange(e)}}>
+                  <option value="Delivery">Delivery and Pickup</option>
                   <option value="Pickup">Pickup</option>
                 </select>
                 </div>
@@ -260,7 +271,7 @@ function RestProfile()
                 </div>
                 <div className="col-sm-2">
                 <span> To:</span>
-                <select id="to_day" name className="custom-select" >
+                <select id="to_day" name="r_timings" onChange={(e)=>{handleUpdateChange(e)}} onChangeclassName="custom-select" >
                 <option>Sunday</option>
                     <option>Monday</option>
                     <option>Tuesday</option>
@@ -278,10 +289,10 @@ function RestProfile()
                   
           </div>
           <div className="col-sm-3">
-          <input onChange type="time" id="appt_from" name="appt"/> 
+          <input onChange type="time"  name="r_timings"  onChange={(e)=>{handleUpdateChange(e)}} id="appt_from" name="appt"/> 
           </div>
           <div className="col-sm-3">
-          <input type="time" id="appt_to" name="appt"/> 
+          <input type="time" id="appt_to"  name="r_timings" onChange={(e)=>{handleUpdateChange(e)}} name="appt"/> 
           </div>
          </Row>
       

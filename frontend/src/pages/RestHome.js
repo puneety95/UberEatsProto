@@ -8,7 +8,7 @@ import {useState} from 'react';
 
 function change_cat_color(id)
 {
-   for(let i=0;i<=2;i++)
+   for(let i=0;i<=1;i++)
     {
      let par_ele=document.getElementById('cat_row_2').children[i];
      par_ele.style.borderBottomColor="white";    

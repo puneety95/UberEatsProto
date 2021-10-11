@@ -28,7 +28,7 @@ const { emptyCart } = useCart();
     const [dropDown ,setDropDown] =useState(1);
    const [dishDetails,setDishDetails] =useState([{}]);
    const [modalDishID ,setModalDishId] =useState(false);
-   const [count,setCount] = useState(1);
+   const [count,setCount] = useState(0);
    const [show2, setShow2] = useState(false);
 
    const handleClose2 = () => setShow2(false);
@@ -100,6 +100,7 @@ const { emptyCart } = useCart();
           addItem(pp);
           
           alert("Items added to the Cart");
+          setCount(0)
         }
         else
         {
@@ -115,6 +116,7 @@ const { emptyCart } = useCart();
       {
         addItem(pp);
         alert("Items added to the Cart");
+        setCount(0);
       }
       handleClose();
        //handleClose();
@@ -130,6 +132,7 @@ const { emptyCart } = useCart();
       emptyCart();
       addItem(product);
       alert("Item added to cart");
+      setCount(0);
       handleClose2();
      }
      
@@ -137,17 +140,7 @@ const { emptyCart } = useCart();
     <Container style={{paddingRight:"10%"}}>
         
        
-        <Row style={{paddingTop:"3%"}}>
-            <div className="col-sm-6">
-              { dropDown==1 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu/> </span> Appetizer</div>}
-              { dropDown==2 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu/> </span> Salads</div>}
-              { dropDown==3 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu/> </span> Main Course</div>}
-              { dropDown==4 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu/> </span> Desserts</div>}
-              { dropDown==5 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu/> </span> Beverages</div>}
-              { dropDown==6 && <div id="Dish_Cat_text"><span><BiIcons.BiFoodMenu/> </span> All</div>}
-                    
-            </div>
-        </Row>
+        
         <Row>
                 <hr className="one"></hr>
             </Row>
@@ -157,7 +150,7 @@ const { emptyCart } = useCart();
                 return(
                 
                 <div className="col-sm-4" style={{paddingTop:'1%',paddingBottom:'1%'}}>
-                            <div className="card" onClick={()=>handleShow(dish.id)} style={{paddingLeft:'2%',cursor:'pointer'}}>
+                            <div className="card card h-100" onClick={()=>handleShow(dish.id)} style={{paddingLeft:'2%',cursor:'pointer'}}>
                             <div className="card-body" style={{padding:'0'}}>
                                 <Row>
                                     <div className="col-sm-6" >
@@ -167,7 +160,7 @@ const { emptyCart } = useCart();
                                         
                                    </div>
                                    <div className="col-sm-6">
-                                       <img style={{width:'100%'}} id ="rest_dish_cat2" src={dish.images} alt="dish_image" />
+                                       <img style={{width:'100%',height:'100%'}} id ="rest_dish_cat2" src={dish.images} alt="dish_image" />
                                  </div>
                                 </Row>
                                
@@ -235,7 +228,7 @@ const { emptyCart } = useCart();
         <Modal.Header >
           <Modal.Title>Create New Order ?</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{fontWeight:'400'}}>Your order contains items from {show2?items[0].n : 2}. Click on continue to create new order and  */}
+        <Modal.Body style={{fontWeight:'400'}}>Your order contains items from {show2?items[0].n : 2}. Click on continue to create new order and  
         add items from {product.n}</Modal.Body>
         <Modal.Footer>
           <Button style={{backgroundColor:'black'}} variant="secondary" onClick={handleClose2}>
