@@ -1,20 +1,26 @@
 const express = require('express');
+
 const bodyParser=require('body-parser');
 require("dotenv").config;
 const app=express();
 const cors=require('cors');
-var mysql = require('mysql');
+
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 console.log(process.env.NODE_ENV);
+const mongoose=require('mongoose');
+mongoose.connect('mongodb+srv://UberEatsUser:Sputnik12@ubereats.atuet.mongodb.net/UberEats?retryWrites=true&w=majority',()=>{
+    console.log('Connected to Mongo Database');
+});
 
 
 
-const con=require('./SQL_Connection.js')
+//const con=require('./SQL_Connection.js')
+//const con = requre
 
 app.use(cors());
 var cors_options ={ //18.224.14.188
-    origin:'http://18.224.14.188:3000'
+    origin:'http://localhost:3000'
  }
  //http://localhost:3000
  app.use(cors(cors_options));

@@ -1,6 +1,6 @@
-import chai from "chai";
-import chaiHttp from "chai-http";
-import { app } from "../index.js"; ///dekhna
+var chai =require("chai");
+var chaiHttp =require ("chai-http");
+const app=require("../index.js"); ///dekhna
 
 chai.use(chaiHttp);
 
