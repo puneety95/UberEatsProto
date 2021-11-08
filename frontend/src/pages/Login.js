@@ -11,12 +11,10 @@ import { server_url } from '../values';
 
 
 function Login() {
- let history = useHistory();
- const dispatch=useDispatch();
- //const state=useSelector((state)=>state.user);
- 
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+    let history = useHistory();
+    const dispatch=useDispatch();
+    const [loginEmail, setLoginEmail] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
 
   function loginButtonHandler(e) {
     let ele = document.getElementById("loginFormId");

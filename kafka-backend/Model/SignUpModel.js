@@ -1,6 +1,6 @@
 //import mongoose from "mongoose";
 const mongoose =require("mongoose");
-
+console.log("---------------------------------")
 const userloginSchema = mongoose.Schema({
     id:{
         type: Number ,

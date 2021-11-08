@@ -5,10 +5,8 @@ const router=express.Router();
 const con=require('../SQL_Connection.js')
 const bcrypt=require('bcrypt');
 const multer=require('multer');
-const user_login=require('../Model/SignUpModel');
-const cust_profile=require('../Model/CustomerModel');
-const rest_info=require('../Model/RestModel');
 
+const kafka = require('../kafka/client');
 
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
@@ -91,7 +89,7 @@ router.post('/signup',   (req,res)=>{
     });
  
    });
-   */
+   
 
 
 router.post('/signup', async (req, res) => {
@@ -152,65 +150,114 @@ router.post('/signup', async (req, res) => {
   }
  
 });
+*/
 
+router.post('/signup',async (req,res)=>{
+  kafka.make_request('sign_up',req.body,(error,result)=>{
+    console.log("-------------------In result-----------------");
+    console.log(result);
+    
 
-// To login -/login
- router.post('/login',(req,res)=>{
-  console.log(req.body);
-  let val=req.body;
-  let sql=`select password from user_login where email='${val.loginEmail}' `;
- 
-  con.query(sql, function (err,result){
-    if(err)
-    {
-      res.status(500).send("There were some errors while performing the action");
+    if(error){
+      console.log("------------Inside the error block----------");
+      console.log(error);
+      res.status(500).send("There were some error while performing the action");
     }
     else{
-      let upass=result;
-      if(upass.length==0)
-      {
-        res.status(403).send("Login Credentials are wrong. Please try again.");
-      }
+      console.log("---------------Inside the result------------");
+      res.status(result.status).json(result.msg);
+    }
+  })
+})
+
+
+// To Login
+router.post('/login',async (req,res)=>{
+  kafka.make_request('login',req.body,(error,result)=>{
+    console.log("-------------------In result-----------------");
+    console.log(result);
+    console.log(error);
+    if(error){
+     
+      console.log(error);
+      res.status(500).send("There were some error while performing the action");
+    }
+    else{
+
+      if(result.status==200){
+        result=result.msg;
+        val={loginEmail:req.body.loginEmail}
+        const accessToken= jwt.sign(val,secret_jwt_token);
+        console.log("--------Isnide result-------",result)
+        res.json({accessToken:accessToken, id:result.id, role:result.role, location:result.location, email:result.email});
+        }else{
+          res.status(500).send(result.msg);
+        }
       
-    else
-    {  
-    try{
+    }
+  })
+})
+
+
+
+
+// // To login -/login
+//  router.post('/login',(req,res)=>{
+//   console.log(req.body);
+//   let val=req.body;
+//   let sql=`select password from user_login where email='${val.loginEmail}' `;
+ 
+//   con.query(sql, function (err,result){
+//     if(err)
+//     {
+//       res.status(500).send("There were some errors while performing the action");
+//     }
+//     else{
+//       let upass=result;
+//       if(upass.length==0)
+//       {
+//         res.status(403).send("Login Credentials are wrong. Please try again.");
+//       }
+      
+//     else
+//     {  
+//     try{
         
-     if( bcrypt.compareSync(val.loginPassword, upass[0].password))
-      {
-        let sql2=`select id,role,email,location from user_login where email='${val.loginEmail}';`
+//      if( bcrypt.compareSync(val.loginPassword, upass[0].password))
+//       {
+//         let sql2=`select id,role,email,location from user_login where email='${val.loginEmail}';`
         
-        con.query(sql2, function(err2,result2){
-          if(err2){   
+//         con.query(sql2, function(err2,result2){
+//           if(err2){   
             
-            res.status(500).send("There were some errors while performing the action");        
-          }
+//             res.status(500).send("There were some errors while performing the action");        
+//           }
 
-          else
-          {
-            let id2=result2;
-            val={loginEmail:req.body.loginEmail}
-            const accessToken= jwt.sign(val,secret_jwt_token);
-            res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, location:result2[0].location, email:result2[0].email});
-          }
+//           else
+//           {
+//             let id2=result2;
+//             val={loginEmail:req.body.loginEmail}
+//             const accessToken= jwt.sign(val,secret_jwt_token);
+//             res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, location:result2[0].location, email:result2[0].email});
+//           }
            
-        }); 
+//         }); 
         
-       // const jwt=require('jsonwebtoken');
+//        // const jwt=require('jsonwebtoken');
 
-     }
-     else{
-       res.sendStatus(403).send("Login Credentials are wrong. Please try again.")
-     }
-    }
-    catch(error)
-    {
-      res.sendStatus(500).send("There were some errors while performing the action");
-    }
-  }
-    }
-  });
-});
+//      }
+//      else{
+//        res.sendStatus(403).send("Login Credentials are wrong. Please try again.")
+//      }
+//     }
+//     catch(error)
+//     {
+//       res.sendStatus(500).send("There were some errors while performing the action");
+//     }
+//   }
+//     }
+//   });
+// });
 
 
 function authenticateToken(req,res,next)

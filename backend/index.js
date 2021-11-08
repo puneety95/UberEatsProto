@@ -8,10 +8,7 @@ const cors=require('cors');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 console.log(process.env.NODE_ENV);
-const mongoose=require('mongoose');
-mongoose.connect('mongodb+srv://UberEatsUser:Sputnik12@ubereats.atuet.mongodb.net/UberEats?retryWrites=true&w=majority',()=>{
-    console.log('Connected to Mongo Database');
-});
+
 
 
 

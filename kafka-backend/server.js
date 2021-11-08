@@ -1,18 +1,32 @@
+const mongoose=require('mongoose');
+//const express = require('express');
+
+
+
+mongoose.connect('mongodb+srv://UberEatsUser:Sputnik12@ubereats.atuet.mongodb.net/UberEats?retryWrites=true&w=majority',()=>{
+    console.log('Connected to Mongo Database');
+});
 var connection =  new require('./kafka/Connection');
 //topics files
 //var signin = require('./services/signin.js');
-var Books = require('./services/books.js');
+var SignUp = require('./services/SignUpService.js');
+var LoginIn = require('./services/LoginService.js');
+const router = require('../backend/routes/handler.js');
+
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
+    console.log(topic_name);
     var consumer = connection.getConsumer(topic_name);
     var producer = connection.getProducer();
     console.log('server is running ');
     consumer.on('message', function (message) {
         console.log('message received for ' + topic_name +" ", fname);
         console.log(JSON.stringify(message.value));
+        console.log("---------------------------------------------------------------printing value------------------");
+        console.log(message);
         var data = JSON.parse(message.value);
-        
+        //console.log(fname);
         fname.handle_request(data.data, function(err,res){
             console.log('after handle'+res);
             var payloads = [
@@ -35,4 +49,6 @@ function handleTopicRequest(topic_name,fname){
 // Add your TOPICs here
 //first argument is topic name
 //second argument is a function that will handle this topic request
-handleTopicRequest("post_book",Books)
+handleTopicRequest("sign_up",SignUp);
+handleTopicRequest("login",LoginIn);
+
