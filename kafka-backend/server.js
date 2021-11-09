@@ -11,7 +11,13 @@ var connection =  new require('./kafka/Connection');
 //var signin = require('./services/signin.js');
 var SignUp = require('./services/SignUpService.js');
 var LoginIn = require('./services/LoginService.js');
+var RestProfile = require('./services/RestProfileService.js');
+var RestProfileUpdate = require('./services/RestProfileUpdateService.js');
+var RestProfileImageUpdate = require('./services/RestProfileImageUpdate.js');
+var RestDishes=require('./services/RestDishesService');
+var RestDishesAdd=require('./services/RestDishesAddService.js');
 const router = require('../backend/routes/handler.js');
+
 
 
 function handleTopicRequest(topic_name,fname){
@@ -51,4 +57,10 @@ function handleTopicRequest(topic_name,fname){
 //second argument is a function that will handle this topic request
 handleTopicRequest("sign_up",SignUp);
 handleTopicRequest("login",LoginIn);
+handleTopicRequest("rest_profile",RestProfile);
+handleTopicRequest("rest_profile_update",RestProfileUpdate);
+handleTopicRequest("rest_profile_image_update",RestProfileImageUpdate);
+handleTopicRequest("get_dishes",RestDishes);
+handleTopicRequest("rest_dishes_add",RestDishesAdd);
+//handleTopicRequest("rest_dishes_add",RestDishesAdd);
 

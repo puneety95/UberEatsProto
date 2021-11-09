@@ -56,10 +56,11 @@ function RestDish() {
 
         setDishDetails(response.data);
 
-        console.log("PPP", response.data);
-        console.log("Details", dishDetails);
+        console.log("PPP--------------------", response.data);
+        console.log("Details--------------", dishDetails);
       })
       .catch((error) => {
+        console.log("INside errorrrrr------------");
         console.log((error.response));
       });
   }, [showDishesModal, modalDishID])

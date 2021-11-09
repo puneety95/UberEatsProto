@@ -5,50 +5,104 @@ const con=require('../SQL_Connection.js');
 const authenticateToken=require('./authenticateToken');
 const s3 =require('./imageHandler.js');
 var _ = require('lodash');
+const kafka = require('../kafka/client');
 
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
 
-//REST DASHBOARD - PROFILE
+
+
+
 restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
-    
-    sql=`select r.r_id, u.location,r.profile_pic, r.r_description, u.name,r.r_contact, type,r_timings from rest_info r inner join user_login u on u.id=r.r_id where u.email='${req.user.loginEmail}'; `;
-      
-     con.query(sql,function(err,result){
-          if(err)
-          {
-            console.log("Iside error  -->>>>>>>>>>>>>",err);
-            res.sendStatus(500);
-          }
-          else
-          {
-          console.log(result);
-          res.json({profileDetails:result});
-          }
-      });
-   });
-  
-  //REST PROFILE UPDATE
-  restRouter.post('/RestProfileUpdate',authenticateToken,(req,res)=>{
-    
-    console.log("THis is the body ->",req.body);
-    let val=req.body;
-    sql=`update  rest_info set r_description='${val.r_description}',type='${val.type}',r_contact='${val.r_contact}',r_timings='10pm' where r_id=${val.r_id};`;
-    sql=sql+ `update user_login set name='${val.name}' , location='${val.location}' where id=${val.r_id};`;
-    console.log(sql);
-    con.query(sql,function(err,result){
-      if(err)
-      {
-        
-        console.log(err);
-        res.sendStatus(500);
-      }
-      else{
-        res.send('ok')
-      }
+  kafka.make_request('rest_profile',req.user,(error,result)=>{
+    console.log("-------------------In result-----------------");
+    console.log(result);
+   
+    if(error){
      
-    })
-  });
+      console.log(error);
+      res.sendStatus(500);
+    }
+    else{
+
+      if(result.status==200){
+        result=result.msg;
+        console.log("------result of profile details is -----",result);
+        res.json({profileDetails:result});
+        }else{
+          res.sendStatus(500);
+        }
+      
+    }
+  })
+})
+
+
+
+// //REST DASHBOARD - PROFILE
+// restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
+    
+//     sql=`select r.r_id, u.location,r.profile_pic, r.r_description, u.name,r.r_contact, type,r_timings from rest_info r inner join user_login u on u.id=r.r_id where u.email='${req.user.loginEmail}'; `;
+      
+//      con.query(sql,function(err,result){
+//           if(err)
+//           {
+//             console.log("Iside error  -->>>>>>>>>>>>>",err);
+//             res.sendStatus(500);
+//           }
+//           else
+//           {
+//           console.log(result);
+//           res.json({profileDetails:result});
+//           }
+//       });
+//    });
+  
+restRouter.put('/RestProfileUpdate',authenticateToken,(req,res)=>{
+  kafka.make_request('rest_profile_update',req.body,(error,result)=>{
+    console.log("-------------------In result-----------------");
+    console.log(result);
+   
+    if(error){
+     
+      console.log(error);
+      res.sendStatus(500);
+    }
+    else{
+
+      if(result.status==200){
+      
+        res.sendStatus(200);
+        }else{
+          res.sendStatus(500);
+        }
+      
+    }
+  })
+})
+
+
+  // //REST PROFILE UPDATE
+  // restRouter.post('/RestProfileUpdate',authenticateToken,(req,res)=>{
+    
+  //   console.log("THis is the body ->",req.body);
+  //   let val=req.body;
+  //   sql=`update  rest_info set r_description='${val.r_description}',type='${val.type}',r_contact='${val.r_contact}',r_timings='10pm' where r_id=${val.r_id};`;
+  //   sql=sql+ `update user_login set name='${val.name}' , location='${val.location}' where id=${val.r_id};`;
+  //   console.log(sql);
+  //   con.query(sql,function(err,result){
+  //     if(err)
+  //     {
+        
+  //       console.log(err);
+  //       res.sendStatus(500);
+  //     }
+  //     else{
+  //       res.send('ok')
+  //     }
+     
+  //   })
+  // });
 
 
   restRouter.get('/s3url',async (req,res)=>{
@@ -57,22 +111,50 @@ restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
       res.send({url});
   })
 
-  restRouter.post('/RestProfileImageUpdate',authenticateToken,(req,res)=>{
-    console.log(req.body);
-    let sql=`Update rest_info set profile_pic='${req.body.imageUrl}' where r_id='${req.body.id}';`;
-    console.log(sql);
-    con.query(sql,(error,result)=>{
-        if(error)
-        {
-          console.log(error);
-          res.sendStatus(500);
-        }
-        else{
-          res.sendStatus(200);
-        }
+  restRouter.put('/RestProfileImageUpdate',authenticateToken,(req,res)=>{
+    kafka.make_request('rest_profile_image_update',req.body,(error,result)=>{
+     if(error){
+        res.sendStatus(500);
+      }
+      else{
+        const status=result.status==200 ? 200 : 500;
+        res.sendStatus(status);
+      }
     })
   })
 
+
+  // restRouter.post('/RestProfileImageUpdate',authenticateToken,(req,res)=>{
+  //   console.log(req.body);
+  //   let sql=`Update rest_info set profile_pic='${req.body.imageUrl}' where r_id='${req.body.id}';`;
+  //   console.log(sql);
+  //   con.query(sql,(error,result)=>{
+  //       if(error)
+  //       {
+  //         console.log(error);
+  //         res.sendStatus(500);
+  //       }
+  //       else{
+  //         res.sendStatus(200);
+  //       }
+  //   })
+  // })
+
+  restRouter.post('/RestDishesAdd',authenticateToken,(req,res)=>{
+    kafka.make_request('rest_dishes_add',req.body,(error,result)=>{
+     if(error){
+        res.sendStatus(500);
+      }
+      else{
+        const status=result.status==200 ? 200 : 500;
+        res.sendStatus(status);
+      }
+    })
+  })
+
+
+
+/*
   restRouter.post('/RestDishesAdd',authenticateToken,(req,res)=>{
     console.log("Puneet-------------------",req.body);
     let value=req.body;
@@ -101,24 +183,41 @@ restRouter.get('/RestProfile',authenticateToken,(req,res)=>{
         }
       
   })})
+*/
 
-  restRouter.get('/getDishes',authenticateToken,(req,res)=>{
-    console.log(req.body);
-    let sql=`select d.id,d.rest_id,d.name,d.ingredients,d.price,d.description,d.cat,c.type,d.images from dishes d, category c where`;
-    sql=sql+` d.cat=c.id and  rest_id='${req.query.id}';`
-    console.log(sql);
-    con.query(sql,(error,result)=>{
-      if(error){
-        console.log(error);
-        res.sendStatus(500);
-      }
-      else{
-        console.log("Success");
-        res.send(result);
-      }
-    })
-
+restRouter.get('/getDishes',authenticateToken,(req,res)=>{
+  kafka.make_request('get_dishes',req.query,(error,result)=>{
+   if(error){
+      res.sendStatus(500);
+    }
+    else{
+      const status=result.status==200 ? 200 : 500;
+      if(status==200){
+        res.send(result.msg);
+      } 
+      else res.sendStatus(500);
+    }
   })
+})
+
+
+  // restRouter.get('/getDishes',authenticateToken,(req,res)=>{
+  //   console.log(req.body);
+  //   let sql=`select d.id,d.rest_id,d.name,d.ingredients,d.price,d.description,d.cat,c.type,d.images from dishes d, category c where`;
+  //   sql=sql+` d.cat=c.id and  rest_id='${req.query.id}';`
+  //   console.log(sql);
+  //   con.query(sql,(error,result)=>{
+  //     if(error){
+  //       console.log(error);
+  //       res.sendStatus(500);
+  //     }
+  //     else{
+  //       console.log("Success");
+  //       res.send(result);
+  //     }
+  //   })
+
+  // })
 
 //To get customer order data
 restRouter.get('/getRestOrders',authenticateToken,(req,res)=>{

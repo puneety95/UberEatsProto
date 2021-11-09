@@ -43,7 +43,8 @@ function DishesAddModal(props)
         
         const imageInput = document.querySelector("#imageInput");
         const file = imageInput.files[0];
-        const { url } = await fetch(server_url+"/s3Url").then(res => res.json())
+        const { url } = await fetch(server_url+"/s3Url").then(res => res.json());
+       
          // post the image direclty to the s3 bucket
       await fetch(url, {
         method: "PUT",
@@ -54,6 +55,7 @@ function DishesAddModal(props)
       })
 
       const imageUrl = url.split('?')[0]
+      console.log("---------------URL-------------",imageUrl);
       let id =localStorage.getItem('id');
       let data ={imageUrl,id,...addDetail};
       await axios({

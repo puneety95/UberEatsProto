@@ -154,17 +154,14 @@ router.post('/signup', async (req, res) => {
 
 router.post('/signup',async (req,res)=>{
   kafka.make_request('sign_up',req.body,(error,result)=>{
-    console.log("-------------------In result-----------------");
-    console.log(result);
     
-
-    if(error){
-      console.log("------------Inside the error block----------");
+       if(error){
+      
       console.log(error);
       res.status(500).send("There were some error while performing the action");
     }
     else{
-      console.log("---------------Inside the result------------");
+      
       res.status(result.status).json(result.msg);
     }
   })
@@ -174,11 +171,10 @@ router.post('/signup',async (req,res)=>{
 // To Login
 router.post('/login',async (req,res)=>{
   kafka.make_request('login',req.body,(error,result)=>{
-    console.log("-------------------In result-----------------");
+    console.log("-------------------In Sign in result-----------------");
     console.log(result);
-    console.log(error);
+   
     if(error){
-     
       console.log(error);
       res.status(500).send("There were some error while performing the action");
     }
@@ -188,7 +184,7 @@ router.post('/login',async (req,res)=>{
         result=result.msg;
         val={loginEmail:req.body.loginEmail}
         const accessToken= jwt.sign(val,secret_jwt_token);
-        console.log("--------Isnide result-------",result)
+        console.log("--------Isnide Sign in result-------",result)
         res.json({accessToken:accessToken, id:result.id, role:result.role, location:result.location, email:result.email});
         }else{
           res.status(500).send(result.msg);

@@ -46,7 +46,7 @@ function RestProfile()
    
       
         axios({
-          method:"post",
+          method:"put",
           url:server_url+"/RestProfileUpdate",
           headers:{"Content-Type":"application/json","Authorization": bearer},
           data: dumProfDetails
@@ -73,9 +73,9 @@ function RestProfile()
         .then((response) => {
           //console.log(response.data.profileDetails[0].profile_pic);
          // console.log("----------",response.data.profDetails[0]);
-         setProfDetails(response.data.profileDetails[0]);
-         setDumProfDetails(response.data.profileDetails[0]);
-        setCoverImageUrl(response.data.profileDetails[0].profile_pic);
+         setProfDetails(response.data.profileDetails);
+         setDumProfDetails(response.data.profileDetails);
+        setCoverImageUrl(response.data.profileDetails.profile_pic);
         })
         .catch((error) => {
           console.log((error.response));
@@ -113,7 +113,7 @@ function RestProfile()
     let id =localStorage.getItem('id');
     let data ={imageUrl,id};
     await axios({
-    method:"POST",
+    method:"PUT",
     url:server_url+"/RestProfileImageUpdate",
     headers:{"Content-Type":"application/json","Authorization": bearer},
     data: data

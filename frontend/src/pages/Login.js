@@ -34,21 +34,21 @@ function Login() {
       headers: { "Content-Type": "application/json" },
     })
       .then((response) => {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("id", response.data.id);
-        localStorage.setItem("role",response.data.role);
-        localStorage.setItem("location",response.data.location);
+           localStorage.setItem("accessToken", response.data.accessToken);
+           localStorage.setItem("id", response.data.id);
+           localStorage.setItem("role",response.data.role);
+           localStorage.setItem("location",response.data.location);
                
-        const loginUserDetails=bindActionCreators(logingetUserDetails,dispatch);
-        delete response.data.accessToken;
-        console.log("RESponseDAta",response.data);
+           const loginUserDetails=bindActionCreators(logingetUserDetails,dispatch);
+           delete response.data.accessToken;
+           console.log("RESponseDAta",response.data);
 
-        loginUserDetails(response.data);
+           loginUserDetails(response.data);
        
-        if(response.data.role===2)
-        {
-        history.push('/dashboard');
-        }
+          if(response.data.role===2)
+          {
+            history.push('/dashboard');
+           }
         else{
           history.push('/home');
         }
