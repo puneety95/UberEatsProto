@@ -20,21 +20,21 @@ function Dashboard()
 
     const [isHeart, setIsHeart] = useState(false);
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
-     const [restDetails,setRestDetails] =useState([{}]);
+     const [restDetails,setRestDetails] =useState({});
        
 
       useEffect(()=>{
         axios({
             method: "get",
-            url: server_url+`/getRestaurantCustomer?id=${id}}`,
+            url: server_url+`/getRestaurantCustomer?id=${id}`,
             headers: { "Content-Type": "application/json","Authorization": bearer  },
             
             
           })
             .then((response) => {
-              
+              console.log("Inside ---------------------------------------------",response);
               setRestDetails(response.data);
-             console.log("Details",response);
+             console.log("Details---------------",restDetails);
             })
             .catch((error) => {
                 //alert("PP");
@@ -101,9 +101,9 @@ function Dashboard()
            
             <Row>
                 <div className="image_over_Text">
-                 <Image style={{width:'100%',height:'240px',objectFit:'cover'}}  src={restDetails[0].profile_pic} alt="cover_image" /> 
+                 <Image style={{width:'100%',height:'240px',objectFit:'cover'}}  src={restDetails.profile_pic} alt="cover_image" /> 
                  <div className="bottom-left">
-                     <p>{restDetails[0].name} <span style={{fontSize:'20px',}}>Timings : "10-10-23"</span></p>
+                     <p>{restDetails.name} <span style={{fontSize:'20px',}}>Timings : "10-10-23"</span></p>
                 
                  </div>
                  
@@ -112,17 +112,17 @@ function Dashboard()
 
             <Row id="rest_description" style={{paddingLeft:'3%',paddingRight:'3%',paddingTop:'1%',textAlign:'justify'}}>
                 <div className="col-sm-8">
-                    {restDetails[0].r_description}
+                    {restDetails.r_description}
                     <Row style={{paddingLeft:'3%',paddingTop:'2%',fontWeight:500}}>
                 <div className="col-sm-8">
                     <MdIcons.MdLocationOn/>
-                    {restDetails[0].location}
+                    {restDetails.location}
                 </div>
             </Row>
             <Row style={{paddingLeft:'3%',paddingTop:'0%',fontWeight:500}}>
                 <div className="col-sm-8">
                     <FaIcons.FaPhoneVolume/>
-                    {restDetails[0].r_contact}
+                    {restDetails.r_contact}
                 </div>
             </Row>
                 </div>
@@ -133,19 +133,19 @@ function Dashboard()
             </Row>            
            
            
-            <Row>
+            {/* <Row>
                 <hr class="one" ></hr>
-            </Row>
+            </Row> */}
 
-            <Row style={{paddingLeft:'3%',paddingTop:'1%',fontWeight:500}}>
+            {/* <Row style={{paddingLeft:'3%',paddingTop:'1%',fontWeight:500}}>
                <h4>APPETIZERS</h4>
-            </Row>
+            </Row> */}
             
             
 
             <Row>
                 <Container>
-             <CustomerDish id={id} n={restDetails[0].name} />
+             <CustomerDish id={id} n={restDetails.name} />
              </Container>
 
             </Row>

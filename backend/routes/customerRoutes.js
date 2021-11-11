@@ -2,6 +2,7 @@ const jwt=require('jsonwebtoken');
 const express=require('express');
 const customerRouter=express.Router();
 const con=require('../SQL_Connection.js');
+const kafka = require('../kafka/client');
 //const con_mongo=require('../mongoose_connection');
 var _ = require('lodash');
 const { commit, getMaxListeners } = require('../SQL_Connection.js');
@@ -33,229 +34,308 @@ function authenticateToken(req,res,next)
   })
 }
 
-//To get Customer Profile -> /Profile
 customerRouter.get('/getCustProfile',authenticateToken,(req,res)=>{
-    let sql=`select a.id,a.about,u.name,a.profile_pic,u.email,a.state,a.country,a.dob,a.city,a.nickname,a.phone from cust_profile as a, user_login as u where a.id=${req.query.id} and u.id=a.id;`;
-    
-    con.query(sql,function(err,result){
-      if(err)
-      {
-        console.log(err);
-        res.sendStatus(500);
-      }
-      else{
-               
-        res.send(result);
-      }
-    })
+  kafka.make_request('cust_profile',req.query,(error,result)=>{
+   if(error){
+      res.sendStatus(500);
+    }
+    else{
+      const status=result.status==200 ? 200 : 500;
+      if(status==200){
+        
+        res.send(result.msg);
+      } 
+      else res.sendStatus(500);
+    }
+  })
 })
 
+// //To get Customer Profile -> /Profile
+// customerRouter.get('/getCustProfile',authenticateToken,(req,res)=>{
+//     let sql=`select a.id,a.about,u.name,a.profile_pic,u.email,a.state,a.country,a.dob,a.city,a.nickname,a.phone from cust_profile as a, user_login as u where a.id=${req.query.id} and u.id=a.id;`;
+    
+//     con.query(sql,function(err,result){
+//       if(err)
+//       {
+//         console.log(err);
+//         res.sendStatus(500);
+//       }
+//       else{
+               
+//         res.send(result);
+//       }
+//     })
+// })
+
+customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
+  kafka.make_request('cust_profile_update',req.body,(error,result)=>{
+   if(error){
+      res.sendStatus(500);
+    }
+    else{
+      const status=result.status==200 ? 200 : 500;
+      if(status==200){
+        res.send(result.msg);
+      } 
+      else res.sendStatus(500);
+    }
+  })
+})
 
 //To update customer profile CustProfileUpdate
-customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
-  console.log(req.body);
-  let check=`select email from user_login where email='${req.body.email}';`;
-  con.query(check,(error,result)=>{
-    if(error)
-    {
-      res.sendStatus(500)
-    }
-    else
-    {
-      //console.log("---",result[0].email);
-      console.log(result)
-        if(result.length>0)
-        {
-         let test=result[0].email;
-         let test2=req.body.email;
-         console.log(test);
-         console.log(test2);
-          if(test != test2)
-       //  if(5 != 3) 
-         {
-            console.log("HERERER");
-           res.sendStatus(403);
-          }
+// customerRouter.post('/CustProfileUpdate',authenticateToken,(req,res)=>{
+//   console.log(req.body);
+//   let check=`select email from user_login where email='${req.body.email}';`;
+//   con.query(check,(error,result)=>{
+//     if(error)
+//     {
+//       res.sendStatus(500)
+//     }
+//     else
+//     {
+//       //console.log("---",result[0].email);
+//       console.log(result)
+//         if(result.length>0)
+//         {
+//          let test=result[0].email;
+//          let test2=req.body.email;
+//          console.log(test);
+//          console.log(test2);
+//           if(test != test2)
+//        //  if(5 != 3) 
+//          {
+//             console.log("HERERER");
+//            res.sendStatus(403);
+//           }
 
-          else
-        {
-          let val=req.body;
-          let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.phone}'  ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
-          sql=sql + `update user_login set name='${val.name}' ,  location='${val.city}' , email='${val.email}' where id='${val.id}' ; `
-          console.log(sql);
-          con.query(sql,function(err,result){
-          if(err)       
-            {
+//           else
+//         {
+//           let val=req.body;
+//           let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.phone}'  ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
+//           sql=sql + `update user_login set name='${val.name}' ,  location='${val.city}' , email='${val.email}' where id='${val.id}' ; `
+//           console.log(sql);
+//           con.query(sql,function(err,result){
+//           if(err)       
+//             {
             
-            if(err.errno == 1062)
-            {
-              res.sendStatus(403);
-            }
-            else{
+//             if(err.errno == 1062)
+//             {
+//               res.sendStatus(403);
+//             }
+//             else{
               
-              res.sendStatus(500);
-            }
+//               res.sendStatus(500);
+//             }
            
-            }
-          else{
-               res.send(result);
-              }       
-            })
+//             }
+//           else{
+//                res.send(result);
+//               }       
+//             })
 
-        }
-
-
-        }
-        else
-        {
-          let val=req.body;
-          let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.phone}'  ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
-          sql=sql + `update user_login set name='${val.name}' , location='${val.city}', email='${val.email}' where id='${val.id}' ; `
-          console.log(sql);
-          con.query(sql,function(err,result){
-          if(err)       
-            {
-            console.log(err);
-            res.sendStatus(500);
-            }
-          else{
-               res.send(result);
-              }       
-            })
-
-        }
-
-    }
-
-  })
+//         }
 
 
+//         }
+//         else
+//         {
+//           let val=req.body;
+//           let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , country='${val.country}' , phone='${val.phone}'  ,nickname='${val.nickname}' ,about='${val.about}' where id='${val.id}' ; `
+//           sql=sql + `update user_login set name='${val.name}' , location='${val.city}', email='${val.email}' where id='${val.id}' ; `
+//           console.log(sql);
+//           con.query(sql,function(err,result){
+//           if(err)       
+//             {
+//             console.log(err);
+//             res.sendStatus(500);
+//             }
+//           else{
+//                res.send(result);
+//               }       
+//             })
 
+//         }
 
+//     }
+
+//   })
 
   
+// })
+
+
+customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
+  kafka.make_request('get_restaurant',req.query,(error,result)=>{
+   if(error){
+      res.sendStatus(500);
+    }
+    else{
+      const status=result.status==200 ? 200 : 500;
+      if(status==200){
+        
+        res.send(result.msg);
+      } 
+      else res.sendStatus(500);
+    }
+  })
 })
 
 
 //to get restaurant at home page
-customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
-  console.log("-------------------------------",req.query);
+// customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
+//   console.log("-------------------------------",req.query);
  
-let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type in ('${req.query.type}','Delivery')`;
+// let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type in ('${req.query.type}','Delivery')`;
 
-let search="";
+// let search="";
 
-if((req.query.search)!="undefined")
-{
-   search=req.query.search
-}
+// if((req.query.search)!="undefined")
+// {
+//    search=req.query.search
+// }
 
- let filter=req.query.filter;
- if(filter.length==0)
- {
-   filter="'veg','nonveg','vegan'";
- }
+//  let filter=req.query.filter;
+//  if(filter.length==0)
+//  {
+//    filter="'veg','nonveg','vegan'";
+//  }
  
-filter="(" + filter +")";
-sql=sql + ` and r.r_id  in (select rest_id from dishes where filter in ${filter} )`
-sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-console.log("Value 111111 is---->",sql);
-con.query(sql,(error,result)=>{
-  if(error)
-  {
-    res.sendStatus(500);
-  }
-  else
-  {
-    let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type in ('${req.query.type}' , 'Delivery') and u.id=r.r_id `;
-    sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
-    sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-    console.log("query22222222 is------------------------ >", sql);
+// filter="(" + filter +")";
+// sql=sql + ` and r.r_id  in (select rest_id from dishes where filter in ${filter} )`
+// sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
+// console.log("Value 111111 is---->",sql);
+// con.query(sql,(error,result)=>{
+//   if(error)
+//   {
+//     res.sendStatus(500);
+//   }
+//   else
+//   {
+//     let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location=(select location from user_login where id='${req.query.id}') and r.type in ('${req.query.type}' , 'Delivery') and u.id=r.r_id `;
+//     sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
+//     sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
+//     console.log("query22222222 is------------------------ >", sql);
    
-    con.query(sql,(error2,result2)=>{
-      if(error2)
-      {
+//     con.query(sql,(error2,result2)=>{
+//       if(error2)
+//       {
         
-        res.sendStatus(500);
-      }
-      else{
+//         res.sendStatus(500);
+//       }
+//       else{
         
-        let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location='${req.query.location}' and r.type in ('${req.query.type}','Delivery') and u.id=r.r_id `;
-        sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
-        sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
-        console.log("quer333------------------------------>",sql)
-        con.query(sql,(err,result3)=>{
-            if(err)
-            {
-              console.log(error);
-              res.send(500)
-            }
-            else{
-             // console.log("REsult is -->",result)
-              let d=[...result3,...result2, ...result];
-              d=_.uniqBy(d, 'r_id');
-              console.log("uniqueee---------->,",d);
-              res.send(d);
-            }
+//         let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location='${req.query.location}' and r.type in ('${req.query.type}','Delivery') and u.id=r.r_id `;
+//         sql=sql + ` and r.r_id   in (select rest_id from dishes where filter in ${filter})`
+//         sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
+//         console.log("quer333------------------------------>",sql)
+//         con.query(sql,(err,result3)=>{
+//             if(err)
+//             {
+//               console.log(error);
+//               res.send(500)
+//             }
+//             else{
+//              // console.log("REsult is -->",result)
+//               let d=[...result3,...result2, ...result];
+//               d=_.uniqBy(d, 'r_id');
+//               console.log("uniqueee---------->,",d);
+//               res.send(d);
+//             }
 
-        })
+//         })
        
-      }
-    })
-  }
-})
+//       }
+//     })
+//   }
+// })
 
-})
-
-
+// });
 
 //TO get selected restaurant details - Dashboard
 customerRouter.get('/getRestaurantCustomer',authenticateToken,(req,res)=>{
-  console.log("Get restuarant details----------------------------------");
-
-
-  let sql=`select r.profile_pic,u.name,r.r_description,r.r_contact,r.r_timings,r.type,u.location from rest_info as r , user_login as u where u.id=r.r_id and r.r_id = '${req.query.id}';`;
- // sql=sql + ` and r.r_id in (select rest_id from dishes where rest_id='${req.query.id}' and filter in ${filter});`  
-  console.log('ppppppp',sql);
-  con.query(sql,(error,result)=>{
-    if(error)
-    {
-      console.log(error);
+  kafka.make_request('get_restaurant_customer',req.query,(error,result)=>{
+   if(error){
       res.sendStatus(500);
     }
     else{
-      console.log("Puneet-----",result);
-      res.send(result);
+      const status=result.status==200 ? 200 : 500;
+      if(status==200){
+        console.log("The value of the returned restuarrat nis  ",result.msg);
+        res.send(result.msg);
+      } 
+      else res.sendStatus(500);
     }
   })
+});
 
-})
+
+// //TO get selected restaurant details - Dashboard
+// customerRouter.get('/getRestaurantCustomer',authenticateToken,(req,res)=>{
+//   console.log("Get restuarant details----------------------------------");
 
 
+//   let sql=`select r.profile_pic,u.name,r.r_description,r.r_contact,r.r_timings,r.type,u.location from rest_info as r , user_login as u where u.id=r.r_id and r.r_id = '${req.query.id}';`;
+//  // sql=sql + ` and r.r_id in (select rest_id from dishes where rest_id='${req.query.id}' and filter in ${filter});`  
+//   console.log('ppppppp',sql);
+//   con.query(sql,(error,result)=>{
+//     if(error)
+//     {
+//       console.log(error);
+//       res.sendStatus(500);
+//     }
+//     else{
+//       console.log("Puneet-----",result);
+//       res.send(result);
+//     }
+//   })
+
+// })
+
+
+
+
+
+//To Add restaurant as favourite
 customerRouter.post('/addfavourite',authenticateToken,(req,res)=>{
-  console.log("inside favouritessss");
-  let val=req.body;
-  let sql;
-  if(val.check==1)
-  {
-    sql=`delete from favourites where rest_id='${val.id}' and cust_id='${val.uid}';`;
-  }
-  else{
-    sql=`Insert into favourites values ('${val.id}' ,'${val.uid}');`;
-  }
-  console.log(sql);
-  con.query(sql,(error,result)=>{
-    if(error)
-    {
-     console.log(error);
+  kafka.make_request('add_favourite',req.body,(error,result)=>{
+   if(error){
       res.sendStatus(500);
     }
     else{
-      console.log("Success");
-      res.sendStatus(200);
+      const status=result.status==200 ? 200 : 500;
+      if(status==200){
+        res.sendStatus(200);
+      } 
+      else res.sendStatus(500);
     }
   })
-})
+});
+
+// //To Add restaurant as favourite
+// customerRouter.post('/addfavourite',authenticateToken,(req,res)=>{
+//   console.log("inside favouritessss");
+//   let val=req.body;
+//   let sql;
+//   if(val.check==1)
+//   {
+//     sql=`delete from favourites where rest_id='${val.id}' and cust_id='${val.uid}';`;
+//   }
+//   else{
+//     sql=`Insert into favourites values ('${val.id}' ,'${val.uid}');`;
+//   }
+//   console.log(sql);
+//   con.query(sql,(error,result)=>{
+//     if(error)
+//     {
+//      console.log(error);
+//       res.sendStatus(500);
+//     }
+//     else{
+//       console.log("Success");
+//       res.sendStatus(200);
+//     }
+//   })
+// })
 
 
 customerRouter.get('/getFavourites',authenticateToken,(req,res)=>{

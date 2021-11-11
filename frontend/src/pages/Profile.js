@@ -59,9 +59,9 @@ function Profile() {
       
     })
       .then((response) => {
-        console.log("PUneettttttttttt--",response.data[0]);
-        setCustDetails(response.data[0]);
-        setDumCustDetails(response.data[0]);
+        console.log("PUneettttttttttt--",response.data);
+        setCustDetails(response.data);
+        setDumCustDetails(response.data);
        
       })
       .catch((error) => {

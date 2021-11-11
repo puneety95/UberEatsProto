@@ -16,6 +16,12 @@ var RestProfileUpdate = require('./services/RestProfileUpdateService.js');
 var RestProfileImageUpdate = require('./services/RestProfileImageUpdate.js');
 var RestDishes=require('./services/RestDishesService');
 var RestDishesAdd=require('./services/RestDishesAddService.js');
+var UpdateRestDishes=require('./services/RestDishUpdateService.js');
+var CustomerProfile=require('./services/CustomerProfile.js');
+var CustomerProfileUpdate=require('./services/CustomerProfileUpdate.js');
+var GetRestaurant=require('./services/GetRestaurantService');
+var GetRestaurantCustomer=require('./services/GetRestaurantCustomerService');
+var AddFavourite=require('./services/AddFavouriteService.js');
 const router = require('../backend/routes/handler.js');
 
 
@@ -62,5 +68,11 @@ handleTopicRequest("rest_profile_update",RestProfileUpdate);
 handleTopicRequest("rest_profile_image_update",RestProfileImageUpdate);
 handleTopicRequest("get_dishes",RestDishes);
 handleTopicRequest("rest_dishes_add",RestDishesAdd);
+handleTopicRequest("update_dish",UpdateRestDishes);
+handleTopicRequest("cust_profile",CustomerProfile);
+handleTopicRequest("cust_profile_update",CustomerProfileUpdate);
+handleTopicRequest("get_restaurant",GetRestaurant);
+handleTopicRequest("get_restaurant_customer",GetRestaurantCustomer);
+handleTopicRequest("add_favourite",AddFavourite);
 //handleTopicRequest("rest_dishes_add",RestDishesAdd);
 

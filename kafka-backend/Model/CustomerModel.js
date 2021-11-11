@@ -15,7 +15,7 @@ const customerSchema = mongoose.Schema({
     
     },
     state: {
-        type: Number
+        type: String
     },
     country: {
         type: String

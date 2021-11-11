@@ -70,7 +70,7 @@ function RestDish() {
   const UpdateDishes = (e) => {
     console.log("THESE ARE THE DETAILS ", dummyDishDetails);
     axios({
-      method: "post", url: server_url + `/updateDish`,
+      method: "put", url: server_url + `/updateDish`,
       headers: { "Content-Type": "application/json", "Authorization": bearer },
       data: dummyDishDetails
     })
@@ -193,7 +193,7 @@ function RestDish() {
                               <label for="Ingredients">Ingredients</label>
                             </div>
                             <div className="col-sm-9">
-                              <textarea type="text" class="form-control " name="Ingredients" onChange={(e) => { handleUpdateChange(e) }} defaultValue={dish.ingredients} rows="5"></textarea>
+                              <textarea type="text" class="form-control " name="ingredients" onChange={(e) => { handleUpdateChange(e) }} defaultValue={dish.ingredients} rows="5"></textarea>
                             </div>
 
                           </Row>
@@ -202,7 +202,7 @@ function RestDish() {
                               <label for="Description">Description</label>
                             </div>
                             <div className="col-sm-9">
-                              <textarea class="form-control " onChange={(e) => { handleUpdateChange(e) }} name="Description" defaultValue={dish.description} rows="5"></textarea>
+                              <textarea class="form-control " onChange={(e) => { handleUpdateChange(e) }} name="description" defaultValue={dish.description} rows="5"></textarea>
                             </div>
 
                           </Row>

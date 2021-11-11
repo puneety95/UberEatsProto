@@ -248,7 +248,19 @@ restRouter.get('/getRestOrders',authenticateToken,(req,res)=>{
   })
 })
 
-restRouter.post('/updateDish',authenticateToken,(req,res)=>{
+restRouter.put('/updateDish',authenticateToken,(req,res)=>{
+  kafka.make_request('update_dish',req.body,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       res.sendStatus(status);
+     }
+   })
+ })
+
+/*estRouter.post('/updateDish',authenticateToken,(req,res)=>{
   let val=req.body;
  
   let sql= `update dishes set name ='${val.name}' , ingredients='${val.ingredients}' , price='${val.price}' , description='${val.description}' where id='${val.id}' and rest_id='${val.rest_id}';`
@@ -265,6 +277,7 @@ restRouter.post('/updateDish',authenticateToken,(req,res)=>{
     }
   })
 })
+*/
 
 restRouter.post('/updateOrderStatus',authenticateToken,(req,res)=>{
   console.log("----------------",req.body.orderStatus2);
