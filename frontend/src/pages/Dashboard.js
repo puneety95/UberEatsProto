@@ -45,10 +45,11 @@ function Dashboard()
         
             axios({
                 method: "get",
-                url: server_url+`/getHeart?id=${id}&uid=${uid}}`,
+                url: server_url+`/getHeart?id=${id}&uid=${uid}`,
                 headers: { "Content-Type": "application/json","Authorization": bearer  },
                 })
                 .then((response) => {
+                 
                     if(response.data.length > 0)
                     {
                      setIsHeart(true);

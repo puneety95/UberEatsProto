@@ -39,7 +39,9 @@ async function handle_request(msg,callback)
             nickname:"",
             phone:"",
             profile_pic:"",
-            about:""
+            about:"",
+            
+
           });
               cust_prof.save();
           }
@@ -49,7 +51,8 @@ async function handle_request(msg,callback)
               r_contact:"",
               r_timings:"",
               profile_pic:"",
-              type:""
+              type:"",
+              user_name:""
 
             });
               rest_prof.save();

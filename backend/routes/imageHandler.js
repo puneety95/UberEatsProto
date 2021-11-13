@@ -48,11 +48,9 @@ const s3 = new aws.S3({
       Expires: 60
     })
  
-  
+  console.log("HEre");
       const uploadURL = await s3.getSignedUrlPromise('putObject', params);
-   
-    
-    
+     console.log(uploadURL);
     return uploadURL;
   }
 

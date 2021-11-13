@@ -8,7 +8,7 @@ const favouriteSchema = mongoose.Schema({
        },
     
     cust_id: {
-        type: String,
+        type: Number,
         required: true
     },
    

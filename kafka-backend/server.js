@@ -22,7 +22,17 @@ var CustomerProfileUpdate=require('./services/CustomerProfileUpdate.js');
 var GetRestaurant=require('./services/GetRestaurantService');
 var GetRestaurantCustomer=require('./services/GetRestaurantCustomerService');
 var AddFavourite=require('./services/AddFavouriteService.js');
+var GetFavourite=require('./services/GetFavouriteService.js');
+var UpdateCustomerPic=require('./services/UpdateCustomerPicService.js');
+var AddDeliveryAdress=require('./services/AddDeliveryAdressService.js');
+var GetDishes2=require('./services/GetDishes2Service.js');
+var GetHeart=require('./services/GetHeartService.js');
+var GetCustImage=require('./services/GetCustImageService.js');
+var GetCustOrders=require('./services/GetCustOrdersService.js');
+var CreateOrder=require('./services/CreateOrderService.js');
+var GetDeliveryAddressService=require('./services/GetDeliveryAddressService.js');
 const router = require('../backend/routes/handler.js');
+
 
 
 
@@ -74,5 +84,14 @@ handleTopicRequest("cust_profile_update",CustomerProfileUpdate);
 handleTopicRequest("get_restaurant",GetRestaurant);
 handleTopicRequest("get_restaurant_customer",GetRestaurantCustomer);
 handleTopicRequest("add_favourite",AddFavourite);
+handleTopicRequest("get_favourite",GetFavourite);
+handleTopicRequest("update_customer_profile_pic",UpdateCustomerPic);
+handleTopicRequest("add_delivery_address",AddDeliveryAdress);
+handleTopicRequest("get_dishes2",GetDishes2);
+handleTopicRequest("get_heart",GetHeart);
+handleTopicRequest("get_cust_image",GetCustImage);
+handleTopicRequest("get_cust_orders",GetCustOrders);
+handleTopicRequest("create_order",CreateOrder);
+handleTopicRequest("get_delivery_address",GetDeliveryAddressService);
 //handleTopicRequest("rest_dishes_add",RestDishesAdd);
 

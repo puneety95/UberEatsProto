@@ -337,58 +337,108 @@ customerRouter.post('/addfavourite',authenticateToken,(req,res)=>{
 //   })
 // })
 
+//API to get favourite restaurant
+customerRouter.get('/getfavourites',authenticateToken,(req,res)=>{
+  kafka.make_request('get_favourite',req.query,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.send(result.msg);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
 
-customerRouter.get('/getFavourites',authenticateToken,(req,res)=>{
-  console.log("Iside get favourites-----------");
+// customerRouter.get('/getFavourites',authenticateToken,(req,res)=>{
+//   console.log("Iside get favourites-----------");
   
-  let sql=`select r.r_id , r.profile_pic , u.name from rest_info as r, user_login as u where u.id=r.r_id and  r.r_id in (select rest_id from favourites where cust_id='${req.query.id}');`;
-  console.log(sql);
-  con.query(sql ,(error,result)=>{
-      if(error)
-      {
-        console.log(error);
-        res.sendStatus(500);
-      }
-      else
-      {
-        console.log("Success",result);
-        res.send(result);
-      }
-  })
+//   let sql=`select r.r_id , r.profile_pic , u.name from rest_info as r, user_login as u where u.id=r.r_id and  r.r_id in (select rest_id from favourites where cust_id='${req.query.id}');`;
+//   console.log(sql);
+//   con.query(sql ,(error,result)=>{
+//       if(error)
+//       {
+//         console.log(error);
+//         res.sendStatus(500);
+//       }
+//       else
+//       {
+//         console.log("Success",result);
+//         res.send(result);
+//       }
+//   })
 
-})
+// })
 
-customerRouter.post('/updateCustomerProfilePic',authenticateToken,(req,res)=>{
-  console.log("Inside customer Profile Pic upload");
-  let sql = `Update cust_profile set profile_pic='${req.body.imageUrl}' where id='${req.body.id}'; `
-  console.log(sql);
-  con.query(sql,(error,result)=>{
-    if(error)
-    {
-      res.sendStatus(500);
-    }
-    else
-    {
-      res.send(200);
-    }
-  })
-});
+//To update customer profile
+customerRouter.put('/updateCustomerProfilePic',authenticateToken,(req,res)=>{
+  kafka.make_request('update_customer_profile_pic',req.body,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.sendStatus(200);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
+
+
+// //To update customer profile
+// customerRouter.post('/updateCustomerProfilePic',authenticateToken,(req,res)=>{
+//   console.log("Inside customer Profile Pic upload");
+//   let sql = `Update cust_profile set profile_pic='${req.body.imageUrl}' where id='${req.body.id}'; `
+//   console.log(sql);
+//   con.query(sql,(error,result)=>{
+//     if(error)
+//     {
+//       res.sendStatus(500);
+//     }
+//     else
+//     {
+//       res.send(200);
+//     }
+//   })
+// });
+
+
+//To add delivery address- Checkout
+customerRouter.post('/addDeliveryAddress',authenticateToken,(req,res)=>{
+  kafka.make_request('add_delivery_address',req.body,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.sendStatus(200);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
 
 //To add delivery addrees - Checkout
-customerRouter.post('/addDeliveryAddress',authenticateToken,(req,res)=>{
-  let sql=`insert into delivery_address values ('${req.body.id}' , '${req.body.address}') ;`
-  con.query(sql,(error,result)=>{
-    if(error)
-    {
-      console.log(error);
-      res.sendStatus(500);
-    }
-    else
-    {
-      res.sendStatus(200);
-    }
-  })
-})
+// customerRouter.post('/addDeliveryAddress',authenticateToken,(req,res)=>{
+//   let sql=`insert into delivery_address values ('${req.body.id}' , '${req.body.address}') ;`
+//   con.query(sql,(error,result)=>{
+//     if(error)
+//     {
+//       console.log(error);
+//       res.sendStatus(500);
+//     }
+//     else
+//     {
+//       res.sendStatus(200);
+//     }
+//   })
+// })
 
 //To get delivery addrees - Checkout
 customerRouter.get('/getDeliveryAddress',authenticateToken,(req,res)=>{
@@ -408,134 +458,224 @@ customerRouter.get('/getDeliveryAddress',authenticateToken,(req,res)=>{
       res.send(result);
     }
   })
-})
+});
+
+
 //To create order - checkout
 customerRouter.post('/createOrder',authenticateToken,(req,res)=>{
- 
-  let val=req.body.order;
-  let val2=req.body.items;
-  let sql=`insert into orders values('0','${val.cust_id}','${val.rest_id}','${val.time}','1','${val.mode}','${val.del_add}','1');`;
-  
-  con.query(sql,(error,result)=>{
-    if(error)
-    {
-      console.log(error);
-      res.sendStatus(500);
-    }
-    else{
+  kafka.make_request('create_order',req.body,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.sendStatus(200);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
 
-        let sql=`select max(id) as maxID   from orders;`
-        con.query(sql,(err,result2)=>{
-          if(err) res.sendStatus(500)
-          else
-          {
+
+// //To create order - checkout
+// customerRouter.post('/createOrder',authenticateToken,(req,res)=>{
+ 
+//   let val=req.body.order;
+//   let val2=req.body.items;
+//   let sql=`insert into orders values('0','${val.cust_id}','${val.rest_id}','${val.time}','1','${val.mode}','${val.del_add}','1');`;
+  
+//   con.query(sql,(error,result)=>{
+//     if(error)
+//     {
+//       console.log(error);
+//       res.sendStatus(500);
+//     }
+//     else{
+
+//         let sql=`select max(id) as maxID   from orders;`
+//         con.query(sql,(err,result2)=>{
+//           if(err) res.sendStatus(500)
+//           else
+//           {
             
-            let sql=`insert into order_item values?`
-             let values = [];
-            for (let i = 0; i < val2.length; i++) {
-            values.push([result2[0].maxID, val2[i].name, val2[i].size,val2[i].price])
-                  }
-            console.log("Query is ===>",sql);
-            con.query(sql, [values], (err, result3) => {
-              if (err)
-                {
-                  console.log(err);
-                  } 
-              else
-                {
-                console.log("rows affected " + result3.affectedRows);
-                res.sendStatus(200);
-                }        
-          });
-          }
-        })
-    }
-  })
-})
+//             let sql=`insert into order_item values?`
+//              let values = [];
+//             for (let i = 0; i < val2.length; i++) {
+//             values.push([result2[0].maxID, val2[i].name, val2[i].size,val2[i].price])
+//                   }
+//             console.log("Query is ===>",sql);
+//             con.query(sql, [values], (err, result3) => {
+//               if (err)
+//                 {
+//                   console.log(err);
+//                   } 
+//               else
+//                 {
+//                 console.log("rows affected " + result3.affectedRows);
+//                 res.sendStatus(200);
+//                 }        
+//           });
+//           }
+//         })
+//     }
+//   })
+// });
+
 
 //To get customer order data
 customerRouter.get('/getCustOrders',authenticateToken,(req,res)=>{
-  console.log("STATUS_______",req.query);
-  let sql;
-  if(req.query.status==7)
-  {
-     sql=`select o.* , i.* , r.profile_pic, u.name as rest_name  from user_login u,orders o, order_item i, rest_info r where i.id=o.id and u.id=r.r_id and r.r_id =o.rest_id and o.cust_id='${req.query.id}' order by DATE(o.date) desc;`;
-  }
-  else
-  {
-     sql=`select o.* , i.* ,r.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,rest_info r where i.id=o.id and u.id=r.r_id and r.r_id =o.rest_id and o.cust_id='${req.query.id}'and lower(o.status) =lower('${req.query.status}')  order by DATE(o.date) desc;`;
-  }
+  kafka.make_request('get_cust_orders',req.query,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.send(result.msg);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
+
+//To get customer order data
+// customerRouter.get('/getCustOrders',authenticateToken,(req,res)=>{
+//   console.log("STATUS_______",req.query);
+//   let sql;
+//   if(req.query.status==7)
+//   {
+//      sql=`select o.* , i.* , r.profile_pic, u.name as rest_name  from user_login u,orders o, order_item i, rest_info r where i.id=o.id and u.id=r.r_id and r.r_id =o.rest_id and o.cust_id='${req.query.id}' order by DATE(o.date) desc;`;
+//   }
+//   else
+//   {
+//      sql=`select o.* , i.* ,r.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,rest_info r where i.id=o.id and u.id=r.r_id and r.r_id =o.rest_id and o.cust_id='${req.query.id}'and lower(o.status) =lower('${req.query.status}')  order by DATE(o.date) desc;`;
+//   }
   
  
-  con.query(sql,(error,result)=>{
-     if(error)
-     {
+//   con.query(sql,(error,result)=>{
+//      if(error)
+//      {
        
-       res.sendStatus(500);
-     }
-     else
-     {
-       result2= _.groupBy(result,'id');
+//        res.sendStatus(500);
+//      }
+//      else
+//      {
+//        result2= _.groupBy(result,'id');
      
-       res.send(result2);
-     }
-  })
-})
+//        res.send(result2);
+//      }
+//   })
+// })
 
 
+//To get the dishes of the restaurant
 customerRouter.get('/getDishes2',authenticateToken,(req,res)=>{
-  console.log("FILTERS");
-  let filter=req.query.filter;
-  console.log(filter);
-  console.log("Filter up");
-   if(filter.length==0)
- {
-   filter="'veg','nonveg','vegan'";
- }
- 
-filter="(" + filter +")";
-  let sql=`select d.id,d.rest_id,d.name,d.ingredients,d.price,d.description,d.cat,c.type,d.images from dishes d, category c where`;
-  sql=sql+` d.cat=c.id and  rest_id='${req.query.id}' and filter in ${filter};`
-  console.log(sql);
-  con.query(sql,(error,result)=>{
+  kafka.make_request('get_dishes2',req.query,(error,result)=>{
     if(error){
-      console.log(error);
-      res.sendStatus(500);
-    }
-    else{
-      console.log("Success");
-      res.send(result);
-    }
-  })
-
-})
-
-customerRouter.get('/getHeart',authenticateToken,(req,res)=>{
-  let sql=`select * from favourites where rest_id = '${req.query.id}' and cust_id='${req.query.uid}' ;`;
-  console.log("favoirut",sql);
-  con.query(sql,(err,result)=>{
-    if(result)
-    {
-      console.log(result);
-      res.send(result);
-      
-    }
-  })
-})
-
-customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
-  let sql=`select c.profile_pic, u.name from cust_profile c , user_login u where c.id='${req.query.id}' and c.id=u.id;`
-  con.query(sql,(err,result)=>{
-     if(err)
-     {
-       console.log(err);
        res.sendStatus(500);
      }
-     else
-     {
-       res.send(result);
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.send(result.msg);
+       } 
+       else res.sendStatus(500);
      }
-  })
-})
+   })
+ });
+
+// //To get the dishes of the restaurant
+// customerRouter.get('/getDishes2',authenticateToken,(req,res)=>{
+//   console.log("FILTERS");
+//   let filter=req.query.filter;
+//   console.log(filter);
+//   console.log("Filter up");
+//    if(filter.length==0)
+//  {
+//    filter="'veg','nonveg','vegan'";
+//  }
+ 
+// filter="(" + filter +")";
+//   let sql=`select d.id,d.rest_id,d.name,d.ingredients,d.price,d.description,d.cat,c.type,d.images from dishes d, category c where`;
+//   sql=sql+` d.cat=c.id and  rest_id='${req.query.id}' and filter in ${filter};`
+//   console.log(sql);
+//   con.query(sql,(error,result)=>{
+//     if(error){
+//       console.log(error);
+//       res.sendStatus(500);
+//     }
+//     else{
+//       console.log("Success");
+//       res.send(result);
+//     }
+//   })
+
+// });
+
+//To get the heart in the restaurant open
+customerRouter.get('/getHeart',authenticateToken,(req,res)=>{
+  kafka.make_request('get_heart',req.query,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.send(result.msg);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
+
+
+// //To get the heart in the restaurant open
+// customerRouter.get('/getHeart',authenticateToken,(req,res)=>{
+//   let sql=`select * from favourites where rest_id = '${req.query.id}' and cust_id='${req.query.uid}' ;`;
+//   console.log("favoirut",sql);
+//   con.query(sql,(err,result)=>{
+//     if(result)
+//     {
+//       console.log(result);
+//       res.send(result);
+      
+//     }
+//   })
+// })
+
+
+//Side drawer details
+customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
+  
+  kafka.make_request('get_cust_image',req.query,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.send(result.msg);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
+
+//Side drawer details
+// customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
+//   let sql=`select c.profile_pic, u.name from cust_profile c , user_login u where c.id='${req.query.id}' and c.id=u.id;`
+//   con.query(sql,(err,result)=>{
+//      if(err)
+//      {
+//        console.log(err);
+//        res.sendStatus(500);
+//      }
+//      else
+//      {
+//        res.send(result);
+//      }
+//   })
+// })
 
 module.exports=customerRouter;

@@ -69,7 +69,7 @@ function Favorites()
                                                                   
                                    <Row>
                                    <div className="col-sm">   
-                                       <img style={{width:'100%'}} id ="rest_dish_cat2" src="https://uber-eats-proto-pun.s3.us-west-1.amazonaws.com/00e0a1ca6a597082c68ace3f6da3ffbd" alt="dish_image" />
+                                       <img style={{width:'100%'}} id ="rest_dish_cat2" src={rest.profile_pic} alt="dish_image" />
                                  </div>
                                    </Row>
                                    <Row>

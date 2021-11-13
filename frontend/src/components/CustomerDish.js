@@ -56,7 +56,7 @@ const { emptyCart } = useCart();
       
     })
       .then((response) => {
-               
+     
        setDishDetails(response.data);
        console.log("PPP",response.data);
        console.log("Details",dishDetails);

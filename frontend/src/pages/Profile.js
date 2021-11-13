@@ -169,7 +169,7 @@ const handleSubmit = (e) => {
     let id = localStorage.getItem("id");
     let data = { imageUrl, id };
     await axios({
-      method: "POST",
+      method: "PUT",
       url:server_url +"/updateCustomerProfilePic",
       headers: { "Content-Type": "application/json", Authorization: bearer },
       data: data,
