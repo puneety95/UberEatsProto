@@ -83,11 +83,11 @@ let d=false;
 
       {
              Object.values(orderValues).map(order => {
-                 const restName = order && order[0] && order[0].rest_name;
-                 const restProfilePic = order && order[0] && order[0].profile_pic;
-                 let date = order && order[0] && order[0].date;
-                 date=new Date(date).toLocaleString()
-                 const status = order && order[0] && order[0].order_state;
+                 const restName = order.rest_name;
+                 const restProfilePic =order.rest_profile_pic;
+                 let date = order.date;
+                date=new Date(date).toLocaleString()
+                 const status = order.order_status;
                  const id=order && order[0] && order[0].id;
                 // const id = order && order[0] && order[0].id;
                  let t_value=0;
@@ -107,7 +107,7 @@ let d=false;
                             
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
                                <p class="card-text" onClick={()=>{setShowReceiptmodal(id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
-                              {order && order.map(item => {
+                              {order && order.order_item.map(item => {
                                  t_value=parseFloat(t_value + item.cost * item.quantity).toFixed(2);
                                   return (
                                       <div>
@@ -123,7 +123,7 @@ let d=false;
                                             <Modal.Body>
 
                                             <Row>   
-                                           <p>Spicy Chicken $15.79 x 1</p>
+                                           {/* <p>Spicy Chicken $15.79 x 1</p> */}
                                              <p>{item.name}  ${item.cost} x {item.quantity} </p>
                                              </Row>
                                              <Row>

@@ -13,18 +13,22 @@ async function handle_request(msg,callback){
 //   }
 try{
     const value=msg;
+    console.log("-----------------value-----------",value);
     let order_detail;
     if(value.status==7){
          order_detail = await orders.find({cust_id:value.id}).sort({date:'desc'}).exec(function(err,docs){
-            callback(error,{status:200,msg:docs});
+             console.log("--------------Inside first find---------",docs);
+            callback(null,{status:200,msg:docs});
          });
     }else{
+        console.log("--------------Inside second find---------",docs);
         order_detail = await orders.find({cust_id:value.id,status:value.status}).sort({date:'desc'}).exec(function(err,docs){
-            callback(error,{status:200,msg:docs});
+            callback(null,{status:200,msg:docs});
          });
     }
     
 }catch(error){
+    console.log("---------------inside error----------------",error);
     callback({status:500},null);
 }
    

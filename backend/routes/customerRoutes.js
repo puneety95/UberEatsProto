@@ -442,23 +442,40 @@ customerRouter.post('/addDeliveryAddress',authenticateToken,(req,res)=>{
 
 //To get delivery addrees - Checkout
 customerRouter.get('/getDeliveryAddress',authenticateToken,(req,res)=>{
-  console.log("Inside=--------------");
-  let sql=`select address from delivery_address where cust_id='${req.query.id}' ;`;
-  console.log(sql);
-  con.query(sql,(error,result)=>{
-    if(error)
-    {
-      console.log(error);
-      res.sendStatus(500);
-    }
-    else
-    {
-      console.log("HERERERERER____",result);
+  kafka.make_request('get_delivery_address',req.query,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.send(result.msg);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
+
+
+// //To get delivery addrees - Checkout
+// customerRouter.get('/getDeliveryAddress',authenticateToken,(req,res)=>{
+//   console.log("Inside=--------------");
+//   let sql=`select address from delivery_address where cust_id='${req.query.id}' ;`;
+//   console.log(sql);
+//   con.query(sql,(error,result)=>{
+//     if(error)
+//     {
+//       console.log(error);
+//       res.sendStatus(500);
+//     }
+//     else
+//     {
+//       console.log("HERERERERER____",result);
       
-      res.send(result);
-    }
-  })
-});
+//       res.send(result);
+//     }
+//   })
+// });
 
 
 //To create order - checkout
