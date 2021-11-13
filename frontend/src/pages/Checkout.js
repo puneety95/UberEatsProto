@@ -26,12 +26,16 @@ function Checkout()
     const [totalBill,setTotalBill] = useState();
     const [totalAfterTax,setTotalAfterTax] = useState();
     const [show, setShow] = useState(false);
+    const [show2, setShow2] = useState(false);
     const [country,setCountry]=useState();
     const [region,setRegion]=useState();
     const [city,setCity]=useState();
     const [street,setStreet]=useState();
     const [savedAdd,setSavedAdd] = useState([{address:""}]);
     const [addressChecked,setAddressChecked]=useState();
+    const [instruct,setInstruct]=useState();
+    const [special,setSpecial]=useState();
+    const [special2,setSpecial2]=useState();
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     let id=localStorage.getItem('id'); 
     const state2=useSelector((state)=>state.delivery);
@@ -40,13 +44,16 @@ function Checkout()
       setShow(false);
       setCountry();
     }
-    
-    const handleShow = () => setShow(true);
-
-    const addInstruction=()=>{
+   
+    const saveInstruction=()=>{
+      
+      setInstruct(false);
+      setSpecial2(special);
       
     }
- 
+    
+    const handleShow = () => setShow(true);
+    
     //Function to send order data to server
     const placeOrder=()=>{
       
@@ -59,7 +66,9 @@ function Checkout()
     let cust_id=id;
     let time=new Date();
     let mode=state2.toggle;
-    let data={rest_id,del_add,cust_id,time,mode}
+    let special_instruction=special2;
+    let data={rest_id,del_add,cust_id,time,mode,special_instruction};
+   
      let i=1;
    
     axios({
@@ -361,11 +370,31 @@ function Checkout()
                   </div>
               </Row>
               <Row>
+            { !instruct    &&
               <div className='col-sm-12' style={{paddingTop:'3%'}}>
-                  <Button onClick={addInstruction} style={{backgroundColor:'green',width:'-webkit-fill-available',border:'none',borderRadius: '0 !important'}}>Add Special Instruction</Button>
+                  <Button onClick={()=>setInstruct(true)} style={{backgroundColor:'green',width:'-webkit-fill-available',border:'none',borderRadius: '0 !important'}}>Add Special Instruction</Button>
                   </div>
+               }
+              </Row>
+            
+              <Row>
+             { instruct && <div className='col-sm-12' style={{paddingTop:'3%'}}>
+                  <textarea onChange={(e)=>{setSpecial(e.target.value)}} placeholder= "Any Special Instructions... Please add here!!!!"  style={{width:'-webkit-fill-available',height:'95px'}}>{special}</textarea>
+                  </div>
+                 
+              }
               </Row>
 
+              <Row>
+                {instruct && 
+                  <div className='col-sm-12' style={{paddingTop:'3%'}}>
+                  <Button onClick={()=>saveInstruction()} style={{backgroundColor:'black',width:'-webkit-fill-available',border:'none',borderRadius: '0 !important'}}>Save</Button>
+                  </div>
+                    
+
+                }
+              </Row>
+              
             </Container>
         </div>
         </div>
@@ -419,6 +448,7 @@ function Checkout()
           </Button>
         </Modal.Footer>
       </Modal>
+
     </Container>
        
 

@@ -36,7 +36,8 @@ try{
         cust_name:cust[0].name,
         cust_profile_pic:restP[0].profile_pic,
         rest_profile_pic:custP[0].profile_pic,
-        order_item:values2
+        order_item:values2,
+        instruction:value.special_instruction
     });
     await order_detail.save();
     console.log("----------------Saving the data------------------------",order_detail);

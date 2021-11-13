@@ -1,6 +1,7 @@
 import {Container,Row,Col,Button,Modal} from 'react-bootstrap';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
+import * as FiIcons from 'react-icons/bi';
 import { server_url } from '../values';
 
 function CustomerOrder()
@@ -114,6 +115,7 @@ let st={
                 let t_value=0;
                 const mode = order.mode;
                 let o_id=  order.id;
+                let instruction=order.instruction;
                
                  console.log('---ORDER----', order);
 
@@ -166,15 +168,32 @@ let st={
                                             <Modal show={show} onHide={handleClose}>
                                                  <Modal.Header >
                                               <Modal.Title>Receipt - {custName}</Modal.Title>
+                                              <div><b>Order ID-</b> {o_id}</div>
                                             </Modal.Header>
                                             <Modal.Body>
 
                                             <Row>   
                                            {/* <p>Spicy Chicken $15.79 x 1</p> */}
-                                             <p>{item.name}  ${item.cost} x {item.quantity} </p>
+                                          < div className='col-sm-10'>
+                                            <FiIcons.BiFoodTag/>  {item.name}  ${item.cost} x {item.quantity} 
+                                               </div>
+                                               <div className='col-sm-2'>
+                                               {parseFloat(item.cost *  item.quantity).toFixed(2)} 
+                                               </div>
+                                            
                                              </Row>
                                              <Row>
-                                             <h5 style={{paddingTop:'10%'}}>Total - ${t_value}</h5>
+                                             <Row style={{paddingTop:'1%',paddingBottom:'2%'}}>
+                                                <hr  className="one"></hr>
+                                                   </Row> 
+                                             <h6 style={{paddingTop:'1%'}}>Special Instructions</h6>
+                                             <p>{instruction}</p>
+                                             </Row>
+                                             <Row style={{paddingTop:'1%',paddingBottom:'2%'}}>
+                                                <hr  className="one"></hr>
+                                                   </Row> 
+                                             <Row>
+                                             <h5 style={{paddingTop:'5%'}}>Total - ${t_value}</h5>
                                              </Row>
                                             </Modal.Body>
                                             <Modal.Footer>
