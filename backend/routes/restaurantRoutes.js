@@ -221,32 +221,50 @@ restRouter.get('/getDishes',authenticateToken,(req,res)=>{
 
 //To get customer order data
 restRouter.get('/getRestOrders',authenticateToken,(req,res)=>{
+  console.log("-----------req-------",req.query);
+  kafka.make_request('get_rest_orders',req.query,(error,result)=>{
+   if(error){
+      res.sendStatus(500);
+    }
+    else{
+      const status=result.status==200 ? 200 : 500;
+      if(status==200){
+        res.send(result.msg);
+      } 
+      else res.sendStatus(500);
+    }
+  })
+});
+
+
+// //To get customer order data
+// restRouter.get('/getRestOrders',authenticateToken,(req,res)=>{
   
-  let sql;
-  if(req.query.status==7)
-  {
-     sql=`select o.* , i.* , c.profile_pic, u.name as cust_name  from user_login u,orders o, order_item i, cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}';`;
-  }
-  else
-  {
-     sql=`select o.* , i.* ,c.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}'and lower(o.order_state) =lower('${req.query.status}');`;
-  }
+//   let sql;
+//   if(req.query.status==7)
+//   {
+//      sql=`select o.* , i.* , c.profile_pic, u.name as cust_name  from user_login u,orders o, order_item i, cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}';`;
+//   }
+//   else
+//   {
+//      sql=`select o.* , i.* ,c.profile_pic ,u.name as rest_name from user_login u, orders o, order_item i,cust_profile c where i.id=o.id and u.id=c.id and c.id =o.cust_id and o.rest_id='${req.query.id}'and lower(o.order_state) =lower('${req.query.status}');`;
+//   }
   
  
-  con.query(sql,(error,result)=>{
-     if(error)
-     {
-       console.log(error);
-       res.sendStatus(500);
-     }
-     else
-     {
-       result2= _.groupBy(result,'id');
-      console.log("result is ",result2);
-       res.send(result2);
-     }
-  })
-})
+//   con.query(sql,(error,result)=>{
+//      if(error)
+//      {
+//        console.log(error);
+//        res.sendStatus(500);
+//      }
+//      else
+//      {
+//        result2= _.groupBy(result,'id');
+//       console.log("result is ",result2);
+//        res.send(result2);
+//      }
+//   })
+// })
 
 restRouter.put('/updateDish',authenticateToken,(req,res)=>{
   kafka.make_request('update_dish',req.body,(error,result)=>{
@@ -278,43 +296,56 @@ restRouter.put('/updateDish',authenticateToken,(req,res)=>{
   })
 })
 */
-
+//To update order status
 restRouter.post('/updateOrderStatus',authenticateToken,(req,res)=>{
-  console.log("----------------",req.body.orderStatus2);
-  let val=req.body.orderStatus2;
-  let sql;
-  if(val.status=='4')
-  {
-    sql =`update orders set status='4' , order_state='2' where id='${val.id}' ; `
-    console.log(sql);
-    con.query(sql, (err,result)=>{
-      if(err)
-      {
-        res.sendStatus(500);
-      }
-      else
-       {
-         res.sendStatus(200);
-       }
-    })
-  }
-  else{
-    sql =`update orders set status='${val.status}'  where id='${val.id}' ; `
-    console.log(sql);
-    con.query(sql, (err,result)=>{
-      if(err)
-      {
-        console.log(err);
-        res.sendStatus(500);
-      }
-      else
-       {
-         res.sendStatus(200);
-       }
-    })
-  }
+  kafka.make_request('update_order_status',req.body,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       res.sendStatus(status);
+     }
+   })
+ })
+
+// //To update order status
+// restRouter.post('/updateOrderStatus',authenticateToken,(req,res)=>{
+//   console.log("----------------",req.body.orderStatus2);
+//   let val=req.body.orderStatus2;
+//   let sql;
+//   if(val.status=='4')
+//   {
+//     sql =`update orders set status='4' , order_state='2' where id='${val.id}' ; `
+//     console.log(sql);
+//     con.query(sql, (err,result)=>{
+//       if(err)
+//       {
+//         res.sendStatus(500);
+//       }
+//       else
+//        {
+//          res.sendStatus(200);
+//        }
+//     })
+//   }
+//   else{
+//     sql =`update orders set status='${val.status}'  where id='${val.id}' ; `
+//     console.log(sql);
+//     con.query(sql, (err,result)=>{
+//       if(err)
+//       {
+//         console.log(err);
+//         res.sendStatus(500);
+//       }
+//       else
+//        {
+//          res.sendStatus(200);
+//        }
+//     })
+//   }
  
   
-})
+// })
 
 module.exports=restRouter;

@@ -44,6 +44,9 @@ const OrdersSchema = mongoose.Schema({
     }],
     date:{
         type:Date
+    },
+    instruction:{
+        type:String
     }
 
 });

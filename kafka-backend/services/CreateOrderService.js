@@ -11,7 +11,7 @@ try{
     console.log("VALUES of the items__________________________",val2);
     const maxid = await orders.count();
     const rest=await users.find({id:value.rest_id});
-    const cust=await users.find({id:value.rest_id});
+    const cust=await users.find({id:value.cust_id});
     const restP=await rest_info.find({r_id:value.rest_id});
     const custP=await cust_info.find({id:value.cust_id});
     console.log("VALUES of the maxID-----------",maxid);

@@ -42,6 +42,10 @@ function Checkout()
     }
     
     const handleShow = () => setShow(true);
+
+    const addInstruction=()=>{
+      
+    }
  
     //Function to send order data to server
     const placeOrder=()=>{
@@ -220,12 +224,14 @@ function Checkout()
         <div style={{fontSize:'36px',fontWeight:'500',paddingLeft:'9%',paddingTop:'3%',fontFamily:'sans-serif'}}><b><BiIcons.BiRestaurant/> {items[0].n}</b>
           </div>  
       </Row>
+      
 
       <Row style={{paddingTop:'0%',paddingBottom:'2%'}}>
                 <hr  className="one"></hr>
             </Row>  
 
       <Row>
+        
         <div style={{fontSize:'36px',fontWeight:'500',paddingLeft:'9%',paddingTop:'1%',fontFamily:'sans-serif',color:'green'}}>Your Items
           </div>  
       </Row>     
@@ -352,6 +358,11 @@ function Checkout()
                   </div>
                   <div className='col-sm-6 text-center'>
                     <div style={{fontWeight:'200px',right:'0',fontSize:'20px',paddingLeft:'10%'}}><b>{parseFloat(totalAfterTax).toFixed(2)}</b></div>
+                  </div>
+              </Row>
+              <Row>
+              <div className='col-sm-12' style={{paddingTop:'3%'}}>
+                  <Button onClick={addInstruction} style={{backgroundColor:'green',width:'-webkit-fill-available',border:'none',borderRadius: '0 !important'}}>Add Special Instruction</Button>
                   </div>
               </Row>
 

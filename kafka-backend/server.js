@@ -31,6 +31,8 @@ var GetCustImage=require('./services/GetCustImageService.js');
 var GetCustOrders=require('./services/GetCustOrdersService.js');
 var CreateOrder=require('./services/CreateOrderService.js');
 var GetDeliveryAddressService=require('./services/GetDeliveryAddressService.js');
+var GetRestOrders=require('./services/GetRestOrdersService.js');
+var UpdateOrderStatus=require('./services/UpdateOrderStatusService.js');
 const router = require('../backend/routes/handler.js');
 
 
@@ -93,5 +95,7 @@ handleTopicRequest("get_cust_image",GetCustImage);
 handleTopicRequest("get_cust_orders",GetCustOrders);
 handleTopicRequest("create_order",CreateOrder);
 handleTopicRequest("get_delivery_address",GetDeliveryAddressService);
+handleTopicRequest("get_rest_orders",GetRestOrders);
+handleTopicRequest("update_order_status",UpdateOrderStatus);
 //handleTopicRequest("rest_dishes_add",RestDishesAdd);
 

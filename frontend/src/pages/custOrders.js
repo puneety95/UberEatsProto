@@ -30,7 +30,8 @@ function CustomerOrder()
                3:"On the way",
                4:"Delivered",
                5:"Pick up Ready",
-               6:"Picked up"  
+               6:"Picked up",
+               8:"Cancelled"  
            }
 
 let d=false;
@@ -44,19 +45,17 @@ let d=false;
           })
             .then((response) => {
               //  setOrderStatus(response.data);
-              
-               console.log("VALUESSSS OF THE OREDER ARE --->",response.data);
                 setStatusValues(response.data);
                 setOrderValues(response.data);
             
             })
             .catch((error) => {
-              console.log("There were some errors while fetching order status data");
+             alert("There were some error while fetching orders");
             });
         },[orderStatus])
 
 
-    console.log('----STATUS----', orderValues)
+   
     return(
         <Container>
 
@@ -72,6 +71,7 @@ let d=false;
                     <option value="4">Delivered</option>
                     <option value="5">Pick up Ready</option>
                     <option value="6">Picked up</option>
+                    <option value="8">Cancelled</option>
                 </select>
                 </div>
             </Row>
@@ -88,13 +88,12 @@ let d=false;
                  let date = order.date;
                 date=new Date(date).toLocaleString()
                  const status = order.order_status;
-                 const id=order && order[0] && order[0].id;
+                 const id=order.id;
+                 const mode = order.mode;
                 // const id = order && order[0] && order[0].id;
                  let t_value=0;
                
-                 console.log('---ORDER----', order);
-
-                     return (
+                 return (
                    <Row>
                     <div class="card mb-3" style={{marginTop:'2%'}}>
                      <div class="row no-gutters">
@@ -106,6 +105,7 @@ let d=false;
                            <h5 class="card-title">{restName}</h5>
                             
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
+                               <p class="card-text" style={{textDecoration:'underline'}}><small >Mode - {mode}</small></p> 
                                <p class="card-text" onClick={()=>{setShowReceiptmodal(id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
                               {order && order.order_item.map(item => {
                                  t_value=parseFloat(t_value + item.cost * item.quantity).toFixed(2);

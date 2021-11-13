@@ -2,6 +2,7 @@ import { Container, Row, Col, Modal, Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import {useCart} from "react-use-cart";
 import * as FiIcons from 'react-icons/fi';
+import * as FaIcons from 'react-icons/fa';
 import * as GrIcons from 'react-icons/gr';
 import {Link} from 'react-router-dom';
 import {useSelector} from 'react-redux';
@@ -10,11 +11,12 @@ function Cart(props) {
   const [show, setShow] = useState(true);
   const [qty,ChangeQty]  =useState(true);
   
-  
+  const { items, isEmpty,removeItem } = useCart();
   const handleClose = () => {
       setShow(false);
       props.p();
   }
+  
 
   //const state2=useSelector((state)=>state.cart);
 
@@ -33,7 +35,7 @@ function Cart(props) {
   
   
  
-  const { items, isEmpty } = useCart();
+  
 
 
   
@@ -66,6 +68,7 @@ function Cart(props) {
              <Row>
              <div className="col-sm-1">
              <select onChange={(e)=>{changeQty(item.id,e.target.value)}} defaultValue = {item.size} name="qty" id="qty">
+            
                <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -82,11 +85,14 @@ function Cart(props) {
                <div style={{paddingLeft:'4%'}} className='col-sm-4'>
                 <b> {item.name}</b>
                </div>
-               <div className='col-sm-3'>
+               <div className='col-sm-2'>
                  {item.price} x  {item.size}
                </div>
                <div className='col-sm-3 text-right'>
                 <FiIcons.FiDollarSign/> {parseFloat(item.price *  item.size).toFixed(2)}
+               </div>
+               <div className='col-sm-1 text-right'>
+               <div onClick ={() => removeItem(item.id)}style={{cursor:'pointer'}}><FaIcons.FaTrashAlt/> </div>
                </div>
              </Row>
             
@@ -99,7 +105,7 @@ function Cart(props) {
         <Modal.Footer style={{padding:'0',paddingLeft:'0'}}>
         <Row style={{flex:'1'}}>
          <div className='col-sm-12'>
-       <Link to='/checkout'>  <Button  onClick={handleClose} style={{backgroundColor:'green',width:'-webkit-fill-available'}}>Go To Check Out</Button> </Link>
+       <Link to='/checkout'>  <Button  onClick={handleClose} style={{backgroundColor:'green',color:'white',width:'-webkit-fill-available'}}>Go To Check Out</Button> </Link>
          </div>
        </Row>
          </Modal.Footer>}

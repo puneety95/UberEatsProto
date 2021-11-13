@@ -1,4 +1,4 @@
-import {Container,Row,Col,Button} from 'react-bootstrap';
+import {Container,Row,Col,Button,Modal} from 'react-bootstrap';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import { server_url } from '../values';
@@ -11,13 +11,20 @@ function CustomerOrder()
     const [statusValues,setStatusValues] =useState([{}]);
     const [orderValues,setOrderValues] =useState({});
     const [display,setDisplay] = useState(false);
+    const [showReceipt,setShowReceipt] = useState();
+    const handleClose = () => setShow(false);
+    const [show, setShow] = useState(true);
+  const handleShow = () => setShow(true);
     let id=localStorage.getItem('id');
     const status=(e)=>{
 
         setOrderStatus(e.target.value);
     
     }
-
+    const setShowReceiptmodal=(id)=>{
+        handleShow();
+        setShowReceipt(id);
+    }
     const status2=(e,id)=>{
         let status=e.target.value;
         let d={status , id}
@@ -31,7 +38,8 @@ let st={
     3:"On the way",
     4:"Delivered",
     5:"Pick up Ready",
-    6:"Picked up"  
+    6:"Picked up",
+    8:"Cancelled"  
 }
     useEffect(()=>{
       
@@ -98,14 +106,14 @@ let st={
 
       {
              Object.values(orderValues).map(order => {
-                 const restName = order && order[0] && order[0].cust_name;
-                 const restProfilePic = order && order[0] && order[0].profile_pic;
-                 let date = order && order[0] && order[0].date;
+                 const custName = order.cust_name;
+                 //const restProfilePic = order && order[0] && order[0].profile_pic;
+                 let date = order.date;
                  date=new Date(date).toLocaleString();
-                 const status = order && order[0] && order[0].status;
+                 const status = order.status;
                 let t_value=0;
-                const mode = order && order[0] && order[0].mode;
-                let o_id=  order && order[0] && order[0].id;
+                const mode = order.mode;
+                let o_id=  order.id;
                
                  console.log('---ORDER----', order);
 
@@ -121,15 +129,17 @@ let st={
                               <option value="2">Preparing</option>
                               <option value="3">On the way</option>
                               <option value="4">Delivered</option>
+                              <option value="8">Cancelled</option>
                               
                        </select>
                         }
                         {  mode == 'Pickup' &&    <select name="order_status2" defaultValue={0} onChange={(e)=>{status2(e)}} id="order_status2">
-                             
+                             <option value="0">--Select Status--:</option>
                              <option value="1">Order Received</option>
                              <option value="2">Preparing</option>
                              <option value="5">Pick up Ready</option>
                              <option value="6">Picked up</option>
+                             <option value="8">Cancelled</option>
                            
                       </select>
                        }
@@ -139,10 +149,12 @@ let st={
                          </div>
                          <div class="col-md-6">
                            <div class="card-body">
-                           <h5 class="card-title">{restName}</h5>
+                           <h5 class="card-title">{custName}</h5>
                             
-                               <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
-                              {order && order.map(item => {
+                               <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p>
+                               <p class="card-text" style={{textDecoration:'underline'}}><small >Mode - {mode}</small></p>  
+                               <p class="card-text" onClick={()=>{setShowReceiptmodal(o_id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
+                              {order && order.order_item.map(item => {
                                   t_value=parseFloat(t_value + item.cost * item.quantity).toFixed(2);
                                   return (
                                       <div>
@@ -150,6 +162,32 @@ let st={
                                            <p>{item.name}  ${item.cost} x {item.quantity} </p>
                                       
                                       </Row>
+                                      {showReceipt==o_id && 
+                                            <Modal show={show} onHide={handleClose}>
+                                                 <Modal.Header >
+                                              <Modal.Title>Receipt - {custName}</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+
+                                            <Row>   
+                                           {/* <p>Spicy Chicken $15.79 x 1</p> */}
+                                             <p>{item.name}  ${item.cost} x {item.quantity} </p>
+                                             </Row>
+                                             <Row>
+                                             <h5 style={{paddingTop:'10%'}}>Total - ${t_value}</h5>
+                                             </Row>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                              <Button variant="secondary" onClick={handleClose}>
+                                                Close
+                                              </Button>
+                                              
+                                            </Modal.Footer>
+                                          </Modal>
+                                        
+                                        
+                                        
+                                        } 
                                  
                                   </div>
                                   )
