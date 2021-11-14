@@ -38,7 +38,7 @@ function NavigBar(props) {
   // const store = useStore()
   // const a= store.getState();
   // console.log("------------------store---------------",a);
-  let store_location=useSelector((state)=>state.location);
+  let user=useSelector((state)=>state.user);
   //  alert(store_location);
   useEffect(()=>{
     
@@ -166,7 +166,7 @@ function NavigBar(props) {
         <Nav id="space">
           <Button id="navaddress" onClick={handleShow} className="rounded-pill">
             <MdIcons.MdLocationOn />
-           {location}
+           {user.location}
           </Button> 
         </Nav>
         <Nav className="flex-container">

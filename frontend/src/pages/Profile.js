@@ -14,10 +14,11 @@ import "./Profile.css";
 import { useState, useEffect ,useMemo} from "react";
 import axios from "axios";
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
-import {useDispatch} from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux';
 import { server_url } from '../values';
 import {locationdetails} from '../state/action-creators/actions';
 import {bindActionCreators} from "redux";
+import {logingetUserDetails} from '../state/action-creators/actions';
 function Profile() {
   const dispatch=useDispatch();
   const [show, setShow] = useState(false);
@@ -31,7 +32,8 @@ function Profile() {
     const [city,setCity]=useState();
   const updateImage = () => setShowImage(true);
 
-  
+ 
+  let user=useSelector((state)=>state.user);
 
   const updateImageClose = () =>{
     setShowImage(false); 
@@ -108,7 +110,7 @@ const handleSubmit = (e) => {
   let ele = document.getElementById("customer_details");
   let chk_status = ele.checkValidity();
   ele.reportValidity();
- 
+  
   if (!chk_status) {
     return;
   }
@@ -124,8 +126,11 @@ const handleSubmit = (e) => {
          //localStorage.setItem('location',dumCustDetails.city)
          setCustDetails(dumCustDetails);
          setDumCustDetails(custDetails);
-         const location=bindActionCreators(locationdetails,dispatch);
-         location(dumCustDetails.city);
+         let d= {...user,
+          location: dumCustDetails.city};
+         const loginUserDetails=bindActionCreators(logingetUserDetails,dispatch);
+         loginUserDetails(d);
+        
          handleClose();
        })
        .catch((error)=>{

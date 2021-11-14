@@ -21,8 +21,9 @@ async function handle_request(msg,callback)
             location:value.city,
             email:value.email
         })
+        const result=await cust_profile.find({id:value.id},{location:1,_id:0})
        
-        callback(null,{status:200,msg:"Customer Profile data is updated"});
+        callback(null,{status:200,msg:result[0]});
         
        }catch(error){
            console.log("Inside Error",error);
