@@ -1,87 +1,55 @@
-const rest_info=require("../Model/RestModel");
-const user_login = require("../Model/SignUpModel");
+const rest=require("../Model/RestModel");
+const user = require("../Model/SignUpModel");
 const dishes=require("../Model/DishesModel");
 var _ = require('lodash');
 
 async function handle_request(msg,callback)
 {
-    
-  
-       try{
-       const value=msg;
-        
-    //    let rest_info= await rest.find({},{
-    //         r_id:1,
-    //         profile_pic:1
-    //             });
-    //     let id_array=[]
+    try{
+        const value=msg;
+        let t=value.type;
+        let type_arr= [t,'Delivery'];
+        console.log("----------------------------type---------",type_arr);
+        const user_loc = await user.find({id:value.id});
+       
+                const rest_id = await user.find({role:2,location:{$ne : user_loc[0].location}},{id:1,_id:0});
+                let rest_id_arr=[];
+                for(let i=0;i<rest_id.length ; i++){
+                    rest_id_arr.push(rest_id[i].id);
+                }console.log(" Idssssss of the restaurant are",rest_id_arr);
+                const rest_type_n_loc = await rest.find({r_id:{$in:rest_id_arr}, type:{$in:type_arr}}).
+                populate({path:'pop_name',select:'name'}).exec();
+                console.log("---------------Values of the rest not in loc-----",rest_type_n_loc);
 
+                const rest_id2 = await user.find({role:2,location:user_loc[0].location},{id:1,_id:0});
+                rest_id_arr=[];
+                for(let i=0;i<rest_id2.length ; i++){
+                    rest_id_arr.push(rest_id2[i].id);
+                }
+                const rest_type_loc = await rest.find({r_id:{$in:rest_id_arr}, type:{$in:type_arr}}).
+                populate({path:'pop_name',select:'name'}).exec();
 
-    //     rest_info.forEach(function(item){
-    //         id_array.push(item.r_id);
+                const rest_id3 = await user.find({role:2,location:value.location},{id:1,_id:0});
+                rest_id_arr=[];
+                for(let i=0;i<rest_id3.length ; i++){
+                    rest_id_arr.push(rest_id3[i].id);
+                }
+                const rest_type_loc_search = await rest.find({r_id:{$in:rest_id_arr}, type:{$in:type_arr}}).
+                populate({path:'pop_name',select:'name'}).exec();
+
+                console.log("---------------Values of the rest  in loc-----",rest_type_loc_search);
+                let result=[...rest_type_loc_search,...rest_type_loc,...rest_type_n_loc];
+                result=_.uniqBy(result, 'r_id');
+                console.log(" Combined-----------------",result);
+                callback(null,{status:200,msg:result});
           
-    //     });
+            
+    }catch(error){
+            console.log("-----------Inside Error-----------",error);
+            callback(null,{status:500});
 
-                
-    //     let user_login= await user.find({id: {$in: id_array}},{password:0,location:0});
-        
-    //     var result = [];
-    //     var len = user_login.length;
-    //         for (var i = 0; i < len; i++) {
-    //             result.push({
-    //              id:user_login[i]['id'],
-    //              r_id:rest_info[i]['r_id'],
-    //              email:user_login[i]['email'],
-    //              role:user_login[i]['role'],
-    //              name:user_login[i]['name'],
-    //              profile_pic:rest_info[i]['profile_pic']
-                
-    //                   });
-    //             }
-    console.log("-----------------------------isnide finding rest--------------------------");
-    const u_loc = await user_login.findOne({ id: value.id }, { location: 1, _id: 0 });
-    console.log("--------------------VAues of the lication is ",u_loc);
-    const rest_ids = await user_login.find(
-      { $and: [
-      {location: { $ne: u_loc.location }},
-      { role: 2 },
-    //   { name: new RegExp(search, 'i') }
-      ]},
-         { id: 1, _id: 0 }
-     );
-     console.log("-----------------------------############# id not in location--------------------------",value.filter);
-    
-       let filter  = value.filter.split(',');
-    
-      if(filter.length<3){
-          filter=['veg','nonveg','vegan'];
-      }
-    console.log("--------------filters are----------------",filter);
-
-
-  const dish_rest_ids = await dishes.find({ filter }, { rest_id: 1, _id: 0 });
-  let type_rest="'"+value.type+"'";
-  console.log("------------------------values of dish_rest_id",dish_rest_ids);
-  let i = _.intersection(rest_ids.id, dish_rest_ids.rest_id);
-  console.log(i);
-
-  const restaurants = await rest_info.find({
-      $and: [
-          {r_id: { $in: _.intersection(rest_ids.id, dish_rest_ids.rest_id) }},
-              {type: {
-                  $in: [type_rest, 'Delivery']
-                  }}
-              ]
-          }).populate({path:'pop_name',select:'name'}).exec();
-      console.log("-------------------------REst--------------",restaurants);
-      callback(null,{status:200,msg:restaurants})
-
-       // callback(null,{status:200,msg:result});
-        
-       }catch(error){
-           console.log("Inside Error",error);
-           callback(null,{status:500,msg:"There were some error while performing this task."})
-       }
-     
+    }
+  
+       
 }
   exports.handle_request=handle_request

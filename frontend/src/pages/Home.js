@@ -29,7 +29,7 @@ function Home()
  
   
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
-    const [restList,setRestList] = useState([{}]);
+    const [restList,setRestList] = useState([]);
     const [filter,setFilter] = useState({veg:false,nonVeg:false,vegan:false});
    // const [search,setSearch] =useState(); 
     let search=location.searchCriteria;
@@ -143,7 +143,7 @@ function Home()
                                    </Row>
                                    <Row>
                                    <div className="col-sm">   
-                                       <div style={{fontSize:'larger',fontWeight:'400',paddingTop:'1%'}}><RiIcons.RiRestaurantFill/>{rest.name}</div>
+                                       <div style={{fontSize:'larger',fontWeight:'400',paddingTop:'1%'}}><RiIcons.RiRestaurantFill/>{rest.pop_name[0].name}</div>
                                      </div>
                                    </Row>
                                

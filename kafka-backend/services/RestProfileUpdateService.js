@@ -8,7 +8,7 @@ async function handle_request(msg,callback)
         console.log("values iso ",value);
         await user_login.updateOne({id:value.r_id},{name:value.name,location:value.location})
         await rest_info.updateOne({r_id:value.r_id},{r_contact:value.r_contact,r_description:value.r_description,r_timings:10,
-    type:value.r_type});
+    type:value.type});
         callback(null,{status:200})
         
        }catch(error){

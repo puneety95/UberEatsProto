@@ -16,8 +16,9 @@ async function handle_request(msg,callback)
             city:value.city,
             state:value.state,
             country:value.country,
-            phone:value.ohone,
+            phone:value.phone,
             nickname:value.nickname,
+            about:value.about
         });
         await user_login.updateOne({id:value.id},{
             name:value.name,
