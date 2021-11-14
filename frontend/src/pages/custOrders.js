@@ -121,9 +121,9 @@ let d=false;
                 <label for="ordersperpage" style={{fontSize:'x-larger'}}>Order Per Page:</label>
                 <select name="ordersperpage"  onClick={(e)=>{changePerPageOrder(e)}} id="ordersperpage">
                     <option value="0">Select Value</option>
-                    <option value="1">1</option>
                     <option value="2">2</option>
-                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
                    
                 </select>
                 </div>

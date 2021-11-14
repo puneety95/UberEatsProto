@@ -15,6 +15,7 @@ import {useSelector,useDispatch} from 'react-redux';
 import {deliveryDetails} from './state/action-creators/actions';
 import {locationdetails} from './state/action-creators/actions';
 import { FiAlertTriangle } from "react-icons/fi";
+import {logingetUserDetails} from './state/action-creators/actions';
 //class='btn btn-primary shadow-none'
 function NavigBar(props) {
   const history=useHistory();
@@ -46,6 +47,10 @@ function NavigBar(props) {
     let data={toggle}       
     deliveryDetails2(data);
 
+    let d= {...user,
+      location: location};
+     const loginUserDetails=bindActionCreators(logingetUserDetails,dispatch);
+     loginUserDetails(d);
     const locationdetail=bindActionCreators(locationdetails,dispatch)
     let data2={location};
     locationdetail(data2);
