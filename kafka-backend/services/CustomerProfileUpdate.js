@@ -3,14 +3,10 @@ const user_login = require("../Model/SignUpModel");
 
 async function handle_request(msg,callback)
 {
-   // let sql=`update cust_profile set dob='${val.dob}' , city='${val.city}' , state='${val.state}' , 
-   //country='${val.country}' , phone='${val.phone}'  ,nickname='${val.nickname}' ,
-   //about='${val.about}' where id='${val.id}' ; `
-  // sql=sql + `update user_login set name='${val.name}' ,  location='${val.city}' , email='${val.email}' 
-  //where id='${val.id}' ; `
+   
        try{
         const value=msg;
-        console.log("values iso ",value);
+      
         await cust_profile.updateOne({id:value.id},{
             dob:value.dob,
             city:value.city,

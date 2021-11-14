@@ -104,7 +104,7 @@ function Dashboard()
                 <div className="image_over_Text">
                  <Image style={{width:'100%',height:'240px',objectFit:'cover'}}  src={restDetails.profile_pic} alt="cover_image" /> 
                  <div className="bottom-left">
-                     <p>{restDetails.name} <span style={{fontSize:'20px',}}>Timings : "10-10-23"</span></p>
+                     <p>{restDetails.name} <span style={{fontSize:'20px',}}>Timings : {restDetails.r_timings}</span></p>
                 
                  </div>
                  

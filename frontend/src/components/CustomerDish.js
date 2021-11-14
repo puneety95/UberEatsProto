@@ -149,18 +149,19 @@ const { emptyCart } = useCart();
             dishDetails.map(dish=>{
                 return(
                 
-                <div className="col-sm-4" style={{paddingTop:'1%',paddingBottom:'1%'}}>
+                <div className="col-sm-4 " style={{paddingTop:'1%',paddingBottom:'1%'}}>
                             <div className="card card h-100" onClick={()=>handleShow(dish.id)} style={{paddingLeft:'2%',cursor:'pointer'}}>
                             <div className="card-body" style={{padding:'0'}}>
                                 <Row>
                                     <div className="col-sm-6" >
                                        <h5 className="card-title">{dish.name}</h5>
+                                       <div className="mt-auto">
                                         <p id="rest_card_text" className="card-text">{dish.description}</p>
-                                        <p id="rest_card_text"  className="card-text">{dish.price}</p>
-                                        
+                                        <p style={{fontSize:'x-large'}} id="rest_card_text"  className="card-text"><BiIcons.BiDollar/>{dish.price}</p>
+                                        </div>
                                    </div>
                                    <div className="col-sm-6">
-                                       <img style={{width:'100%',height:'100%'}} id ="rest_dish_cat2" src={dish.images} alt="dish_image" />
+                                       <img style={{width:'100%',height:'20vh'}} id ="rest_dish_cat2" src={dish.images} alt="dish_image" />
                                  </div>
                                 </Row>
                                
@@ -176,7 +177,7 @@ const { emptyCart } = useCart();
                             <Modal.Body style={{padding:'0%'}}>
                            <Row>
                            <div className="col-sm-12">
-                                       <img style={{width:'100%',height:'100%'}} id ="rest_dish_cat2" src={dish.images} alt="dish_image" />
+                                       <img style={{width:'100%',height:'50vh'}} id ="rest_dish_cat2" src={dish.images} alt="dish_image" />
                                  </div>
                            </Row>
                            <Row>

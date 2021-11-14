@@ -7,7 +7,8 @@ async function handle_request(msg,callback)
     //, description='${val.description}' where id='${val.id}' and rest_id='${val.rest_id}';`
        try{
         const value=msg;
-        console.log("values iso ",value);
+        
+       
         await dish_update.updateOne({id:value.id,rest_id:value.rest_id},{
             name:value.name,
             ingredients:value.ingredients,

@@ -86,7 +86,7 @@ function Cart(props) {
                 <b> {item.name}</b>
                </div>
                <div className='col-sm-2'>
-                 {item.price} x  {item.size}
+                 {item.price} x  {item.size}  
                </div>
                <div className='col-sm-3 text-right'>
                 <FiIcons.FiDollarSign/> {parseFloat(item.price *  item.size).toFixed(2)}

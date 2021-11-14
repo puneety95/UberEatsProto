@@ -17,7 +17,7 @@ const restSchema = mongoose.Schema({
     
     },
     r_timings: {
-        type: Number 
+        type: String 
     },
     profile_pic: {
         type: String

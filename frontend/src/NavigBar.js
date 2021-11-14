@@ -35,7 +35,11 @@ function NavigBar(props) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
+  // const store = useStore()
+  // const a= store.getState();
+  // console.log("------------------store---------------",a);
+  let store_location=useSelector((state)=>state.location);
+  //  alert(store_location);
   useEffect(()=>{
     
     const deliveryDetails2=bindActionCreators(deliveryDetails,dispatch);
@@ -46,12 +50,16 @@ function NavigBar(props) {
     let data2={location};
     locationdetail(data2);
 
+
   },[toggle,location])
 
-
+  // useEffect(()=>{
+  //   setLocation(store_location.location);
+  // },[store_location])
+  
 
   const sd_click_handler=()=>{
-    setSideDrawerView((prevState)=>{
+    setSideDrawerView((prevState)=>{  
       return (!prevState)
     });   
   }
@@ -159,7 +167,7 @@ function NavigBar(props) {
           <Button id="navaddress" onClick={handleShow} className="rounded-pill">
             <MdIcons.MdLocationOn />
            {location}
-          </Button>
+          </Button> 
         </Nav>
         <Nav className="flex-container">
           <div id="navsearch">

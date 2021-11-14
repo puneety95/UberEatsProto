@@ -25,6 +25,7 @@ function Home()
   console.log(state2);
 
   const state_location=useSelector((state)=>state.location);
+  console.log("------------------------state location--------------",state_location);
    //const [loc,setLoc] = useState("");
  
   
@@ -132,15 +133,10 @@ function Home()
                     
                     restList.map(rest=>{
            return(
-            <div className="col-sm-3" style={{paddingTop:'1%',paddingBottom:'1%'}}>
+            <div className="col-sm-3 d-flex align-items-stretch" style={{paddingTop:'1%',paddingBottom:'1%'}}>
                             <div className="card" onClick={()=>restOpen(rest.r_id)} style={{cursor:'pointer'}}>
                             <div className="card-body" style={{padding:'0'}}>
-                                                                  
-                                   <Row>
-                                   <div className="col-sm">   
                                        <img style={{width:'100%'}} id ="rest_dish_cat2" src={rest.profile_pic} alt="dish_image" />
-                                 </div>
-                                   </Row>
                                    <Row>
                                    <div className="col-sm">   
                                        <div style={{fontSize:'larger',fontWeight:'400',paddingTop:'1%'}}><RiIcons.RiRestaurantFill/>{rest.pop_name[0].name}</div>

@@ -5,9 +5,9 @@ async function handle_request(msg,callback)
 {
        try{
         const value=msg;
-        console.log("values iso ",value);
+        const time=value.r_timings + ":"+ value.r_timings3 + " - " + value.r_timings2+ ":"+ value.r_timings4;
         await user_login.updateOne({id:value.r_id},{name:value.name,location:value.location})
-        await rest_info.updateOne({r_id:value.r_id},{r_contact:value.r_contact,r_description:value.r_description,r_timings:10,
+        await rest_info.updateOne({r_id:value.r_id},{r_contact:value.r_contact,r_description:value.r_description,r_timings:time,
     type:value.type});
         callback(null,{status:200})
         

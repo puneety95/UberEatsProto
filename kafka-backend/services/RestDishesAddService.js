@@ -4,16 +4,14 @@ const dish_add=require('../Model/DishesModel');
 async function handle_request(msg,callback)
 {
     const value=msg;
-    console.log("value of the dishes is",value);
+    
        try{
        // sql=`insert into dishes (rest_id,name,ingredients,images,price,description,cat,filter)
        // values('${value.id}','${value.name}','${value.ingredients}','${req.body.imageUrl}',
        //'${value.price}','${value.description}','${value.category}','${value.type}');`;
            //await dis
            const len=await dish_add.find();
-           console.log("Dishes are the following",len);
-           console.log("Dishes are the following",len.length);
-
+         
            const dish_details = new dish_add({
             id:len.length+1,
             rest_id:value.id,

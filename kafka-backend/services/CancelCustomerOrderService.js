@@ -3,11 +3,13 @@ async function handle_request(msg,callback){
  
 try{
     const value=msg;
-    await orders.deleteOne({id:value.id});
+    await orders.updateOne({id:value.id},{
+        status:8,
+        order_status:3,
+    });
     callback(null,{status:200});
 }catch(error){
-    console.log("---------------inside error----------------",error);
-    callback({status:500},null);
+     callback({status:500},null);
 }
    
 

@@ -6,20 +6,21 @@ const rest_info=require('../Model/RestModel')
 
 async function handle_request(msg,callback)
 {
-  console.log("---------------------------------------------------------------", msg)
+  
     const value=msg;
     const isPresent = await user_login.find({email:value.signup_email});
-    console.log("In handle request inside ----------------:");
-  
+     
   if(isPresent.length ==0){
-    console.log("---------------------------------------------------In length------------------------")
-    const maxid = await user_login.find().sort({id:-1}).limit(1);
+    
+    //const maxid = await user_login.find().sort({id:-1}).limit(1);
+    let maxid = await user_login.count();
+    maxid=maxid+1;
     console.log("--------------",maxid);
-    console.log("IDDDDD is",maxid[0].id);
-   // const pp=value.signup_pass;
+//    console.log("IDDDDD is",maxid[0].id);
+  
    const pp= bcrypt.hashSync(value.signup_pass, 10);
     const user_info = new user_login({
-      id:maxid[0].id +1 , 
+      id:maxid , 
       email:value.signup_email,
       password: pp,
       role: value.role,
@@ -28,10 +29,10 @@ async function handle_request(msg,callback)
       });
       
       try {
-        console.log("SAving------------")
+       
           const saved_user =  user_info.save();
           if(value.role==1){
-            const cust_prof=new cust_profile({id:maxid[0].id+1,
+            const cust_prof=new cust_profile({id:maxid,
             dob:"",
             city:"",
             state:"",
@@ -46,7 +47,7 @@ async function handle_request(msg,callback)
               cust_prof.save();
           }
           else{
-            const rest_prof=new rest_info({r_id:maxid[0].id+1,
+            const rest_prof=new rest_info({r_id:maxid,
               r_description:"",
               r_contact:"",
               r_timings:"",
@@ -59,12 +60,11 @@ async function handle_request(msg,callback)
           }        
           callback(null,{status:200,msg:saved_user});
           
-        //  res.status(200).json(saved_user);
+       
       } catch (error) {
-        console.log(error)
-        console.log("----------here-----------------");
+      
         callback({status:400,msg:error},null);
-          //res.status(400).json({"msg": error});
+          
       }
 
   }

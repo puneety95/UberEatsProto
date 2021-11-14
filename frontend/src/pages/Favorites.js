@@ -11,7 +11,7 @@ import { server_url } from '../values';
 function Favorites()
 {
     let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
-    const [restList,setRestList] = useState([{}]);
+    const [restList,setRestList] = useState([]);
     let id=localStorage.getItem('id');
     const history =useHistory();
     const restOpen=(id)=>{
@@ -74,7 +74,7 @@ function Favorites()
                                    </Row>
                                    <Row>
                                    <div className="col-sm">   
-                                       <div style={{fontSize:'larger',fontWeight:'400',paddingTop:'1%'}}><RiIcons.RiRestaurantFill/>{rest.name}</div>
+                                       <div style={{fontSize:'larger',fontWeight:'400',paddingTop:'1%'}}><RiIcons.RiRestaurantFill/>{rest.pop_name[0].name}</div>
                                      </div>
                                    </Row>
                                

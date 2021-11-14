@@ -16,7 +16,7 @@ async function handle_request(msg,callback)
         callback(null,{status:200,msg:result});
 
        }catch(error){
-           console.log("Inside Error",error);
+           
            callback(null,{status:500});
        }
      

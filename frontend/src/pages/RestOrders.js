@@ -143,7 +143,7 @@ let st={
       {
              Object.values(currentOrders).map(order => {
                  const custName = order.cust_name;
-                 //const restProfilePic = order && order[0] && order[0].profile_pic;
+                 const restProfilePic = order.rest_profile_pic;
                  let date = order.date;
                  date=new Date(date).toLocaleString();
                  const status = order.status;
@@ -160,6 +160,8 @@ let st={
                      <div class="row no-gutters">
                          <div class="col-md-3" style={{paddingTop:'5%'}}>
                              {/* <img src={restProfilePic} style={{height:'100%',objectFit:'cover'}} class="card-img" alt="rest_image"/> */}
+                             
+                            
                         {  mode == 'Delivery' &&    <select name="order_status2"  defaultValue={0} onChange={(e)=>{status2(e,o_id)}} id="order_status2">
                               <option value="0">--Select Status--:</option>
                               <option value="1">Order Received</option>
@@ -170,7 +172,7 @@ let st={
                               
                        </select>
                         }
-                        {  mode == 'Pickup' &&    <select name="order_status2" defaultValue={0} onChange={(e)=>{status2(e)}} id="order_status2">
+                        {  mode == 'Pickup' &&    <select name="order_status2" defaultValue={0} onChange={(e)=>{status2(e,o_id)}} id="order_status2">
                              <option value="0">--Select Status--:</option>
                              <option value="1">Order Received</option>
                              <option value="2">Preparing</option>

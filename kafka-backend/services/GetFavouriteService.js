@@ -7,11 +7,11 @@ const user=require("../Model/SignUpModel.js");
 async function handle_request(msg,callback){
     
     const value=msg;
-    console.log("---------------Inside The service",value);
+  
     try{
        
         const fav_rest = await fav.find({cust_id:value.id});
-        console.log("VAlues of the rest id",fav_rest);
+       
         const fav_arr=[]
         for(let i=0;i< fav_rest.length;i++){
             fav_arr.push(fav_rest[i]['rest_id']);

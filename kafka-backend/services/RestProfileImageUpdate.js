@@ -5,7 +5,7 @@ async function handle_request(msg,callback)
 {
        try{
         const value=msg;
-        console.log("values iso ",value);
+       
        // await user_login.updateOne({id:value.r_id},{name:value.name,location:value.location})
         await rest_info.updateOne({r_id:value.id},{profile_pic:value.imageUrl});
         callback(null,{status:200})

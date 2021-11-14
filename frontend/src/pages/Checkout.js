@@ -134,7 +134,7 @@ function Checkout()
    }
  
     const { items , emptyCart } = useCart();
-    console.log("Puneeeeeeeeeeeeeeeeeeeeeeeeeeee",items);
+    
     let tax=3;
     let delivery_fee=2;
     let ca=1;
@@ -161,7 +161,7 @@ function Checkout()
 
     useEffect(()=>{
       setTotalBill(total);
-      let t=total + tax+delivery_fee + ca;
+      let t=total;
       setTotalAfterTax(t);
 
 
@@ -325,42 +325,12 @@ function Checkout()
                     <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${parseFloat(totalBill).toFixed(2)}</div>
                   </div>
               </Row>
-              <Row style={{paddingTop:'3%'}}>
-                  <div className='col-sm-6'>
-                    <div style={{fontWeight:'200px',fontSize:'16px',paddingLeft:'10%'}}>Taxes & Fees</div>
-                  </div>
-                  <div className='col-sm-6 text-center'>
-                    <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${tax}</div>
-                  </div>
-              </Row>
-                          
+                   
                          
               <Row style={{paddingTop:'2%',paddingBottom:'0%'}}>
                 <hr  className="one"></hr>
             </Row>
-                       
-            <Row style={{paddingTop:'1%'}}>
-                  <div className='col-sm-6'>
-                    <div style={{fontWeight:'bold',fontSize:'16px',paddingLeft:'10%'}}>Add a Tip</div>
-                  </div>
-                  <div className='col-sm-6 text-center'>
-                    <div style={{fontWeight:'200px',right:'0',fontSize:'16px',paddingLeft:'10%'}}>${delivery_fee}</div>
-                  </div>
-              </Row>
-
-              <Row>
-            <div className='col-sm-12' style={{paddingTop:'1%'}}>
-                    <div style={{fontWeight:'200',fontSize:'14px'}}>Add a tip to say thanks.</div>
-                  </div>
-              </Row>
-
-              
-
-
-            <Row style={{paddingTop:'2%',paddingBottom:'3%'}}>
-                <hr  className="one"></hr>
-            </Row>  
-
+         
             <Row style={{paddingTop:'1%'}}>
                   <div className='col-sm-6'>
                     <div style={{fontWeight:'bold',fontSize:'20px',paddingLeft:'10%'}}>Total</div>

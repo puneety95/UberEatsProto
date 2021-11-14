@@ -3,7 +3,7 @@ async function handle_request(msg,callback){
  
 try{
     const value=msg.orderStatus2;
-    console.log("-----------------value-----------",msg);
+  
     let order_detail;
     if(value.status==4){
          await orders.updateOne({id:value.id},{
@@ -13,7 +13,7 @@ try{
          });
             
     }else if(value.status==8){
-        console.log("-------------------cancelled the order--------------------");
+       
         await orders.updateOne({id:value.id},{
             status:8,
             order_status:3,
@@ -27,7 +27,7 @@ try{
         
     
 }catch(error){
-    console.log("---------------inside error----------------",error);
+    
     callback({status:500},null);
 }
    

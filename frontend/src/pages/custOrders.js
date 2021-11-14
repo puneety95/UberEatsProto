@@ -141,10 +141,10 @@ let d=false;
       {
              Object.values(currentOrders).map(order => {
                  const restName = order.rest_name;
-                 const restProfilePic =order.rest_profile_pic;
+                 const restProfilePic =order.cust_profile_pic;
                  let date = order.date;
                 date=new Date(date).toLocaleString()
-                 const status = order.order_status;
+                 const status = order.status;
                  const id=order.id;
                  const mode = order.mode;
                  let instruction=order.instruction;
@@ -182,9 +182,17 @@ let d=false;
                                               </Row>
                                             </Modal.Header>
                                             <Modal.Body>
-
+                                          <Row>
+                                          <div className='col-sm-10'>
+                                          <p> <FiIcons.BiFoodTag/> Chicken Rice $10 x 3</p> 
+                                               </div>
+                                               <div className='col-sm-2'>
+                                               30.00
+                                               </div>
+                                            
+                                            </Row>
                                             <Row>   
-                                           {/* <p>Spicy Chicken $15.79 x 1</p> */}
+                                           
                                             <div className='col-sm-10'>
                                             <FiIcons.BiFoodTag/>  {item.name}  ${item.cost} x {item.quantity} 
                                                </div>

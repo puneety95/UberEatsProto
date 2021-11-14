@@ -16,7 +16,8 @@ import axios from "axios";
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
 import {useDispatch} from 'react-redux';
 import { server_url } from '../values';
-
+import {locationdetails} from '../state/action-creators/actions';
+import {bindActionCreators} from "redux";
 function Profile() {
   const dispatch=useDispatch();
   const [show, setShow] = useState(false);
@@ -120,9 +121,11 @@ const handleSubmit = (e) => {
        })
        .then((response)=>{
          alert("Data Updated");
-         localStorage.setItem('location',dumCustDetails.city)
+         //localStorage.setItem('location',dumCustDetails.city)
          setCustDetails(dumCustDetails);
          setDumCustDetails(custDetails);
+         const location=bindActionCreators(locationdetails,dispatch);
+         location(dumCustDetails.city);
          handleClose();
        })
        .catch((error)=>{

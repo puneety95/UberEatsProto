@@ -7,14 +7,13 @@ async function handle_request(msg,callback)
    //a.phone from cust_profile as a, user_login as u where a.id=${req.query.id} and u.id=a.id;`;
        try{
         const value=msg;
-        console.log("values iso ",value);
         const user_info=await cust_profile.find({id:value.id});
         const user_info_name=await cust_profile_name.find({id:value.id},{password:0});
         const result={...user_info_name[0]._doc,...user_info[0]._doc};
         callback(null,{status:200,msg:result});
         
        }catch(error){
-           console.log("Inside Error",error);
+           
            callback(null,{status:500,msg:"There were some error while performing this task."})
        }
      
