@@ -6,7 +6,7 @@ const kafka = require('../kafka/client');
 //const con_mongo=require('../mongoose_connection');
 var _ = require('lodash');
 const { commit, getMaxListeners } = require('../SQL_Connection.js');
-const { groupBy } = require('lodash');
+const { groupBy, values } = require('lodash');
 let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
 
 
@@ -184,7 +184,25 @@ customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
 //to get restaurant at home page
 // customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
 //   console.log("-------------------------------",req.query);
- 
+// const u_loc = await user_login.findOne({ id: values.id }, { location: 1, _id: 0 });
+// const rest_ids = await user_login.find(
+//   {$and: [
+//     {location: { $ne: u_loc }},
+//     { role: 1 },
+//     { name: new RegExp(search, 'i') }
+//   ]},
+//   { id: 1, _id: 0 }
+// );
+// const dish_rest_ids = await dishes.find({ filter }, { rest_id: 1, _id: 0 });
+// const restaurants = await rest_info.find({
+//   $and: [
+//     {r_id: { $in: _.intersection(rest_ids, dish_rest_ids) }},
+//     {type: {
+//         $in: [value.type, 'Delivery']
+//     }}
+//   ]
+// }).populate({path:'pop_name',select:'name'}).exec();
+
 // let sql=`select r.r_id,r.profile_pic,u.name from rest_info as r ,user_login as u where u.location not in (select location from user_login where id='${req.query.id}') and u.id=r.r_id and r.type in ('${req.query.type}','Delivery')`;
 
 // let search="";
@@ -201,6 +219,7 @@ customerRouter.get('/getRestaurant',authenticateToken,(req,res)=>{
 //  }
  
 // filter="(" + filter +")";
+
 // sql=sql + ` and r.r_id  in (select rest_id from dishes where filter in ${filter} )`
 // sql = sql + ` and  (u.name like '%${search}%' or r.r_id  in (select rest_id from dishes where name like '%${search}%' ));`
 // console.log("Value 111111 is---->",sql);

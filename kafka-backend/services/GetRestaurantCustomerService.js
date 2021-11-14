@@ -1,5 +1,6 @@
-const rest=require("../Model/RestModel");
-const user = require("../Model/SignUpModel");
+const rest_info=require("../Model/RestModel");
+const user_login = require("../Model/SignUpModel");
+const dishes=require("../Model/DishesModel");
 
 
 async function handle_request(msg,callback)
@@ -9,8 +10,7 @@ async function handle_request(msg,callback)
   
        try{
         const value=msg;
-
-        console.log("Value of the values are ",value)
+       
         
        let rest_info= await rest.find({r_id:value.id},{});
        console.log("Values of the restaurant are",rest_info[0]);
@@ -19,7 +19,7 @@ async function handle_request(msg,callback)
        const result={...rest_info[0]._doc,...user_login[0]._doc};
        console.log("Values of theresult is ",result);
        callback(null,{status:200,msg:result});
-        
+     
        }catch(error){
            console.log("Inside Error",error);
            callback(null,{status:500,msg:"There were some error while performing this task."})
