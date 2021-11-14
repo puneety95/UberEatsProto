@@ -33,6 +33,7 @@ var CreateOrder=require('./services/CreateOrderService.js');
 var GetDeliveryAddressService=require('./services/GetDeliveryAddressService.js');
 var GetRestOrders=require('./services/GetRestOrdersService.js');
 var UpdateOrderStatus=require('./services/UpdateOrderStatusService.js');
+var CancelCustomerOrder=require('./services/CancelCustomerOrderService.js');
 const router = require('../backend/routes/handler.js');
 
 
@@ -97,5 +98,6 @@ handleTopicRequest("create_order",CreateOrder);
 handleTopicRequest("get_delivery_address",GetDeliveryAddressService);
 handleTopicRequest("get_rest_orders",GetRestOrders);
 handleTopicRequest("update_order_status",UpdateOrderStatus);
+handleTopicRequest("cancel_customer_order",CancelCustomerOrder);
 //handleTopicRequest("rest_dishes_add",RestDishesAdd);
 

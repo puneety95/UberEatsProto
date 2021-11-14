@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import axios from 'axios';
 import * as FiIcons from 'react-icons/bi';
 import { server_url } from '../values';
+import Pagination from '../components/Pagination';
 
 function CustomerOrder()
 {    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
@@ -10,11 +11,13 @@ function CustomerOrder()
     // TO change order status
     const [orderStatus2,setOrderStatus2]=useState({}); 
     const [statusValues,setStatusValues] =useState([{}]);
-    const [orderValues,setOrderValues] =useState({});
+    const [orderValues,setOrderValues] =useState([]);
     const [display,setDisplay] = useState(false);
     const [showReceipt,setShowReceipt] = useState();
     const handleClose = () => setShow(false);
     const [show, setShow] = useState(true);
+    const [currentPage,setCurrentPage] =useState(1);
+    const [postsPerPage,setPostsPerPage] = useState(5);
   const handleShow = () => setShow(true);
     let id=localStorage.getItem('id');
     const status=(e)=>{
@@ -83,7 +86,19 @@ let st={
                   console.log("There were some errors while fetching order status data");
                 });
         }
+        const changePerPageOrder =(e)=>{
+          if(e.target.value!=0){
+            setPostsPerPage(e.target.value);
+          }
+         
+      }
 
+      //Get current posts
+      const indexOfLastPost = currentPage * postsPerPage;
+      const indexofFirstPost = indexOfLastPost - postsPerPage;
+      const currentOrders=orderValues.slice(indexofFirstPost,indexOfLastPost); 
+ 
+      const paginate = pageNumber => setCurrentPage(pageNumber);
     console.log('----STATUS----', orderValues)
     return(
         <Container>
@@ -102,11 +117,31 @@ let st={
             <Row style={{paddingTop:'1%',paddingBottom:'2%'}}>
                 <hr  className="one"></hr>
 
-                
             </Row> 
+            <Row>
+                <div className="col-sm-12 text-end">
+                <label for="ordersperpage" style={{fontSize:'x-larger'}}>Order Per Page:</label>
+                <select name="ordersperpage"  onClick={(e)=>{changePerPageOrder(e)}} id="ordersperpage">
+                    <option value="0">Select Value</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                   
+                </select>
+                </div>
+            </Row> 
+            <Row>
+            <div className="col-sm-12 text-end" style={{paddingTop:'1%'}}>
+            <Pagination
+                 postsPerPage={postsPerPage}
+                 totalPosts={orderValues.length}
+                paginate={paginate}
+           />
+           </div>
+            </Row>
 
       {
-             Object.values(orderValues).map(order => {
+             Object.values(currentOrders).map(order => {
                  const custName = order.cust_name;
                  //const restProfilePic = order && order[0] && order[0].profile_pic;
                  let date = order.date;

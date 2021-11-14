@@ -678,7 +678,7 @@ customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
      }
    })
  });
-
+ 
 //Side drawer details
 // customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
 //   let sql=`select c.profile_pic, u.name from cust_profile c , user_login u where c.id='${req.query.id}' and c.id=u.id;`
@@ -694,5 +694,21 @@ customerRouter.get('/getCustImage',authenticateToken,(req,res)=>{
 //      }
 //   })
 // })
+
+customerRouter.post('/cancelCustomerOrder',authenticateToken,(req,res)=>{
+  console.log("------------------value of the orders---------------",req.body);
+  kafka.make_request('cancel_customer_order',req.body,(error,result)=>{
+    if(error){
+       res.sendStatus(500);
+     }
+     else{
+       const status=result.status==200 ? 200 : 500;
+       if(status==200){
+         res.sendStatus(200);
+       } 
+       else res.sendStatus(500);
+     }
+   })
+ });
 
 module.exports=customerRouter;

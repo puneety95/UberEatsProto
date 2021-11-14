@@ -3,12 +3,16 @@ import {useEffect, useState} from 'react';
 import * as FiIcons from 'react-icons/bi';
 import axios from 'axios';
 import { server_url } from '../values';
+import Pagination from '../components/Pagination';
 function CustomerOrder()
 {    let bearer= 'Bearer '+localStorage.getItem('accessToken'); 
     const [orderStatus,setOrderStatus]=useState(7);
     const [statusValues,setStatusValues] =useState([{}]);
-    const [orderValues,setOrderValues] =useState({});
+    const [orderValues,setOrderValues] =useState([]);
     const [showReceipt,setShowReceipt] = useState();
+    const [refresh,setRefresh]=useState(true);
+    const [currentPage,setCurrentPage] =useState(1);
+    const [postsPerPage,setPostsPerPage] = useState(5);
     let id=localStorage.getItem('id');
     const [show, setShow] = useState(true);
 
@@ -22,6 +26,31 @@ function CustomerOrder()
     const setShowReceiptmodal=(id)=>{
         handleShow();
         setShowReceipt(id);
+    }
+    const changePerPageOrder =(e)=>{
+        if(e.target.value!=0){
+          setPostsPerPage(e.target.value);
+        }
+       
+    }
+
+    const cancelOrder=(id)=>{
+      
+      let data={id};
+      console.log("---------value sot he data idd---------",data);
+      axios({
+        method: "post",
+        url: server_url+`/cancelCustomerOrder`,
+        headers: { "Content-Type": "application/json","Authorization": bearer  },
+        data:data
+      })
+        .then((response) => {
+          //  setOrderStatus(response.data);
+          setRefresh(!refresh);
+        })
+        .catch((error) => {
+         alert("There were some error while fetching orders");
+        });
     }
 
     let st={
@@ -38,25 +67,33 @@ function CustomerOrder()
 let d=false;
     useEffect(()=>{
       
-          axios({
-            method: "get",
-            url: server_url+`/getCustOrders?id=${id}&status=${orderStatus}`,
-            headers: { "Content-Type": "application/json","Authorization": bearer  },
-            
+      const  getorders=async()=>{
+        
+      await  axios({
+          method: "get",
+          url: server_url+`/getCustOrders?id=${id}&status=${orderStatus}`,
+          headers: { "Content-Type": "application/json","Authorization": bearer  },
+          
+        })
+          .then((response) => {
+            //  setOrderStatus(response.data);
+              setStatusValues(response.data);
+              setOrderValues(response.data);
+          
           })
-            .then((response) => {
-              //  setOrderStatus(response.data);
-                setStatusValues(response.data);
-                setOrderValues(response.data);
-            
-            })
-            .catch((error) => {
-             alert("There were some error while fetching orders");
-            });
-        },[orderStatus])
-
-
+          .catch((error) => {
+           alert("There were some error while fetching orders");
+          });
+      }
+      getorders();
+        },[orderStatus,refresh])
+        console.log("---------------values of the oreder---------",orderValues);
+        //Get current posts
+        const indexOfLastPost = currentPage * postsPerPage;
+        const indexofFirstPost = indexOfLastPost - postsPerPage;
+        const currentOrders=orderValues.slice(indexofFirstPost,indexOfLastPost); 
    
+        const paginate = pageNumber => setCurrentPage(pageNumber);
     return(
         <Container>
 
@@ -78,12 +115,31 @@ let d=false;
             </Row>
             <Row style={{paddingTop:'1%',paddingBottom:'2%'}}>
                 <hr  className="one"></hr>
-
-                
+            </Row>
+            <Row>
+                <div className="col-sm-12 text-end">
+                <label for="ordersperpage" style={{fontSize:'x-larger'}}>Order Per Page:</label>
+                <select name="ordersperpage"  onClick={(e)=>{changePerPageOrder(e)}} id="ordersperpage">
+                    <option value="0">Select Value</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                   
+                </select>
+                </div>
             </Row> 
+            <Row>
+            <div className="col-sm-12 text-end" style={{paddingTop:'1%'}}>
+            <Pagination
+                 postsPerPage={postsPerPage}
+                 totalPosts={orderValues.length}
+                paginate={paginate}
+           />
+           </div>
+            </Row>
 
       {
-             Object.values(orderValues).map(order => {
+             Object.values(currentOrders).map(order => {
                  const restName = order.rest_name;
                  const restProfilePic =order.rest_profile_pic;
                  let date = order.date;
@@ -94,7 +150,7 @@ let d=false;
                  let instruction=order.instruction;
                 // const id = order && order[0] && order[0].id;
                  let t_value=0;
-               
+               console.log("orderrrrrrrrr", order)
                  return (
                    <Row>
                     <div class="card mb-3" style={{marginTop:'2%'}}>
@@ -109,7 +165,7 @@ let d=false;
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Date - {date}</small></p> 
                                <p class="card-text" style={{textDecoration:'underline'}}><small >Mode - {mode}</small></p> 
                                <p class="card-text" onClick={()=>{setShowReceiptmodal(id)}} style={{textDecoration:'underline',cursor:'pointer'}}><small >View Receipt</small></p>
-                              {order && order.order_item.map(item => {
+                              {order.order_item && order.order_item.map(item => {
                                  t_value=parseFloat(t_value + item.cost * item.quantity).toFixed(2);
                                   return (
                                       <div>
@@ -159,9 +215,7 @@ let d=false;
                                               
                                             </Modal.Footer>
                                           </Modal>
-                                        
-                                        
-                                        
+                                       
                                         } 
                                   </div>
                                   )
@@ -172,7 +226,18 @@ let d=false;
                               <h5 style={{paddingTop:'10%'}}>Total - ${t_value}</h5>
                               <Button style={{backgroundColor:'black'}}>View Store</Button>
                               <h6 style={{paddingTop:'10%'}}>Order Status - {st[status]}</h6>
+                             {status==1 && 
+                              <div>
+                                <Button onClick={(e)=>{cancelOrder(id)}} style={{fontSize:'small',backgroundColor:'red',borderColor:'none'}}>Cancel Order</Button>
+                                <div style={{fontSize:'x-small'}}>*Preparation not started
+                                </div>
+                                </div>
+                                
+                              }
+                               
+                             
                             </div>
+                           
                         </div>
                     </div>              
                     </Row>
