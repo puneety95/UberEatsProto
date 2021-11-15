@@ -2,7 +2,7 @@ var kafka = require("kafka-node");
 function ConnectionProvider() {
   this.getConsumer = function (topic_name) {
     // if (!this.kafkaConsumerConnection) {
-    this.client = new kafka.KafkaClient(`54.218.164.95:2181`);
+    this.client = new kafka.KafkaClient('localhost:2181');
     //this.client = new kafka.Client("localhost:2181");
     /*this.client.refreshMetadata([{topic: topic_name}], (err) => {
                 if (err) {
