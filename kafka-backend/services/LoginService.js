@@ -7,12 +7,12 @@ async function handle_request(msg,callback)
     const value=msg;
     const isPresent = await user_login.find({email:value.loginEmail});
     
-     
+     console.log("-----------insdie mgs------------",msg);
   if(isPresent.length !=0){
 
     try{
         if( bcrypt.compareSync(value.loginPassword, isPresent[0].password))
-        {                 
+        {         console.log("-----------login------------");        
                    
            callback(null,{status:200,msg:isPresent[0]});
         }
@@ -21,7 +21,7 @@ async function handle_request(msg,callback)
           }
 
     }catch(error){
-        
+      console.log("-----------error------------",error);
         callback(null,{status:500,msg:"There were some errors while processing your request"});
     }
     

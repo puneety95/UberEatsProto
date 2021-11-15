@@ -172,7 +172,7 @@ router.post('/signup',async (req,res)=>{
 router.post('/login',async (req,res)=>{
   kafka.make_request('login',req.body,(error,result)=>{
     console.log("-------------------In Sign in result-----------------");
-    console.log(result);
+    console.log("----------here to fet--------",result);
    
     if(error){
       console.log(error);
