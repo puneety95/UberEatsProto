@@ -83,6 +83,7 @@ function Checkout()
       
     }).then ((response)=>{
       alert("Orde Placed successfully");
+      
      // emptyCart();
   
       goToHome();
@@ -185,6 +186,7 @@ function Checkout()
          },[]);
    
     const goToHome=()=>{
+    
         history.push('/home')
         
       }

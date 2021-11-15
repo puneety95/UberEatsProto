@@ -24,8 +24,8 @@ function NavigBar(props) {
   const[searchCriteriaValue,setSearchCriteriaValue]=useState("");
   const [cartModal,setCartModal]=useState(false);
   const [toggle,setToggle]=useState('Delivery');
-
-  let ll=localStorage.getItem('location');
+  let user=useSelector((state)=>state.user);
+  let ll=user.location;
   const [location,setLocation]=useState(ll);
   const [dummyLocation , setDummyLocation] = useState();
   const dispatch=useDispatch();
@@ -39,7 +39,7 @@ function NavigBar(props) {
   // const store = useStore()
   // const a= store.getState();
   // console.log("------------------store---------------",a);
-  let user=useSelector((state)=>state.user);
+  
   //  alert(store_location);
   useEffect(()=>{
     
@@ -171,7 +171,7 @@ function NavigBar(props) {
         <Nav id="space">
           <Button id="navaddress" onClick={handleShow} className="rounded-pill">
             <MdIcons.MdLocationOn />
-           {user.location}
+           {location}
           </Button> 
         </Nav>
         <Nav className="flex-container">
@@ -208,6 +208,7 @@ function NavigBar(props) {
         <Modal.Footer>
          
           <Button variant="primary" onClick={(e)=>{
+            localStorage.setItem('location', dummyLocation);           
             setLocation(dummyLocation);
              handleClose()
              }}>
