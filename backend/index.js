@@ -17,7 +17,7 @@ console.log(process.env.NODE_ENV);
 
 app.use(cors());
 var cors_options ={ //18.224.14.188
-    origin:'http://localhost:3000'
+    origin:'http://54.218.164.95:3000'
  }
  //http://localhost:3000
  app.use(cors(cors_options));
