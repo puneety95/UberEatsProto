@@ -3,7 +3,7 @@ const user_login=require('../Model/SignUpModel');
 
 async function handle_request(msg,callback)
 {
-  
+  console.log("-----------insdie mgs top------------",msg);
     const value=msg;
     const isPresent = await user_login.find({email:value.loginEmail});
     
