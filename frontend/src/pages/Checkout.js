@@ -67,6 +67,7 @@ function Checkout()
     let time=new Date();
     let mode=state2.toggle;
     let special_instruction=special2;
+    console.log("-----------Spceial instruction------------",special_instruction);
     let data={rest_id,del_add,cust_id,time,mode,special_instruction};
    
      let i=1;

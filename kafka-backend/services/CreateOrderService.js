@@ -7,7 +7,7 @@ async function handle_request(msg,callback){
 try{
     const value=msg.order;
     const val2=msg.items;
-   
+    
     const maxid = await orders.count();
     const rest=await users.find({id:value.rest_id});
     const cust=await users.find({id:value.cust_id});
