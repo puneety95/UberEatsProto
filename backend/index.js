@@ -28,11 +28,11 @@ var cors_options = {
 //http://localhost:3000
 app.use(cors(cors_options));
 
-// const routesHandler = require("./routes/handler.js");
+const routesHandler = require("./routes/handler.js");
 
-// const restRoutesHandler = require("./routes/restaurantRoutes.js");
+const restRoutesHandler = require("./routes/restaurantRoutes.js");
 
-// const customerRoutesHandler = require("./routes/customerRoutes.js");
+const customerRoutesHandler = require("./routes/customerRoutes.js");
 
 const schema = require("./schema");
 // app.use("/", routesHandler);
