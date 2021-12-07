@@ -35,9 +35,9 @@ const restRoutesHandler = require("./routes/restaurantRoutes.js");
 const customerRoutesHandler = require("./routes/customerRoutes.js");
 
 const schema = require("./schema");
-// app.use("/", routesHandler);
-// app.use("/", restRoutesHandler);
-// app.use("/", customerRoutesHandler);
+app.use("/", routesHandler);
+app.use("/", restRoutesHandler);
+app.use("/", customerRoutesHandler);
 const PORT = 4000;
 
 app.use(
