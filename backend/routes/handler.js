@@ -1,14 +1,15 @@
-const e = require('express');
-const jwt=require('jsonwebtoken');
-const express =require('express');
-const router=express.Router();
-const con=require('../SQL_Connection.js')
-const bcrypt=require('bcrypt');
-const multer=require('multer');
+const e = require("express");
+const jwt = require("jsonwebtoken");
+const express = require("express");
+const router = express.Router();
+const con = require("../SQL_Connection.js");
+const bcrypt = require("bcrypt");
+const multer = require("multer");
 
-const kafka = require('../kafka/client');
+const kafka = require("../kafka/client");
 
-let secret_jwt_token='4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be';
+let secret_jwt_token =
+  "4405fdad7ce0e57621bd4e62b6c39ff91e72d16253238917ea9c844fc60245c6a299576c85c1b553849f7ccdf0ab29372e12b18cdda2cd8842480ce3e124e6be";
 
 /*
 //handles signup - /signup
@@ -152,57 +153,53 @@ router.post('/signup', async (req, res) => {
 });
 */
 
-router.post('/signup',async (req,res)=>{
-  kafka.make_request('sign_up',req.body,(error,result)=>{
-    
-       if(error){
-      
+router.post("/signup", async (req, res) => {
+  console.log("----------------inside sign up----------------");
+  kafka.make_request("sign_up", req.body, (error, result) => {
+    if (error) {
       console.log(error);
       res.status(500).send("There were some error while performing the action");
-    }
-    else{
-      
+    } else {
       res.status(result.status).json(result.msg);
     }
-  })
-})
-
+  });
+});
 
 // To Login
-router.post('/login',async (req,res)=>{
-  kafka.make_request('login',req.body,(error,result)=>{
+router.post("/login", async (req, res) => {
+  kafka.make_request("login", req.body, (error, result) => {
     console.log("-------------------In Sign in result-----------------");
-    console.log("----------here to fet--------",result);
-   
-    if(error){
+    console.log("----------here to fet--------", result);
+
+    if (error) {
       console.log(error);
       res.status(500).send("There were some error while performing the action");
+    } else {
+      if (result.status == 200) {
+        result = result.msg;
+        val = { loginEmail: req.body.loginEmail };
+        const accessToken = jwt.sign(val, secret_jwt_token);
+        console.log("--------Isnide Sign in result-------", result);
+        res.json({
+          accessToken: accessToken,
+          id: result.id,
+          role: result.role,
+          location: result.location,
+          email: result.email,
+        });
+      } else {
+        res.status(500).send(result.msg);
+      }
     }
-    else{
-
-      if(result.status==200){
-        result=result.msg;
-        val={loginEmail:req.body.loginEmail}
-        const accessToken= jwt.sign(val,secret_jwt_token);
-        console.log("--------Isnide Sign in result-------",result)
-        res.json({accessToken:accessToken, id:result.id, role:result.role, location:result.location, email:result.email});
-        }else{
-          res.status(500).send(result.msg);
-        }
-      
-    }
-  })
-})
-
-
-
+  });
+});
 
 // // To login -/login
 //  router.post('/login',(req,res)=>{
 //   console.log(req.body);
 //   let val=req.body;
 //   let sql=`select password from user_login where email='${val.loginEmail}' `;
- 
+
 //   con.query(sql, function (err,result){
 //     if(err)
 //     {
@@ -214,19 +211,19 @@ router.post('/login',async (req,res)=>{
 //       {
 //         res.status(403).send("Login Credentials are wrong. Please try again.");
 //       }
-      
+
 //     else
-//     {  
+//     {
 //     try{
-        
+
 //      if( bcrypt.compareSync(val.loginPassword, upass[0].password))
 //       {
 //         let sql2=`select id,role,email,location from user_login where email='${val.loginEmail}';`
-        
+
 //         con.query(sql2, function(err2,result2){
-//           if(err2){   
-            
-//             res.status(500).send("There were some errors while performing the action");        
+//           if(err2){
+
+//             res.status(500).send("There were some errors while performing the action");
 //           }
 
 //           else
@@ -236,9 +233,9 @@ router.post('/login',async (req,res)=>{
 //             const accessToken= jwt.sign(val,secret_jwt_token);
 //             res.json({accessToken:accessToken, id:result2[0].id, role:result2[0].role, location:result2[0].location, email:result2[0].email});
 //           }
-           
-//         }); 
-        
+
+//         });
+
 //        // const jwt=require('jsonwebtoken');
 
 //      }
@@ -255,36 +252,24 @@ router.post('/login',async (req,res)=>{
 //   });
 // });
 
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers.authorization;
 
-function authenticateToken(req,res,next)
-{
- 
-  const authHeader =req.headers.authorization;
- 
-  const token =authHeader.split(' ')[1];
-  
-  if(token==null)
-  {
-     
+  const token = authHeader.split(" ")[1];
+
+  if (token == null) {
     res.sendStatus(401);
   }
-  jwt.verify(token,secret_jwt_token,(err,user)=>{
-    if(err)
-      {
- 
-        res.sendStatus(403);
-      }
+  jwt.verify(token, secret_jwt_token, (err, user) => {
+    if (err) {
+      res.sendStatus(403);
+    }
 
-      console.log("use----------",user);
-    req.user=user;
-    
+    console.log("use----------", user);
+    req.user = user;
+
     next();
-
-  })
+  });
 }
 
-
-
-
-
-module.exports=router;
+module.exports = router;
